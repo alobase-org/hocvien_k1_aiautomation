@@ -1,0 +1,22 @@
+{
+  "$schema": "hr-screening-rubric-v1",
+  "role": "Nhân viên Kinh doanh B2B Junior",
+  "total_points": 100,
+  "training_only": true,
+  "criteria": [
+    {"id": "sales_experience", "name": "Kinh nghiệm Sales/CS có KPI", "max_points": 20, "scoring_rule": ">=24 tháng: 20; >=12: 16; >=6: 10; còn lại: 0"},
+    {"id": "b2b_experience", "name": "Kinh nghiệm B2B", "max_points": 15, "scoring_rule": ">=24 tháng: 15; >=12: 12; >=6: 8; còn lại: 0"},
+    {"id": "prospecting", "name": "Tìm kiếm và tiếp cận khách hàng", "max_points": 15, "scoring_rule": "5 điểm cho mỗi kênh có evidence; tối đa 15"},
+    {"id": "communication", "name": "Tư vấn, giao tiếp và đàm phán", "max_points": 15, "scoring_rule": "Có evidence rõ: 12; không có: 0"},
+    {"id": "crm_pipeline", "name": "CRM và quản lý pipeline", "max_points": 10, "scoring_rule": "Có công cụ CRM/pipeline và evidence: 10; không có: 0"},
+    {"id": "quantified_achievement", "name": "Thành tích có số liệu", "max_points": 15, "scoring_rule": "Có thành tích định lượng và evidence: 15; không có: 0"},
+    {"id": "market_fit", "name": "Hiểu SaaS/phần mềm/giáo dục/dịch vụ B2B", "max_points": 5, "scoring_rule": "Có kinh nghiệm thị trường liên quan và evidence: 5; không có: 0"},
+    {"id": "tools_and_cv_quality", "name": "Công cụ và chất lượng CV", "max_points": 5, "scoring_rule": ">=2 công cụ có evidence: 5; 1 công cụ: 3; không có: 0"}
+  ],
+  "routing": [
+    {"min": 75, "max": 100, "result": "STRONG_REVIEW", "action": "HR ưu tiên xem để cân nhắc phỏng vấn"},
+    {"min": 60, "max": 74, "result": "REVIEW", "action": "HR xem xét thêm"},
+    {"min": 0, "max": 59, "result": "LOW_PRIORITY_REVIEW", "action": "HR xem thủ công; workflow không tự loại"}
+  ],
+  "override": "Nếu thiếu dữ liệu quan trọng hoặc evidence yếu, đặt NEEDS_REVIEW bất kể tổng điểm."
+}

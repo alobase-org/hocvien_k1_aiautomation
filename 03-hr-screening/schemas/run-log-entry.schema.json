@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "run-log-entry.schema.json",
+  "title": "HR Screening Run Log Entry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["run_id", "candidate_id", "step", "status", "input_ref", "output_ref", "schema_validation", "error_code", "error_message", "processed_at"],
+  "properties": {
+    "run_id": {"type": "string", "minLength": 1},
+    "candidate_id": {"type": "string"},
+    "step": {"type": "string", "enum": ["TH1_CANDIDATE_PROFILE", "TH2_DATA_QUALITY", "TH3_SCORING_RESULT", "WORKFLOW_COMPLETE", "WORKFLOW_ERROR"]},
+    "status": {"type": "string", "enum": ["SUCCESS", "NEEDS_REVIEW", "ERROR"]},
+    "input_ref": {"type": "string"},
+    "output_ref": {"type": "string"},
+    "schema_validation": {"type": "string", "enum": ["PASS", "FAIL", "NOT_RUN"]},
+    "error_code": {"type": "string"},
+    "error_message": {"type": "string"},
+    "processed_at": {"type": "string", "format": "date-time"}
+  }
+}

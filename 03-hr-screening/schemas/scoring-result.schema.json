@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "scoring-result.schema.json",
+  "title": "HR Screening Scoring Result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["source_candidate_id", "criteria", "total_score", "result", "human_review_required", "scoring_summary", "interview_questions"],
+  "properties": {
+    "source_candidate_id": {"type": "string", "minLength": 1},
+    "criteria": {
+      "type": "array",
+      "minItems": 8,
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "name", "score", "max_points", "evidence", "scoring_note"],
+        "properties": {
+          "id": {"type": "string"},
+          "name": {"type": "string"},
+          "score": {"type": "integer", "minimum": 0},
+          "max_points": {"type": "integer", "minimum": 1},
+          "evidence": {"type": "string"},
+          "scoring_note": {"type": "string"}
+        }
+      }
+    },
+    "total_score": {"type": "integer", "minimum": 0, "maximum": 100},
+    "result": {"type": "string", "enum": ["STRONG_REVIEW", "REVIEW", "LOW_PRIORITY_REVIEW", "NEEDS_REVIEW"]},
+    "human_review_required": {"const": true},
+    "scoring_summary": {"type": "string"},
+    "interview_questions": {"type": "array", "minItems": 2, "maxItems": 4, "items": {"type": "string", "minLength": 1}, "uniqueItems": true}
+  }
+}

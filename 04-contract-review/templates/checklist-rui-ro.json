@@ -1,0 +1,20 @@
+{
+  "_comment": "Checklist 12 tiêu chí rà khung (vĩ mô) cho Contract Review Agent. Synthetic — TEST ONLY.",
+  "version": "1.0",
+  "generated_for": "K1 AI Automation B4 — Contract Review",
+  "tieu_chi": [
+    { "id": "TC01", "ten": "Đối tượng & phạm vi hợp đồng", "mo_ta": "Xác định rõ dịch vụ/sản phẩm gì, phạm vi bao gồm/không bao gồm.", "bat_buoc": true },
+    { "id": "TC02", "ten": "Giá trị & phương thức thanh toán", "mo_ta": "Số tiền, tiền tệ, đợt thanh toán, điều kiện thanh toán.", "bat_buoc": true },
+    { "id": "TC03", "ten": "Nghĩa vụ các bên", "mo_ta": "Bên A làm gì, bên B làm gì — rõ ràng, cân bằng.", "bat_buoc": true },
+    { "id": "TC04", "ten": "Thời hạn & tiến độ", "mo_ta": "Ngày bắt đầu, kết thúc, milestone giao việc.", "bat_buoc": true },
+    { "id": "TC05", "ten": "Điều khoản chấm dứt", "mo_ta": "Điều kiện chấm dứn trước hạn + đơn phương + hậu quả chấm dứt.", "bat_buoc": true },
+    { "id": "TC06", "ten": "Bảo mật thông tin (BMTT)", "mo_ta": "Phạm vi bảo mật, thời gian, chế tài vi phạm.", "bat_buoc": true },
+    { "id": "TC07", "ten": "Sở hữu trí tuệ", "mo_ta": "Ai sở hữu sản phẩm/sản phẩm phái sinh.", "bat_buoc": true },
+    { "id": "TC08", "ten": "Bảo hành & giới hạn trách nhiệm", "mo_ta": "Thời gian bảo hành, trần bồi thường.", "bat_buoc": true },
+    { "id": "TC09", "ten": "Bất khả kháng", "mo_ta": "Định nghĩa, thủ tục thông báo, miễn trừ.", "bat_buoc": true },
+    { "id": "TC10", "ten": "Giải quyết tranh chấp", "mo_ta": "Thương lượng → hòa giải → trọng tài/tòa án, luật áp dụng.", "bat_buoc": true },
+    { "id": "TC11", "ten": "Pháp luật áp dụng", "mo_ta": "Hệ thống pháp luật nào điều chỉnh hợp đồng.", "bat_buoc": true },
+    { "id": "TC12", "ten": "Điều khoản chung & thông báo", "mo_ta": "Địa chỉ liên hệ, cách gửi thông báo có hiệu lực.", "bat_buoc": true }
+  ],
+  "_note": "Omission = tiêu chí bat_buoc=true mà contract KHÔNG có. Đây là kẻ thù số 1. Contract mẫu B4 cố ý THIẾU TC05 (chấm dứt) để HV phát hiện."
+}

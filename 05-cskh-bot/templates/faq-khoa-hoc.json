@@ -1,0 +1,21 @@
+{
+  "_comment": "FAQ mẫu synthetic cho TH1 — HV dùng làm gợi ý, KHÔNG copy y nguyên (tự sinh từ chính sách). TEST ONLY.",
+  "khoa_hoc": "AI Automation & Vibe Coding K1",
+  "faq": [
+    {"id": "F01", "nhom": "xác nhận thanh toán", "cau_hoi": "Tôi chuyển khoản xong rồi, sao chưa thấy xác nhận?", "cau_tra_loi": "Gửi mã giao dịch qua Zalo CSKH. Xác nhận trong 2 giờ làm việc.", "nguon": "Mục 2. Thanh toán"},
+    {"id": "F02", "nhom": "xác nhận thanh toán", "cau_hoi": "Có xuất hóa đơn không?", "cau_tra_loi": "Có. Gửi email cskh@demo.vn kèm thông tin công ty để cấp hóa đơn điện tử.", "nguon": "Mục 2. Thanh toán"},
+    {"id": "F03", "nhom": "hoàn tiền", "cau_hoi": "Tôi chưa khai giảng, muốn hủy thì có được hoàn tiền không?", "cau_tra_loi": "Trước khai giảng 3 ngày: hoàn 100%. Gửi email cskh@demo.vn.", "nguon": "Mục 3. Hoàn tiền"},
+    {"id": "F04", "nhom": "hoàn tiền", "cau_hoi": "Đã học được 1 buổi, muốn dừng thì có được hoàn tiền không?", "cau_tra_loi": "Sau khai giảng, trước buổi 2: hoàn 70%. Sau buổi 2: không hoàn (trừ bất khả kháng).", "nguon": "Mục 3. Hoàn tiền"},
+    {"id": "F05", "nhom": "kỹ thuật", "cau_hoi": "Tôi không vào được Zoom?", "cau_tra_loi": "Kiểm tra link mới nhất trong group Zalo lớp. Vẫn lỗi → Zalo CSKH xử lý 2 giờ.", "nguon": "Mục 4. Hỗ trợ kỹ thuật"},
+    {"id": "F06", "nhom": "kỹ thuật", "cau_hoi": "Quên mật khẩu đăng nhập lớp học?", "cau_tra_loi": "Bấm 'Quên mật khẩu' ở trang đăng nhập, hoặc Zalo CSKH cấp lại.", "nguon": "Mục 4. Hỗ trợ kỹ thuật"},
+    {"id": "F07", "nhom": "kỹ thuật", "cau_hoi": "Tải lại tài liệu ở đâu?", "cau_tra_loi": "Thư mục shared Drive, link cố định trong group Zalo lớp.", "nguon": "Mục 4. Hỗ trợ kỹ thuật"},
+    {"id": "F08", "nhom": "khiếu nại", "cau_hoi": "Tôi muốn khiếu nại chất lượng giảng dạy.", "cau_tra_loi": "Gửi email cskh@demo.vn, tiêu đề 'Khiếu nại'. Xử lý trong 3 ngày làm việc.", "nguon": "Mục 5. Khiếu nại"},
+    {"id": "F09", "nhom": "thông tin", "cau_hoi": "Khóa học bao giờ khai giảng?", "cau_tra_loi": "Khai giảng 16/07/2026, 9 buổi tối 19:30–21:30.", "nguon": "Mục 1. Thông tin khóa"},
+    {"id": "F10", "nhom": "thông tin", "cau_hoi": "Học phí bao nhiêu?", "cau_tra_loi": "6.800.000 VNĐ. Chuyển khoản hoặc MoMo.", "nguon": "Mục 1 + 2"},
+    {"id": "F11", "nhom": "thông tin", "cau_hoi": "Học xong có cấp chứng chỉ không?", "cau_tra_loi": "Có chứng chỉ hoàn khóa nếu tham gia ≥7/9 buổi.", "nguon": "Mục 7. Lưu ý"},
+    {"id": "F12", "nhom": "thông tin", "cau_hoi": "Có cam kết việc làm sau khóa không?", "cau_tra_loi": "Không cam kết việc làm. Khóa học trang bị kỹ năng tự Apply.", "nguon": "Mục 7. Lưu ý"},
+    {"id": "F13", "nhom": "liên hệ", "cau_hoi": "Tôi muốn liên hệ trực tiếp thì sao?", "cau_tra_loi": "Zalo CSKH 0900.000.123 (8:00–20:00) hoặc email cskh@demo.vn.", "nguon": "Mục 6. Liên hệ"},
+    {"id": "F14", "nhom": "liên hệ", "cau_hoi": "Khiếu nại hoàn tiền liên hệ ai?", "cau_tra_loi": "Đội CSKH cấp 2 — hotline 0900.000.456 hoặc email cskh@demo.vn.", "nguon": "Mục 5 + 6"},
+    {"id": "F15", "nhom": "thông tin", "cau_hoi": "Có trả góp không?", "cau_tra_loi": "Không có chính sách trả góp trong K1.", "nguon": "Mục 7. Lưu ý"}
+  ]
+}

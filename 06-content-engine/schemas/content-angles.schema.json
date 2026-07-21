@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "content-angles.schema.json",
+  "title": "Content Engine — Lớp 1: Danh sách content angle",
+  "description": "Schema giữ cấu trúc và số đếm. Tiêu chí văn phong (ý tưởng có cụ thể không, có chung chung không) nằm ở checklist nghiệm thu trong lab, không đưa vào đây.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["brief_id", "brief_title", "personas_covered", "angles"],
+  "properties": {
+    "brief_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Mã brief. Hai artifact sau phải mang đúng mã này để chứng minh kế thừa."
+    },
+    "brief_title": { "type": "string", "minLength": 1 },
+    "personas_covered": {
+      "type": "array",
+      "minItems": 2,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 },
+      "description": "Các mã chân dung được phủ. Tối thiểu 2 — không dồn cả 5 ý tưởng vào một người."
+    },
+    "angles": {
+      "type": "array",
+      "minItems": 5,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["angle_id", "nhom", "y_tuong", "chan_dung", "muc_tieu", "kenh_phu_hop"],
+        "properties": {
+          "angle_id": { "type": "string", "pattern": "^A-[0-9]{2}$" },
+          "nhom": { "type": "string", "minLength": 1 },
+          "y_tuong": { "type": "string", "minLength": 1 },
+          "chan_dung": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Mã chân dung lấy TỪ file chân dung khách hàng, không được tự đặt tên mới."
+          },
+          "muc_tieu": {
+            "type": "string",
+            "enum": ["AWARENESS", "TRUST", "EDUCATION", "OBJECTION", "CONVERSION"],
+            "description": "Token máy viết hoa không dấu — để model không trượt chính tả tiếng Việt."
+          },
+          "kenh_phu_hop": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string", "minLength": 1 }
+          }
+        }
+      }
+    }
+  }
+}

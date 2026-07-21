@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "content-draft.schema.json",
+  "title": "Content Engine — Lớp 2: Bài Fanpage + kịch bản TikTok",
+  "description": "Schema giữ cấu trúc và số đếm. Các mốc văn phong — Fanpage 120-200 từ, TikTok 30-45 giây, cột hình ảnh đủ chi tiết — nằm ở checklist nghiệm thu trong lab. Đưa chúng vào schema sẽ biến một bài viết hay thành lỗi parse.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["brief_id", "source_angle_id", "chan_dung", "fanpage", "tiktok", "thieu_thong_tin"],
+  "properties": {
+    "brief_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Phải khớp brief_id trong content-angles.json."
+    },
+    "source_angle_id": {
+      "type": "string",
+      "pattern": "^A-[0-9]{2}$",
+      "description": "Angle đã chọn ở lớp 1. Phải tồn tại trong content-angles.json."
+    },
+    "chan_dung": { "type": "string", "minLength": 1 },
+    "fanpage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["noi_dung", "so_tu", "hook", "cta"],
+      "properties": {
+        "noi_dung": { "type": "string", "minLength": 1 },
+        "so_tu": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Số từ agent tự đếm. Mốc 120-200 kiểm ở nghiệm thu, và checkpoint bt2 đếm lại độc lập vì con số này agent có thể khai sai."
+        },
+        "hook": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Hai dòng đầu, phải đứng được một mình khi Facebook cắt sau nút Xem thêm."
+        },
+        "cta": { "type": "string", "minLength": 1 }
+      }
+    },
+    "tiktok": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tong_thoi_luong_giay", "khoi"],
+      "properties": {
+        "tong_thoi_luong_giay": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Mốc 30-45 giây kiểm ở nghiệm thu."
+        },
+        "khoi": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 4,
+          "description": "Đúng 4 khối. Đây là ràng buộc cấu trúc nên giữ cứng.",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["ten_khoi", "thoi_gian", "hinh_anh", "loi_thoai"],
+            "properties": {
+              "ten_khoi": {
+                "type": "string",
+                "enum": ["HOOK", "PROBLEM", "SOLUTION", "CTA"],
+                "description": "Token máy. Nhãn tiếng Việt để app duyệt tự map khi hiển thị."
+              },
+              "thoi_gian": { "type": "string", "pattern": "^[0-9]+-[0-9]+s$" },
+              "hinh_anh": {
+                "type": "string",
+                "minLength": 1,
+                "description": "Quay gì. Là input của Buổi 7 — độ chi tiết kiểm ở nghiệm thu."
+              },
+              "loi_thoai": { "type": "string", "minLength": 1 }
+            }
+          }
+        }
+      }
+    },
+    "thieu_thong_tin": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 },
+      "description": "Liệt kê những chỗ đã ghi [cần bổ sung] trong bài. Mảng rỗng nghĩa là không thiếu gì — với brief Sunrise Kids thì đó là dấu hiệu AI đã bịa số."
+    }
+  }
+}

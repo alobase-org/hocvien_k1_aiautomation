@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "data-quality.schema.json",
+  "title": "HR Screening Data Quality",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["source_candidate_id", "completeness_score", "missing_fields", "warnings", "ready_for_scoring", "review_note"],
+  "properties": {
+    "source_candidate_id": {"type": "string", "minLength": 1},
+    "completeness_score": {"type": "integer", "minimum": 0, "maximum": 100},
+    "missing_fields": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "warnings": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "ready_for_scoring": {"type": "boolean"},
+    "review_note": {"type": "string"}
+  }
+}

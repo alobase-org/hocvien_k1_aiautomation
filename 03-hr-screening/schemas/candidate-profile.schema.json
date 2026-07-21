@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "candidate-profile.schema.json",
+  "title": "HR Screening Candidate Profile",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["candidate_id", "candidate_name", "full_time", "months_sales", "months_b2b", "prospecting_channels", "communication_evidence", "crm_tools", "quantified_achievement", "market_experience", "office_tools", "evidence_summary", "evidence"],
+  "properties": {
+    "candidate_id": {"type": "string", "minLength": 1},
+    "candidate_name": {"type": "string"},
+    "full_time": {"type": ["boolean", "null"]},
+    "months_sales": {"type": "integer", "minimum": 0},
+    "months_b2b": {"type": "integer", "minimum": 0},
+    "prospecting_channels": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "communication_evidence": {"type": "string"},
+    "crm_tools": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "quantified_achievement": {"type": "string"},
+    "market_experience": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "office_tools": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "evidence_summary": {"type": "string"},
+    "evidence": {"type": "object", "additionalProperties": {"type": "string"}}
+  }
+}

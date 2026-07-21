@@ -1,0 +1,132 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "content-assets.schema.json",
+  "title": "Content Engine — Lớp 3: Comment seeding + image brief + prompt ảnh",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "brief_id",
+    "source_angle_id",
+    "seeding",
+    "image_brief",
+    "image_prompt",
+    "review_note"
+  ],
+  "properties": {
+    "brief_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Phải khớp brief_id của hai artifact trước."
+    },
+    "source_angle_id": {
+      "type": "string",
+      "pattern": "^A-[0-9]{2}$"
+    },
+    "seeding": {
+      "type": "array",
+      "minItems": 5,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "seed_id",
+          "noi_dung",
+          "vai_tro"
+        ],
+        "properties": {
+          "seed_id": {
+            "type": "string",
+            "pattern": "^SEED-[0-9]{2}$"
+          },
+          "noi_dung": {
+            "type": "string",
+            "minLength": 1
+          },
+          "vai_tro": {
+            "type": "string",
+            "enum": [
+              "ASK",
+              "RELATE",
+              "EXPERIENCE",
+              "CONDITION",
+              "CTA_NUDGE"
+            ],
+            "description": "Token máy, tránh model trượt chính tả tiếng Việt. Nhãn hiển thị: ASK=Hỏi thật, RELATE=Đồng cảnh, EXPERIENCE=Trải nghiệm, CONDITION=Hỏi điều kiện, CTA_NUDGE=Đẩy về CTA. Cố ý KHÔNG có giá trị nào nghĩa là khen ngợi."
+          }
+        }
+      }
+    },
+    "image_brief": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "muc_tieu",
+        "thong_diep_chinh",
+        "doi_tuong",
+        "kenh",
+        "ty_le",
+        "phong_cach",
+        "bo_cuc",
+        "chu_tren_anh",
+        "khong_duoc_xuat_hien"
+      ],
+      "properties": {
+        "muc_tieu": {
+          "type": "string",
+          "minLength": 1
+        },
+        "thong_diep_chinh": {
+          "type": "string",
+          "minLength": 1
+        },
+        "doi_tuong": {
+          "type": "string",
+          "minLength": 1
+        },
+        "kenh": {
+          "type": "string",
+          "minLength": 1
+        },
+        "ty_le": {
+          "type": "string",
+          "enum": [
+            "1:1",
+            "4:5",
+            "9:16",
+            "16:9"
+          ]
+        },
+        "phong_cach": {
+          "type": "string",
+          "minLength": 1
+        },
+        "bo_cuc": {
+          "type": "string",
+          "minLength": 1
+        },
+        "chu_tren_anh": {
+          "type": "string"
+        },
+        "khong_duoc_xuat_hien": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": "Mục bắt buộc. Với sản phẩm liên quan trẻ em phải có ràng buộc về mặt trẻ em."
+        }
+      }
+    },
+    "image_prompt": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Prompt tiếng Anh gửi thẳng cho node sinh ảnh ở lớp 3 của workflow. KHÔNG chứa chữ cần hiển thị trên ảnh — model sinh ảnh viết sai chính tả tiếng Việt, chữ chèn sau bằng Canva."
+    },
+    "review_note": {
+      "type": "string",
+      "description": "Điều người duyệt cần lưu ý trước khi bấm Approved."
+    }
+  },
+  "description": "Schema giữ cấu trúc và số đếm. Tiêu chí chất lượng seeding (không khen rỗng, có câu hỏi thật) nằm ở checklist nghiệm thu trong lab."
+}
