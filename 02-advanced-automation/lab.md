@@ -1,50 +1,68 @@
 # Lab Handout — Buổi 02 (advanced-automation)
 
-> 🚧 **PLACEHOLDER** — `/vibe-teach-orchestrator` **Route 11** (SYNTHETIC_DATA / lab).
 > File dành cho HỌC VIÊN (sẽ sync sang `studentkit/`). Đáp án/expected output để ở `checkpoints/`.
 
 ## Workflow
-Advanced Automation Workflow
+Cấu hình n8n & Credentials (OAuth2 + Gemini Key) → AI thiết kế luồng JSON → Import & Chỉnh sửa n8n Workflow → Dựng Luồng Nhắc việc & Gửi Email → Tích hợp Gemini API tự động soạn Email theo từ khóa.
 
 ## KPI / Sản phẩm đầu ra
-Một luồng nghiệp vụ nâng cao hoàn chỉnh: sinh bằng Claude Code, tích hợp đa kênh (Gmail + Telegram), có error workflow & log tập trung, đóng gói bàn giao cho SME.
+1. Cấu hình hoàn tất n8n Cloud và kết nối thành công 3 Credentials: Google Sheets (OAuth2), Gmail (OAuth2), Google AI Studio (Gemini API Key).
+2. Sử dụng AI sinh thành công file JSON workflow n8n rà soát công việc và import mượt mà vào n8n Canvas.
+3. Chạy hoàn chỉnh luồng Nhắc việc tự động: Đọc Sheet CongViec (`1ViOwxqyqNoB9LUa0dJUNGoEGAyyfS-1RmsZeDDrnjgM`) → Lọc việc chưa xong → Ghi vào Sheet NhacViec → Tự động gửi Email nhắc việc. (Hiểu tư duy chuyển đổi sang Google AppsScript).
+4. Dựng thành công luồng n8n tích hợp Gemini API: Đọc từ khóa từ Google Sheet (`https://docs.google.com/spreadsheets/d/1kU1hP5zpGh7DjhAee8wmfCALQwfy2fQgzCkz4Eao_HM/...`) → Gọi Gemini API tự động sinh Tiêu đề & Nội dung email → Ghi ngược vào bảng tính Google Sheet.
 
 ## Điều kiện tiên quyết
-Hoàn thành B1 (đã có credential/API key & 3 flow cơ bản). Cài Claude Code/CLI. Có Telegram bot (tùy chọn).
+- Đã hoàn thành Buổi 01 (có kho bài tập `hocvien_k1_aiautomation`, đã cài ứng dụng AI).
+- Có tài khoản n8n Cloud (hoặc self-hosted) và tài khoản Google (Gmail, Google Drive, Google AI Studio).
+- Đã lưu bản sao (Make a copy) các file Google Sheet mẫu về Google Drive cá nhân.
 
 ## Công cụ
-n8n · Claude Code/CLI · Gemini / AI Studio · Telegram · Google Workspace · MCP connector
+n8n Cloud / Self-hosted · Google AI Studio (Gemini API Key) · Google Sheets / Gmail (OAuth2 Credential) · AI Chatbot (ChatGPT/Claude/Antigravity) · Google AppsScript (tùy chọn)
 
 ## Các phân đoạn thực hành (TH1 → TH4 = pipeline)
 > Output TH_N = Input TH_{N+1}.
-### TH1 — Phân đoạn 1 — Tự sinh luồng xử lý yêu cầu khách hàng bằng Claude Code
-- **Mô tả kỹ thuật (Input → Action → Output):** JIT: prompt Claude Code mô tả nghiệp vụ (input/bước xử lý/output/điều kiện). HV dùng Claude Code sinh & refactor 1 workflow: scaffold node, sinh expression/Code node, cấu hình kết nối MCP. Output: workflow JSON import chạy được.
-- **Công cụ:** Claude Code/CLI + n8n
-- **Đầu ra:** ★ Workflow sinh bằng Claude Code
 
-> TODO (Route 11): prompt copy-paste vào `prompts/`, file starter vào `templates/`, expected output/rescue vào `checkpoints/` (instructor-only).
-### TH2 — Phân đoạn 2 — Cảnh báo khiếu nại/đơn khẩn đa kênh & chống nghẽn API
-- **Mô tả kỹ thuật (Input → Action → Output):** JIT: độ bền của luồng. HV thêm cảnh báo Telegram song song Gmail; bật Retry On Fail; bọc Gemini trong Loop Over Items (Batch=1) + Wait chống quota 429; thêm Code node làm sạch JSON bọc markdown.
-- **Công cụ:** n8n + Telegram + Gemini
-- **Đầu ra:** ★ Luồng đa kênh + chống lỗi
+### TH1 — Phân đoạn 1 — Đăng ký n8n Cloud & Cấu hình Chìa khóa kết nối (Credentials & Bảo mật)
+- **Mô tả kỹ thuật (Input → Action → Output):** 
+  - *Lý thuyết:* Hiểu kiến trúc n8n (Low-code/No-code, Canvas), khái niệm Trigger – Node – Action, bảo mật Credentials (OAuth2, API Key) và nguyên tắc "Human-in-the-loop" (AI chỉ soạn nháp, con người duyệt và bấm Gửi).
+  - *Thực hành:* Đăng ký n8n Cloud. Cấu hình 3 bộ Chìa khóa kết nối (Credentials):
+    1. Google Sheets OAuth2 (cấp quyền đọc/ghi bảng tính).
+    2. Gmail OAuth2 (cấp quyền tạo nháp/gửi mail).
+    3. Google AI Studio Gemini API Key (kết nối gọi mô hình LLM).
+- **Công cụ:** n8n Cloud + Google AI Studio + Google Cloud Console
+- **Đầu ra:** ★ 3 Credentials đã test kết nối thành công (`Connected`)
 
-> TODO (Route 11): prompt copy-paste vào `prompts/`, file starter vào `templates/`, expected output/rescue vào `checkpoints/` (instructor-only).
-### TH3 — Phân đoạn 3 — Điều phối yêu cầu đa phòng ban & trả lời đa ngôn ngữ
-- **Mô tả kỹ thuật (Input → Action → Output):** JIT: luồng nhiều bước. HV tách sub-workflow, định tuyến theo intent (Switch), thêm nhánh đa ngôn ngữ (Gemini tự dịch email theo cột Ngôn ngữ), dùng data pinning giữ row_number để Update đúng dòng.
-- **Công cụ:** n8n + Gemini + sub-workflow
-- **Đầu ra:** ★ Sub-workflow + đa ngôn ngữ
+### TH2 — Phân đoạn 2 — Sử dụng AI như Trợ lý thiết kế luồng tự động & Import JSON
+- **Mô tả kỹ thuật (Input → Action → Output):** 
+  - *Lý thuyết:* Nắm cách truyền dữ liệu JSON trong n8n (`{{ $json["Mô tả sự cố"] }}`).
+  - *Thực hành:* Soạn prompt mô tả bối cảnh & chỉ dẫn bằng ngôn ngữ tự nhiên: *"Rà soát người chưa hoàn thành công việc trong sheet CongViec và ghi vào sheet NhacViec, xuất file JSON để đưa vào n8n"*.
+  - Nhận file JSON từ AI, tải (Import) lên n8n Canvas và tiến hành kiểm tra/chỉnh sửa node.
+  - *Checklist điểm kiểm tra:* (1) Email n8n có trùng với email Google Drive? (2) Đã lưu file Sheet giảng viên về Drive cá nhân chưa? (3) Google Drive có bị đầy bộ nhớ không?
+- **Công cụ:** ChatGPT / Claude + n8n Canvas + Google Sheets
+- **Đầu ra:** ★ Workflow JSON được AI thiết kế và import thành công trên n8n
 
-> TODO (Route 11): prompt copy-paste vào `prompts/`, file starter vào `templates/`, expected output/rescue vào `checkpoints/` (instructor-only).
-### TH4 — Phân đoạn 4 — Đóng gói trợ lý vận hành & bàn giao cho SME
-- **Mô tả kỹ thuật (Input → Action → Output):** JIT: vận hành & bàn giao. HV thêm Error Trigger workflow + log tập trung (Run ID|thời gian|trạng thái|lỗi), viết README ngắn, đóng gói export JSON. Checklist nghiệm thu & kịch bản bàn giao cho SME.
-- **Công cụ:** n8n + Claude Code
-- **Đầu ra:** ★ Luồng đóng gói + log + bàn giao
+### TH3 — Phân đoạn 3 — Dựng Luồng Nhắc việc tự động & Gửi Email (n8n / Google AppsScript)
+- **Mô tả kỹ thuật (Input → Action → Output):** 
+  - *Thực hành:* Mở Google Sheet bài tập (ID: `1ViOwxqyqNoB9LUa0dJUNGoEGAyyfS-1RmsZeDDrnjgM`).
+  - Dựng luồng n8n: Schedule/Manual Trigger → Google Sheets Read (`tab CongViec`) → IF (`Trạng thái ≠ Hoàn thành`) → Edit Fields (soạn nội dung nhắc việc) → 2 nhánh song song: Append log vào `Sheet NhacViec` + Gmail Send Email nhắc việc người phụ trách.
+  - *Gợi ý nâng cao:* Tìm hiểu tư duy làm bằng Google AppsScript với logic tương tự 100% để tối ưu chi phí vận hành cho doanh nghiệp.
+- **Công cụ:** n8n + Google Sheets + Gmail (Google AppsScript)
+- **Đầu ra:** ★ Luồng nhắc việc và gửi email tự động chạy thành công
 
-> TODO (Route 11): prompt copy-paste vào `prompts/`, file starter vào `templates/`, expected output/rescue vào `checkpoints/` (instructor-only).
+### TH4 — Phân đoạn 4 — Đưa AI (Gemini API) vào Luồng n8n Soạn thảo Email theo từ khóa
+- **Mô tả kỹ thuật (Input → Action → Output):** 
+  - *Thực hành:* Mở Google Sheet bài tập tích hợp AI (`https://docs.google.com/spreadsheets/d/1kU1hP5zpGh7DjhAee8wmfCALQwfy2fQgzCkz4Eao_HM/...`).
+  - Dựng luồng n8n: Read Google Sheet (đọc từ khóa/yêu cầu) → Call Google API (Gemini Node / HTTP Request với Gemini API Key) → Code node làm sạch JSON bọc markdown (nếu có) → Update Google Sheets (ghi kết quả vào cột Tiêu đề và Nội dung).
+  - *Kỹ thuật:* Sử dụng data pinning / giữ `row_number` để node Update ghi kết quả đúng dòng gốc.
+- **Công cụ:** n8n + Google Gemini API + Google Sheets
+- **Đầu ra:** ★ Workflow AI n8n sinh nội dung email tự động ghi vào Google Sheets
 
+## Bài tập về nhà
+- Thực hành nâng cấp workflow Buổi 02: Thêm bước Human-in-the-loop (Gemini chỉ tạo Gmail Draft + đánh dấu 'Chờ duyệt', người quản lý gõ 'Gửi' mới tiến hành gửi email chính thức).
+- Viết thử nghiệm đoạn mã Google AppsScript tương đương cho luồng Nhắc việc để so sánh với n8n.
 
-## Bài tập về nhà — TODO
-- _TODO_
-
-## Checklist nghiệm thu — TODO
-- [ ] _TODO (SLI/SLO đo được)_
+## Checklist nghiệm thu
+- [ ] Cấu hình thành công 3 Credentials trên n8n (Google Sheets, Gmail, Gemini API Key).
+- [ ] Import file JSON được thiết kế bởi AI vào n8n thành công không báo lỗi.
+- [ ] Luồng Nhắc việc lọc chính xác công việc tồn đọng, ghi log vào Sheet NhacViec và gửi email nhắc việc.
+- [ ] Luồng Gemini AI gọi thành công API và tự động điền Tiêu đề + Nội dung email vào Google Sheet.
