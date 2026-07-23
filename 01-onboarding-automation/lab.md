@@ -10,7 +10,7 @@ Cài đặt Hybrid AI Agents (Antigravity 2.0 / Codex / Claude Code) → Gọi N
 
 ## KPI / Sản phẩm đầu ra
 
-1. Cài đặt thành công ít nhất 2/3 ứng dụng Hybrid AI trên máy tính (Antigravity 2.0, Codex, Claude Code).
+1. Cài đặt thành công ít nhất 2/3 ứng dụng Hybrid AI trên máy tính (Antigravity IDE, Codex, Claude Code).
 2. Tạo & kích hoạt được Nhân sự số AI trên máy tính, sẵn sàng thực thi câu lệnh.
 3. Cài đặt trình xem Markdown (Markdown View) và đọc/quản lý thành công file Skill định dạng `.md`.
 4. Git clone thành công kho bài tập `hocvien_k1_aiautomation.git` từ GitHub về thư mục làm việc cục bộ `K1-HOCVIEN-AIAT`.
