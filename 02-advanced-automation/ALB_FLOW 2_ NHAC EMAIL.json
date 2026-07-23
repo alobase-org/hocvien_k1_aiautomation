@@ -1,0 +1,360 @@
+{
+  "name": "ALB_FLOW 2_ NHAC VIEC",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "6eb74a39-599d-4f91-9821-0a07beceb8a8",
+      "name": "Manual Trigger (Test)",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        576,
+        544
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1ViOwxqyqNoB9LUa0dJUNGoEGAyyfS-1RmsZeDDrnjgM",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 759155195,
+          "mode": "list",
+          "cachedResultName": "CongViec",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ViOwxqyqNoB9LUa0dJUNGoEGAyyfS-1RmsZeDDrnjgM/edit#gid=759155195"
+        },
+        "options": {}
+      },
+      "id": "3c9ecee3-19bd-42d4-8289-b54c07da37cc",
+      "name": "Đọc sheet CongViec",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        848,
+        544
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "nETlz35akwoXb5vW",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "cond-1",
+              "leftValue": "={{ $json['Trạng thái'] }}",
+              "rightValue": "Hoàn thành",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "658045c7-aafa-42eb-b248-e506ccfe0cdf",
+      "name": "Lọc chưa hoàn thành",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        1072,
+        544
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "set-1",
+              "name": "Nội dung nhắc",
+              "value": "=Nhắc: \"{{ $json['Tên công việc'] }}\" - Hạn chót {{ $json['Hạn chót'] }} - Trạng thái hiện tại: {{ $json['Trạng thái'] }}",
+              "type": "string"
+            },
+            {
+              "id": "set-2",
+              "name": "Người phụ trách",
+              "value": "={{ $json['Người phụ trách'] }}",
+              "type": "string"
+            },
+            {
+              "id": "set-3",
+              "name": "Ngày nhắc",
+              "value": "={{ $now.format('dd/MM/yyyy HH:mm') }}",
+              "type": "string"
+            },
+            {
+              "id": "set-4",
+              "name": "Email",
+              "value": "={{ $json['Email'] }}",
+              "type": "string"
+            },
+            {
+              "id": "set-5",
+              "name": "Tên công việc",
+              "value": "={{ $json['Tên công việc'] }}",
+              "type": "string"
+            },
+            {
+              "id": "set-6",
+              "name": "Hạn chót",
+              "value": "={{ $json['Hạn chót'] }}",
+              "type": "string"
+            },
+            {
+              "id": "set-7",
+              "name": "Trạng thái",
+              "value": "={{ $json['Trạng thái'] }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ef555389-fcb8-4e65-9784-bff2652c3969",
+      "name": "Chuẩn hoá dữ liệu nhắc",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1296,
+        544
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1ViOwxqyqNoB9LUa0dJUNGoEGAyyfS-1RmsZeDDrnjgM",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1055086887,
+          "mode": "list",
+          "cachedResultName": "NhacViec",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ViOwxqyqNoB9LUa0dJUNGoEGAyyfS-1RmsZeDDrnjgM/edit#gid=1055086887"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Nội dung nhắc": "={{ $json['Nội dung nhắc'] }}",
+            "Người phụ trách": "={{ $json['Người phụ trách'] }}",
+            "Ngày nhắc": "={{ $json['Ngày nhắc'] }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Nội dung nhắc",
+              "displayName": "Nội dung nhắc",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "Người phụ trách",
+              "displayName": "Người phụ trách",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "Ngày nhắc",
+              "displayName": "Ngày nhắc",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "703adf13-9775-46e5-adde-7511a651caab",
+      "name": "Ghi vào NhacViec",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1504,
+        416
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "nETlz35akwoXb5vW",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "email-1",
+              "leftValue": "={{ $json['Email'] }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "415b86f0-a6ac-4061-8b57-3b4c9c8a4827",
+      "name": "Lọc có Email",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        1504,
+        656
+      ]
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json['Email'] }}",
+        "subject": "=[Nhắc việc] Công việc chưa hoàn thành - {{ $json['Tên công việc'] }}",
+        "message": "=<p>Kính gửi <b>{{ $json['Người phụ trách'] }}</b>,</p>\n<p>Hệ thống nhắc việc tự động của FUTU1 ghi nhận công việc sau <b>chưa hoàn thành</b>:</p>\n<table border=\"1\" cellpadding=\"8\" cellspacing=\"0\" style=\"border-collapse:collapse;font-family:Arial,sans-serif;font-size:13px;\">\n  <tr style=\"background:#f2f2f2;\"><td><b>Tên công việc</b></td><td>{{ $json['Tên công việc'] }}</td></tr>\n  <tr><td><b>Trạng thái hiện tại</b></td><td>{{ $json['Trạng thái'] }}</td></tr>\n  <tr><td><b>Hạn chót</b></td><td>{{ $json['Hạn chót'] }}</td></tr>\n  <tr><td><b>Ngày nhắc</b></td><td>{{ $json['Ngày nhắc'] }}</td></tr>\n</table>\n<p>Đề nghị Anh/Chị cập nhật tiến độ hoặc hoàn thành công việc trước hạn chót nêu trên.</p>\n<p>Trân trọng,<br/><i>Hệ thống nhắc việc tự động - FUTU1</i></p>",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "id": "9857110c-6318-45a0-9364-1982617abae8",
+      "name": "Gửi Gmail nhắc việc",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1728,
+        656
+      ],
+      "webhookId": "69ec6881-36ed-48b4-8efa-c744be0cabe1",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "gp6OOGWMgrqJAc9I",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Manual Trigger (Test)": {
+      "main": [
+        [
+          {
+            "node": "Đọc sheet CongViec",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Đọc sheet CongViec": {
+      "main": [
+        [
+          {
+            "node": "Lọc chưa hoàn thành",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lọc chưa hoàn thành": {
+      "main": [
+        [
+          {
+            "node": "Chuẩn hoá dữ liệu nhắc",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Chuẩn hoá dữ liệu nhắc": {
+      "main": [
+        [
+          {
+            "node": "Ghi vào NhacViec",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Lọc có Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lọc có Email": {
+      "main": [
+        [
+          {
+            "node": "Gửi Gmail nhắc việc",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "85971a8a-d12d-4410-8bf4-23cd08a7701a",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "50425052517c85d790d358dbca5eb9f58cfd8be6dd0024c255395f9ba2a8036b"
+  },
+  "nodeGroups": [],
+  "id": "xVQIlKCCYtg1lNNp",
+  "tags": [
+    {
+      "updatedAt": "2026-07-11T08:42:11.250Z",
+      "createdAt": "2026-07-11T08:42:11.250Z",
+      "id": "FAQY5JyrNmH5pMoi",
+      "name": "FUTU1"
+    },
+    {
+      "updatedAt": "2026-07-11T08:42:11.227Z",
+      "createdAt": "2026-07-11T08:42:11.227Z",
+      "id": "OeWmBynWU5ebjCwJ",
+      "name": "Nhắc việc"
+    },
+    {
+      "updatedAt": "2026-07-11T08:42:11.278Z",
+      "createdAt": "2026-07-11T08:42:11.278Z",
+      "id": "nCTbPqBuhTUtmege",
+      "name": "Alobase demo"
+    }
+  ]
+}

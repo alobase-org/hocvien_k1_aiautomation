@@ -1,0 +1,244 @@
+{
+  "name": "ALB - FLOW 1 NHAC VIEC",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 8 * * *"
+            }
+          ]
+        }
+      },
+      "id": "0f9c6555-8e9f-41cf-8614-a038678e19cb",
+      "name": "Chay 8h sang moi ngay",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1D0q8HR6Epl_JpbpUUEOiqC-zV8GepzP5yKDpfAfgzz0",
+          "mode": "list",
+          "cachedResultName": "FUTU1_ggsheet1_nhac_viec",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1D0q8HR6Epl_JpbpUUEOiqC-zV8GepzP5yKDpfAfgzz0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 91897797,
+          "mode": "list",
+          "cachedResultName": "CongViec",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1D0q8HR6Epl_JpbpUUEOiqC-zV8GepzP5yKDpfAfgzz0/edit#gid=91897797"
+        },
+        "options": {}
+      },
+      "id": "b87f9992-16e1-49db-97e9-d79e054691df",
+      "name": "Doc sheet CongViec",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        224,
+        0
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "nETlz35akwoXb5vW",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// === LOC CONG VIEC CHUA HOAN THANH & TAO NOI DUNG NHAC ===\n// Dieu kien: TrangThai != 'Hoan thanh' VA (da qua han HOAC con <= 2 ngay toi han)\n\nconst now = new Date();\nconst today = new Date(now.getFullYear(), now.getMonth(), now.getDate());\n\n// Ngay nhac dinh dang dd/mm/yyyy\nconst pad = (n) => n.toString().padStart(2, '0');\nconst ngayNhac = `${pad(today.getDate())}/${pad(today.getMonth() + 1)}/${today.getFullYear()}`;\n\nconst results = [];\n\nfor (const item of $input.all()) {\n  const row = item.json;\n\n  const tenCV = row['Tên công việc'] || row['Ten cong viec'] || '';\n  const nguoiPT = row['Người phụ trách'] || row['Nguoi phu trach'] || '';\n  const trangThai = (row['Trạng thái'] || row['Trang thai'] || '').toString().trim();\n  const hanChotRaw = row['Hạn chót'] || row['Han chot'] || '';\n\n  // Bo qua neu da hoan thanh\n  const ttLower = trangThai.toLowerCase();\n  if (ttLower.includes('hoàn thành') || ttLower.includes('hoan thanh')) continue;\n  if (!tenCV) continue;\n\n  // Parse han chot (ho tro dd/mm/yyyy hoac yyyy-mm-dd hoac Date object)\n  let hanChot;\n  if (hanChotRaw instanceof Date) {\n    hanChot = hanChotRaw;\n  } else if (typeof hanChotRaw === 'string' && hanChotRaw.includes('/')) {\n    const [d, m, y] = hanChotRaw.split('/').map(Number);\n    hanChot = new Date(y, m - 1, d);\n  } else {\n    hanChot = new Date(hanChotRaw);\n  }\n  if (isNaN(hanChot.getTime())) continue;\n\n  const hanChotStr = `${pad(hanChot.getDate())}/${pad(hanChot.getMonth() + 1)}/${hanChot.getFullYear()}`;\n\n  // Tinh so ngay chenh lech (am = qua han)\n  const diffDays = Math.floor((hanChot.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));\n\n  // Chi nhac neu qua han HOAC con <= 2 ngay\n  if (diffDays > 2) continue;\n\n  let mucDo;\n  if (diffDays < 0) mucDo = `QUÁ HẠN ${Math.abs(diffDays)} ngày`;\n  else if (diffDays === 0) mucDo = 'HÔM NAY LÀ HẠN CUỐI';\n  else mucDo = `CÒN ${diffDays} ngày`;\n\n  const noiDungNhac = `[${mucDo}] ${tenCV} — Trạng thái: ${trangThai} — Hạn: ${hanChotStr}`;\n\n  results.push({\n    json: {\n      'Nội dung nhắc': noiDungNhac,\n      'Người phụ trách': nguoiPT,\n      'Ngày nhắc': ngayNhac\n    }\n  });\n}\n\nreturn results;\n"
+      },
+      "id": "5dd8cefc-1f7d-4f56-8a1c-8ec9916ef512",
+      "name": "Loc & tao noi dung nhac",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        464,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "cond-1",
+              "leftValue": "={{ $items().length }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "42e3510a-6c46-4a1a-a088-3b149bc31153",
+      "name": "Co viec can nhac?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        704,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1D0q8HR6Epl_JpbpUUEOiqC-zV8GepzP5yKDpfAfgzz0",
+          "mode": "list",
+          "cachedResultName": "FUTU1_ggsheet1_nhac_viec",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1D0q8HR6Epl_JpbpUUEOiqC-zV8GepzP5yKDpfAfgzz0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1102571565,
+          "mode": "list",
+          "cachedResultName": "NhacViec",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1D0q8HR6Epl_JpbpUUEOiqC-zV8GepzP5yKDpfAfgzz0/edit#gid=1102571565"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Nội dung nhắc": "={{ $json['Nội dung nhắc'] }}",
+            "Người phụ trách": "={{ $json['Người phụ trách'] }}",
+            "Ngày nhắc": "={{ $json['Ngày nhắc'] }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Nội dung nhắc",
+              "displayName": "Nội dung nhắc",
+              "required": false,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Người phụ trách",
+              "displayName": "Người phụ trách",
+              "required": false,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Ngày nhắc",
+              "displayName": "Ngày nhắc",
+              "required": false,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "08e1a7f4-8986-4019-b8ee-c9b53b896722",
+      "name": "Ghi vao sheet NhacViec",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1008,
+        -16
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "nETlz35akwoXb5vW",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Chay 8h sang moi ngay": {
+      "main": [
+        [
+          {
+            "node": "Doc sheet CongViec",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Doc sheet CongViec": {
+      "main": [
+        [
+          {
+            "node": "Loc & tao noi dung nhac",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loc & tao noi dung nhac": {
+      "main": [
+        [
+          {
+            "node": "Co viec can nhac?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Co viec can nhac?": {
+      "main": [
+        [
+          {
+            "node": "Ghi vao sheet NhacViec",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "9c6a3971-911d-49d7-ae5a-f14439131109",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "50425052517c85d790d358dbca5eb9f58cfd8be6dd0024c255395f9ba2a8036b"
+  },
+  "nodeGroups": [],
+  "id": "7Bz4IGUh6BjwPN1j",
+  "tags": [
+    {
+      "updatedAt": "2026-07-11T07:41:10.301Z",
+      "createdAt": "2026-07-11T07:41:10.301Z",
+      "id": "2kxnjxsR8VCvHErh",
+      "name": "Auto-Reminder"
+    },
+    {
+      "updatedAt": "2026-07-11T07:41:10.261Z",
+      "createdAt": "2026-07-11T07:41:10.261Z",
+      "id": "wwWWMCTASKhOczyI",
+      "name": "Alobase"
+    }
+  ]
+}
