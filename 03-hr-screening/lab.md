@@ -14,7 +14,7 @@ Workflow `.json` hoàn chỉnh là đáp án cứu hộ của TH4, không phải
 
 - Antigravity/Codex hoặc Coding Agent có thể đọc và tạo file trong workspace.
 - Đến TH4: Coding Agent được kết nối trực tiếp với n8n qua MCP/API.
-- Credential Vertex và Google Sheets do giảng viên chuẩn bị trên n8n.
+- Credential Google AI Studio và Google Sheets do giảng viên chuẩn bị trên n8n.
 - `templates/cv-b2b-junior-input.md`.
 - `templates/JD-nhan-vien-kinh-doanh-B2B-junior.md`.
 - `templates/rubric-kinh-doanh-B2B-100.json`.
@@ -103,7 +103,7 @@ TH1–TH3 dùng chung một `run_id` và mỗi bước append đúng một JSON 
 1. Kết nối Coding Agent với n8n qua MCP/API theo hướng dẫn của giảng viên.
 2. Trong cùng chat, copy `prompts/bt4-prompt.md` và chạy.
 3. Agent phải đọc ba artifact đã tạo rồi mới xây workflow; không yêu cầu học viên tự viết expression dài.
-4. Agent tạo hoặc cập nhật workflow n8n, cấu hình Vertex qua HTTP Request và Google Sheets.
+4. Agent tạo hoặc cập nhật workflow n8n, cấu hình Google AI Studio qua HTTP Request và Google Sheets.
 5. Chạy workflow với CV holdout `checkpoints/cv-b2b-junior-holdout.md`.
 6. Mở Google Sheet kiểm tra một dòng scorecard mới; HR điền phần quyết định.
 

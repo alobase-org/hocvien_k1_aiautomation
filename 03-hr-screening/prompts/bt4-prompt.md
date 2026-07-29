@@ -19,14 +19,14 @@ INPUT PHẢI ĐỌC TRƯỚC KHI XÂY:
 
 YÊU CẦU THỰC HIỆN:
 1. Đọc và xác nhận ba artifact cùng candidate_id, schema nối tiếp hợp lệ và rubric tối đa 100.
-2. Kiểm tra kết nối n8n và tham khảo các workflow đang dùng Vertex/Google Sheets trong cùng instance trước khi cấu hình.
+2. Kiểm tra kết nối n8n và tham khảo các workflow đang dùng Google AI Studio/Google Sheets trong cùng instance trước khi cấu hình.
 3. Tạo hoặc cập nhật một workflow n8n có bốn vùng rõ ràng:
-   - Lớp 1: nhận CV Markdown mới, gọi Vertex bằng HTTP Request và tạo candidate_profile đúng schema TH1.
+   - Lớp 1: nhận CV Markdown mới, gọi Google AI Studio bằng HTTP Request và tạo candidate_profile đúng schema TH1.
    - Lớp 2: kiểm tra dữ liệu theo đúng luật TH2 và tạo data_quality.
    - Lớp 3: áp rubric cố định theo TH3 và tạo scoring_result; không để model tự đổi trọng số.
    - Lớp 4: tạo scorecard dễ đọc, append Google Sheets và để HR duyệt.
 4. Học viên không phải tự viết expression dài. Bạn chịu trách nhiệm cấu hình node, expression, connection và credential reference.
-5. Vertex HTTP Request phải dùng cấu hình hiện có trên n8n: endpoint/model và Generic Header Auth credential đang hoạt động; không ghi API key vào workflow JSON.
+5. Google AI Studio HTTP Request phải dùng cấu hình hiện có trên n8n: endpoint/model và Generic Header Auth credential đang hoạt động; không ghi API key vào workflow JSON.
 6. Cột Bằng chứng chính phải dùng evidence_summary dễ đọc, không đổ object JSON vào một ô.
 7. Cột Câu hỏi phỏng vấn phải lấy từ scoring_result.interview_questions và nối mỗi câu bằng ký tự xuống dòng.
 8. Trạng thái mặc định là Chờ HR duyệt. Không tự gửi thư mời/từ chối và không tự quyết định tuyển dụng.
