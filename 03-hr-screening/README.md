@@ -28,3 +28,7 @@ Không import workflow hoàn chỉnh ở đầu buổi. Học viên chạy bốn
 ## Sản phẩm cuối
 
 Một workflow n8n nhận CV Markdown mới, tái tạo ba lớp đã kiểm chứng, tạo scorecard kèm câu hỏi phỏng vấn và ghi Google Sheets để HR duyệt.
+
+## Tự làm ở nhà với dữ liệu thật
+
+`lab.md` là bài trên lớp, dùng CV/JD mẫu, có GV dẫn. Nếu muốn thực hành thêm với CV/JD thật của công ty bạn, làm theo `lab_tulam.md` — nộp trên repo GitHub riêng của bạn, không phải repo `hocvien_k1_aiautomation`.
