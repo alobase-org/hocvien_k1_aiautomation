@@ -1,0 +1,47 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "clause.schema.json",
+  "title": "Clauses (Contract Review) — schema validate ở Thực hành 2",
+  "type": "object",
+  "required": ["contract_id", "metadata", "clauses", "confidence_score", "need_review"],
+  "properties": {
+    "contract_id": {"type": "string"},
+    "metadata": {
+      "type": "object",
+      "required": ["ben_a", "ben_b", "ngay_ky", "loai_hop_dong"],
+      "properties": {
+        "ben_a": {"type": "string"},
+        "ben_b": {"type": "string"},
+        "ngay_ky": {"type": "string"},
+        "gia_tri": {"type": "string"},
+        "loai_hop_dong": {"type": "string"},
+        "thoi_han": {"type": "string"}
+      }
+    },
+    "clauses": {
+      "type": "array",
+      "minItems": 3,
+      "items": {
+        "type": "object",
+        "required": ["id", "tieu_de", "noi_dung", "evidence", "confidence_score", "need_review"],
+        "properties": {
+          "id": {"type": "string"},
+          "tieu_de": {"type": "string"},
+          "noi_dung": {"type": "string"},
+          "evidence": {
+            "type": "object",
+            "required": ["verbatim_quote", "location"],
+            "properties": {
+              "verbatim_quote": {"type": "string", "minLength": 1},
+              "location": {"type": "string"}
+            }
+          },
+          "confidence_score": {"type": "number", "minimum": 0, "maximum": 1},
+          "need_review": {"type": "boolean"}
+        }
+      }
+    },
+    "confidence_score": {"type": "number", "minimum": 0, "maximum": 1},
+    "need_review": {"type": "boolean"}
+  }
+}
