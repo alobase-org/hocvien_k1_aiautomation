@@ -1,0 +1,167 @@
+{
+  "package_id": "wd-contract-review-b4-2026-08-03",
+  "use_case": {
+    "name": "Rà soát hợp đồng dịch vụ (Contract Review) — redact → extract+schema → evidence → report HITL",
+    "department": "Pháp chế",
+    "constraint": "PII đối tác + nghĩa vụ tài chính; cấp 4 (mật) không qua AI công; quyết định duyệt luôn thuộc human (BR-W2)"
+  },
+  "phases": [
+    {
+      "id": "W1",
+      "name": "Usecase prioritization — ma trận Hiệu quả × Độ phức tạp",
+      "deliverable": "Ma trận 7 use-case Pháp chế + Top-3 nên automate; pick #1 Contract Review",
+      "sli_slo": [
+        { "sli": "số use-case trong ma trận", "slo": "≥5", "met": true },
+        { "sli": "use-case ở góc LÀM NGAY", "slo": "≥1", "met": true },
+        { "sli": "Top-3 có lý do", "slo": "3/3", "met": true }
+      ],
+      "output_ref": "01-usecase-matrix.md",
+      "prompt_ref": "prompt/01-usecase-impact-matrix.md"
+    },
+    {
+      "id": "W2",
+      "name": "Workflow design as-is → ESIA to-be",
+      "deliverable": "Bảng as-is 6 bước + to-be ESIA + HITL note",
+      "sli_slo": [
+        { "sli": "số bước as-is", "slo": "≥5 (đạt 6)", "met": true },
+        { "sli": "mỗi bước to-be có E/S/I/A", "slo": "100%", "met": true },
+        { "sli": "bước tiền bạc/pháp lý có HITL", "slo": "100%", "met": true }
+      ],
+      "output_ref": "02-as-is-tobe.md",
+      "prompt_ref": "prompt/02-workflow-design-esia.md"
+    },
+    {
+      "id": "W3",
+      "name": "Production hardening (4 lớp + 6 thuộc tính)",
+      "deliverable": "Bảng hardening 7 bước + compliance note + tự đánh giá 6/6",
+      "sli_slo": [
+        { "sli": "lớp hardening", "slo": "đủ 4 (fallback/log/edge/HITL)", "met": true },
+        { "sli": "thuộc tính tin cậy", "slo": "đánh giá 6/6 (4 đạt, 2 một phần)", "met": true }
+      ],
+      "output_ref": "03-hardening.md",
+      "prompt_ref": "prompt/03-production-hardening.md"
+    },
+    {
+      "id": "W4",
+      "name": "Mermaid diagram",
+      "deliverable": "Mã Mermaid flowchart LR, node AI + HITL + fallback",
+      "sli_slo": [
+        { "sli": "node count", "slo": "≤8 (đạt 8)", "met": true },
+        { "sli": "node AI", "slo": "≥1 (đạt 1)", "met": true },
+        { "sli": "node HITL", "slo": "≥1 (đạt 2)", "met": true }
+      ],
+      "output_ref": "04-mermaid.mmd",
+      "prompt_ref": "prompt/04-mermaid-diagram.md"
+    },
+    {
+      "id": "W5",
+      "name": "Infographic render prompt",
+      "deliverable": "Prompt image-gen + Mermaid source + label VN check",
+      "sli_slo": [
+        { "sli": "prompt có style spec", "slo": "đủ", "met": true },
+        { "sli": "label tiếng Việt chính xác", "slo": "100%", "met": true }
+      ],
+      "output_ref": "05-image-prompt.md",
+      "prompt_ref": "prompt/05-generate-workflow-image.md"
+    },
+    {
+      "id": "W6",
+      "name": "Leadership deck 30 ngày (CRAFT)",
+      "deliverable": "Prompt CRAFT 8 slide + lộ trình 30 ngày + lợi ích đo được",
+      "sli_slo": [
+        { "sli": "slide", "slo": "7–10 (đạt 8)", "met": true },
+        { "sli": "lợi ích đo được", "slo": "≥3", "met": true },
+        { "sli": "số chưa đo ghi [cần đo]", "slo": "0 bịa", "met": true }
+      ],
+      "output_ref": "06-leadership-deck.md",
+      "prompt_ref": "prompt/06-notebooklm-leadership-deck.md"
+    }
+  ],
+  "design_doc": {
+    "as_is": {
+      "steps": [
+        { "step": "Nhận .docx từ đối tác", "actor": "Trợ lý pháp chế", "input": "email/share", "output": "file raw (có PII)", "bottleneck_or_repeat_error": "File rải rác, không version" },
+        { "step": "Đọc trọn 15–20 trang", "actor": "Chuyên viên pháp chế", "input": ".docx raw", "output": "ghi chú tay", "bottleneck_or_repeat_error": "2–3h/đồng; sót omission" },
+        { "step": "So checklist 8 điều khoản", "actor": "Chuyên viên pháp chế", "input": "ghi chú + checklist", "output": "bản thiếu sót", "bottleneck_or_repeat_error": "Không nhất quán giữa người" },
+        { "step": "Làm rõ với đối tác", "actor": "Chuyên viên pháp chế", "input": "bản thiếu sót", "output": "email làm rõ", "bottleneck_or_repeat_error": "Chậm, phụ thuộc lịch đối tác" },
+        { "step": "Trình trưởng phòng duyệt", "actor": "Trưởng phòng Pháp chế", "input": "file + ghi chú", "output": "chữ ký / yêu cầu sửa", "bottleneck_or_repeat_error": "Cổ chai 1 người duyệt" },
+        { "step": "Lưu + Sheet theo dõi", "actor": "Trợ lý pháp chế", "input": "file đã duyệt", "output": "Sheet", "bottleneck_or_repeat_error": "Nhập tay → sai số" }
+      ]
+    },
+    "to_be_esia": {
+      "steps": [
+        { "step": "Redact 4 cấp PII", "esia_action": "A", "detail": "Code node Python redact cấp 1-3; cấp 4 = cổng DỪNG → AI local", "who": "AI", "automation_branch": "n8n", "hitl": false },
+        { "step": "Extract + Schema validate", "esia_action": "A", "detail": "AI Gemini extract → Python jsonschema. FAIL→loop max 2", "who": "AI+Người", "automation_branch": "n8n", "hitl": false },
+        { "step": "Evidence + omission check", "esia_action": "A", "detail": "Python verbatim_quote not in text → hallucination_flag; check 8 điều khoản", "who": "AI", "automation_branch": "n8n", "hitl": false },
+        { "step": "Tổng hợp + report", "esia_action": "A", "detail": "report.xlsx Tóm tắt + Chi tiết + section HITL", "who": "AI", "automation_branch": "n8n", "hitl": false },
+        { "step": "Pháp chế duyệt report", "esia_action": "S", "detail": "Đọc report → duyệt/sửa/từ chối. Quyết định pháp lý+tiền bạc", "who": "Người", "automation_branch": "không", "hitl": true },
+        { "step": "Case HIGH escalate", "esia_action": "I", "detail": "Redline HIGH (BMTT/phạt/chấm dứt) → duyệt kép trưởng phòng", "who": "Người", "automation_branch": "n8n", "hitl": true },
+        { "step": "Lưu + Sheet theo dõi", "esia_action": "A", "detail": "Write deadline/giá trị redact + run-log.jsonl", "who": "AI", "automation_branch": "n8n", "hitl": false }
+      ],
+      "hitl_note": "Quyết định 'duyệt hợp đồng' LUÔN thuộc human (BR-W2). Bước 5+6 HITL bắt buộc (pháp lý+tiền bạc). Bước 2+3 không HITL vì máy tất định (schema+evidence = Python, không phải 'AI tự thấy ổn'). Confidence AI<0.7 → đẩy HITL bước 5."
+    },
+    "hardening": {
+      "layers": [
+        { "step": "Redact 4 cấp", "fallback": "Cấp 4 → STOP AI local; regex sót → flag", "execution_log": "hash, số PII/cấp, OK/WARN/FAIL", "edge_case": "scan/OCR, file rỗng, encoding lỗi", "hitl": "Người xác nhận dừng cấp 4" },
+        { "step": "Extract+Schema", "fallback": "FAIL→loop max 2→need_review", "execution_log": "model, token, retry, PASS/FAIL", "edge_case": "timeout, JSON cắt, token limit", "hitl": "confidence<0.7 → HITL" },
+        { "step": "Evidence+omission", "fallback": "normalize whitespace rồi check lại; fail→need_review", "execution_log": "match/clause, omission, TC đã rà", "edge_case": "evidence là bảng/hình", "hitl": "—" },
+        { "step": "Tổng hợp+report", "fallback": "Write fail → local .xlsx + Slack", "execution_log": "số flag, severity, runtime", "edge_case": "0 clause extract", "hitl": "—" },
+        { "step": "Pháp chế duyệt", "fallback": "Vắng→SLA 24h→escalate", "execution_log": "người duyệt, ngày, quyết định, lý do", "edge_case": "từ chối không lý do → bắt buộc", "hitl": "Pháp chế — mọi HĐ" },
+        { "step": "Case HIGH", "fallback": "Trưởng phòng vắng→deputy; 48h→KÉT", "execution_log": "route reason, duyệt kép, ts", "edge_case": "2 redline xung đột", "hitl": "Trưởng phòng" },
+        { "step": "Lưu+Sheet", "fallback": "retry 3× backoff→local JSON", "execution_log": "deadline/giá trị redact, run-id", "edge_case": "giá trị không parse số", "hitl": "—" }
+      ],
+      "compliance_note": "PII đối tác + nghĩa vụ tài chính. Bước 1 (redact) là điều kiện tiên quyết đưa dữ liệu qua AI công — bảo vệ ở nguồn. Bước 5 (duyệt) bắt buộc HITL theo quy định nội bộ. Cấp 4 (mật) chỉ AI local.",
+      "reliability_self_assessment": {
+        "fault_tolerant": "một phần",
+        "observable": "đạt",
+        "scalable": "một phần",
+        "workable": "đạt",
+        "idempotent": "đạt",
+        "auditable": "đạt"
+      }
+    },
+    "mermaid": {
+      "source": "flowchart LR\n  A[(📄 contract.docx)] --> R[Code node Redact 4 cấp]\n  R -->|cấp 4 mật| STOP[STOP → AI local]\n  R -->|OK| E[AI node extract]\n  E --> S{schema PASS?}\n  S -->|FAIL ×2| RR[Retry AI need_review]\n  S -->|PASS| V[Code node evidence+omission]\n  V --> F[(report.xlsx)]\n  F --> H{Pháp chế duyệt HITL}\n  H -->|redline HIGH| T[Trưởng phòng duyệt kép]\n  H -->|OK / sửa| K[(Ký + Sheet)]",
+      "valid": true,
+      "node_count": 8,
+      "has_ai_node": true,
+      "has_hitl_node": true
+    },
+    "infographic_prompt": {
+      "prompt": "xem 05-image-prompt.md",
+      "image_link": "[chèn sau generate] — fallback: screenshot mermaid.live",
+      "label_vietnamese_accurate": true
+    },
+    "before_after": {
+      "thoi_gian": "2–3 giờ/hợp đồng → <10'/hợp đồng (KPI lab)",
+      "loi": "sót omission/clause bịa → evidence check Python bắt hallucination+omission",
+      "chi_phi": "Pháp chế đọc全文 → chỉ duyệt report (giờ tiết kiệm/tháng: [cần đo])"
+    },
+    "automation_steps": [
+      { "step": "Redact 4 cấp", "tool": "n8n Code node Python", "hitl": "Cấp 4 mật → người xác nhận dừng", "fallback": "Regex sót PII → flag + cảnh báo" },
+      { "step": "Extract clause", "tool": "n8n AI node (Gemini)", "hitl": "confidence<0.7 → Pháp chế", "fallback": "Schema FAIL → loop max 2 → need_review" },
+      { "step": "Schema validate", "tool": "n8n Code node (jsonschema)", "hitl": "— (máy tất định)", "fallback": "malformed → retry AI" },
+      { "step": "Evidence + omission", "tool": "n8n Code node Python", "hitl": "— (máy tất định)", "fallback": "match fail do dấu câu → normalize rồi check lại" },
+      { "step": "Tổng hợp + report", "tool": "n8n Code node", "hitl": "Pháp chế duyệt report", "fallback": "Write fail → local .xlsx + Slack" },
+      { "step": "Lưu + Sheet", "tool": "n8n Write", "hitl": "—", "fallback": "retry 3× backoff → local JSON sync sau" }
+    ]
+  },
+  "leadership_deck": {
+    "goal": "Thuyết phục lãnh đạo duyệt pilot 30 ngày Contract Review + ngân sách n8n Cloud + 1 Pháp chế champion",
+    "roadmap_30_days": "Tuần 1 pilot 10 HĐ đã duyệt (answer-key) · Tuần 2 hardening+edge case · Tuần 3 chạy song song · Tuần 4 go-live+monitoring",
+    "measurable_benefits": [
+      "<10'/hợp đồng vs 2–3h as-is",
+      "Bắt hallucination (clause bịa) + omission (8 điều khoản bắt buộc)",
+      "Pháp chế chỉ duyệt report → giải phóng capacity"
+    ]
+  },
+  "evidence": [
+    { "claim": "KPI <10'/hợp đồng vs 2-3h tay", "verbatim_quote": "Kết quả đo: <10'/hợp đồng (vs 2-3h tay)", "source": "b4-foundation-n8n-harness.md", "location": "line 8" },
+    { "claim": "Workflow redact→schema→evidence→report HITL", "verbatim_quote": "redact → extract (schema-validated) → evidence-check → report HITL", "source": "../lab.md", "location": "line 8" },
+    { "claim": "8 điều khoản bắt buộc", "verbatim_quote": "đối tượng · giá trị · thanh toán · nghĩa vụ · chấm dứt · BMTT · giải quyết tranh chấp · pháp luật áp dụng.", "source": "esia-usecase.md", "location": "line 20" },
+    { "claim": "Quyết định duyệt luôn human", "verbatim_quote": "Quyết định \"duyệt hợp đồng\" LUÔN thuộc human. Workflow chỉ đề xuất + flag.", "source": "../lab.md", "location": "line 156" },
+    { "claim": "Redaction 4 cấp + gate mật", "verbatim_quote": "Cấp 4 (mật) = gate: nếu phát hiện → STOP, không qua AI công, dùng AI local.", "source": "../lab.md", "location": "line 63" }
+  ],
+  "confidence_score": 0.92,
+  "need_review": false
+}
