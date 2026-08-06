@@ -1,0 +1,70 @@
+[
+  {
+    "id": "P01",
+    "name": "Tai nghe Bluetooth AirBeat Lite",
+    "aliases": [
+      "tai nghe",
+      "airbeat",
+      "bluetooth",
+      "headphone",
+      "airbeat lite"
+    ],
+    "category": "Âm thanh",
+    "price": 690000,
+    "stock": 18,
+    "warranty_months": 12,
+    "summary": "Tai nghe Bluetooth pin 28 giờ, chống nước IPX4, phù hợp đi làm và luyện tập.",
+    "promo": "Giảm 10% khi mua kèm cáp sạc USB-C."
+  },
+  {
+    "id": "P02",
+    "name": "Bình giữ nhiệt Inox 750ml",
+    "aliases": [
+      "binh giu nhiet",
+      "inox",
+      "750ml",
+      "binh nuoc",
+      "binh inox"
+    ],
+    "category": "Gia dụng",
+    "price": 320000,
+    "stock": 42,
+    "warranty_months": 6,
+    "summary": "Bình inox 304 giữ nóng/lạnh 8-12 giờ, nắp chống tràn, có 3 màu.",
+    "promo": "Mua 2 bình giảm thêm 5%."
+  },
+  {
+    "id": "P03",
+    "name": "Bàn phím cơ MiniKey K68",
+    "aliases": [
+      "ban phim",
+      "minikey",
+      "k68",
+      "ban phim co",
+      "keyboard"
+    ],
+    "category": "Phụ kiện máy tính",
+    "price": 890000,
+    "stock": 0,
+    "warranty_months": 12,
+    "summary": "Bàn phím cơ layout 68 phím, kết nối Bluetooth/USB-C, switch tactile.",
+    "promo": "Đang hết hàng, có thể để lại SĐT để CSKH báo khi về hàng."
+  },
+  {
+    "id": "P04",
+    "name": "Máy xay sinh tố BlendGo 500W",
+    "aliases": [
+      "may xay",
+      "blendgo",
+      "sinh to",
+      "may xay sinh to",
+      "blendgo 500w"
+    ],
+    "category": "Gia dụng điện",
+    "price": 1250000,
+    "stock": 9,
+    "warranty_months": 12,
+    "summary": "Máy xay 500W, cối thủy tinh 1.5L, có 3 tốc độ và chế độ nhồi.",
+    "promo": "Tặng bộ ly thủy tinh cho đơn trong tuần này."
+  }
+]

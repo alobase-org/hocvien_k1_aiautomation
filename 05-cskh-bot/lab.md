@@ -61,7 +61,7 @@ Mở file Jupyter Notebook [`test/05_cskh_bot_lab_demo.ipynb`](./test/05_cskh_bo
 ### 🧱 3. Giải thích workflow theo lớp sau khi demo chạy được
 Sau khi học viên đã thấy hệ thống chạy thật, GV bóc tách workflow thành 5 lớp nhỏ:
 
-1. **Lớp tri thức**: `faq-khoa-hoc.json` → embedding → `vector-store.json`.
+1. **Lớp tri thức**: `templates/faq-cskh.md` → embedding → `vector-store.json`.
 2. **Lớp biên an toàn**: Webhook nhận câu hỏi → prompt injection guard → scope/intent router.
 3. **Lớp trả lời nhanh**: FAQ cache exact match + semantic similarity cao → reply ngay từ FAQ, không gọi LLM.
 4. **Lớp fallback có kiểm soát**: cache miss → LLM trả lời có nguồn → LLM-as-Judge → ticket HITL nếu rủi ro.
@@ -88,7 +88,7 @@ Trong các đội chăm sóc khách hàng dịch vụ bán lẻ, nhân sự thư
 ```mermaid
 flowchart TD
     Z["📓 Jupyter Notebook<br/>05_cskh_bot_lab_demo.ipynb"] -->|Step 0: Auto-Import| W["⚙️ n8n Workflow<br/>B5 Retail CSKH Bot"]
-    A["📚 templates/faq-khoa-hoc.json<br/>(15 FAQ bán lẻ, 5 nhóm nội dung)"] -->|TH1: Embedding API| B["🧠 vector-store.json<br/>(faq_id + nhom + vector)"]
+    A["📚 templates/faq-cskh.md<br/>(15 FAQ bán lẻ, 5 nhóm nội dung)"] -->|TH1: Embedding API| B["🧠 vector-store.json<br/>(faq_id + nhom + vector)"]
     C["🛍️ Landing page + Chatbot UI<br/>POST Webhook (khách hỏi)"] -->|TH2: /cskh| D["🛡️ Prompt Injection Guard<br/>(tin nhắn khách = DATA)"]
     Z -->|Step 2-5: gửi test cases| D
     D --> E{"🧭 Scope + Intent Router<br/>thuộc dịch vụ bán lẻ?"}
@@ -117,8 +117,9 @@ flowchart TD
 | Jupyter Demo Notebook | 1/HV | [`test/05_cskh_bot_lab_demo.ipynb`](./test/05_cskh_bot_lab_demo.ipynb) | Notebook demo tương tác từng bước cho Giảng viên & Học viên |
 | n8n workflow solution | 1/HV | [`checkpoints/n8n-cskh-bot-solution.json`](./checkpoints/n8n-cskh-bot-solution.json) | Workflow demo Webhook → Guard/Router/Cache → Respond |
 | Credential LLM/Embedding | 1/HV | Google AI Studio/OpenAI credential từ B2 | Dùng embedding + LLM answer + LLM judge |
-| `templates/faq-khoa-hoc.json` | 1/HV | [`templates/faq-khoa-hoc.json`](./templates/faq-khoa-hoc.json) | 15 FAQ mẫu cho dịch vụ bán lẻ, chia 5 nhóm nội dung |
+| `templates/faq-cskh.md` | 1/HV | [`templates/faq-cskh.md`](./templates/faq-cskh.md) | 15 FAQ mẫu cho dịch vụ bán lẻ, chia 5 nhóm nội dung |
 | `templates/chinh-sach-ho-tro.md` | 1/HV | [`templates/chinh-sach-ho-tro.md`](./templates/chinh-sach-ho-tro.md) | Chính sách giao nhận, thanh toán, đổi trả, bảo hành để bot bám nguồn |
+| `templates/thong_tin_san_pham.md` | 1/HV | [`templates/thong_tin_san_pham.md`](./templates/thong_tin_san_pham.md) | Catalog & chi tiết sản phẩm bán lẻ (P01-P04) để bot hỏi đáp và nhận đơn mua |
 | Prompt templates | 1/HV | [`prompts/`](./prompts/) | Prompt cho TH1-TH4 |
 | Test cases | GV phát khi kiểm thử | [`checkpoints/test-cases.json`](./checkpoints/test-cases.json) | 5 test case, trong đó 2 case phải chuyển người |
 | Vibe coding tool | 1/HV | Cursor/Antigravity hoặc công cụ tương đương | Tạo landing page HTML/JS có chatbot gọi webhook |

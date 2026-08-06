@@ -1,4 +1,0 @@
-Biên bản cuộc họp bàn về kế hoạch triển khai AI Automation tháng 3/2026
-Ngày họp: 02/03/2026
-Thành phần: CEO, CTO, Trưởng phòng Marketing
-Quyết định: Triển khai thử nghiệm 3 công cụ tự động hóa trong tháng.
