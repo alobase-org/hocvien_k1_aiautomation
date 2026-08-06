@@ -1,0 +1,356 @@
+{
+  "slides": [
+    {
+      "type": "cover",
+      "data": {
+        "course_name": "WEBINAR #3 · WORKFLOW MINDSET",
+        "session_number": 3,
+        "session_title": "Thiết kế quy trình đáng tin cậy trước khi tự động hóa",
+        "date": "Thứ 7, 11/07/2026 · 20:00",
+        "time": "60 phút",
+        "format": "Online qua Zoom · AI Automation K1"
+      }
+    },
+    {
+      "type": "agenda",
+      "data": {
+        "session_number": 3,
+        "modules": [
+          {"title": "15' — Lý thuyết Workflow Mindset", "tools": "3 khó khăn + Case Tuấn Hà Vinalink + 4 trụ cột", "teacher": "GV: Cường", "duration": "~15 phút"},
+          {"title": "30' — Demo 6 bài tập móc nối", "tools": "Usecase → ESIA → Hardening → Mermaid → Ảnh → NotebookLM", "teacher": "GV: Cường", "duration": "~30 phút"},
+          {"title": "15' — Thực hành & nộp bài", "tools": "HV chạy 1 bài + form chấm + Early Bird K1", "teacher": "GV: Cường", "duration": "~15 phút"}
+        ]
+      }
+    },
+    {
+      "type": "theory",
+      "data": {
+        "title": "VÌ SAO AI AUTOMATION HAY THẤT BẠI?",
+        "content": [
+          {"label": "Câu hỏi mở:", "text": "Doanh nghiệp apex AI vào rồi vẫn thất bại — vì sao?"},
+          {"label": "Đáp án ngắn:", "text": "Họ tự động hóa quy trình đang hỏng. Tốc độ nhân sự lộn xộn lên gấp mười."}
+        ]
+      }
+    },
+    {
+      "type": "module_header",
+      "data": {
+        "module_number": 1,
+        "module_title": "PHẦN 1 · WORKFLOW MINDSET",
+        "subtitle": "Tư duy quyết định automation thành hay bại",
+        "teacher": "GV: Cường",
+        "duration": "~15 phút"
+      }
+    },
+    {
+      "type": "theory",
+      "data": {
+        "title": "3 KHÓ KHĂN KHI ỨNG DỤNG AI AUTOMATION",
+        "content": [
+          {"label": "① Thiếu quy trình chuẩn hóa:", "text": "DN truyền thống chạy theo kinh nghiệm, linh hoạt, chủ động con người → không phân vai rõ."},
+          {"label": "② Không bao phủ hết use-case:", "text": "Quy trình mới chạy được vài case rồi sập ở case khác."},
+          {"label": "③ Không đáng tin cậy:", "text": "AI automation hiệu quả nhưng nhiều lỗ hổng bảo mật, lỗi sai, hallucination."}
+        ]
+      }
+    },
+    {
+      "type": "theory",
+      "data": {
+        "title": "CASE STUDY: TUẤN HÀ — VINALINK",
+        "content": [
+          {"label": "Việc:", "text": "Vibe code mà không thiết kế guardrail."},
+          {"label": "Hậu quả:", "text": "Lộ password trong code + mất database khách hàng."},
+          {"label": "Bài học:", "text": "Tốc độ tự động hóa không đền bù việc thiếu Workflow Mindset. Process phải đáng tin cậy trước khi chạy thật."}
+        ]
+      }
+    },
+    {
+      "type": "concept_diagram",
+      "data": {
+        "title": "WORKFLOW MINDSET #1 · VALUE STREAM MAP",
+        "steps": [
+          {"icon": "📥", "label": "Input", "desc": "Đầu vào đo được"},
+          {"icon": "⚙️", "label": "Process", "desc": "Kiểm soát được"},
+          {"icon": "📤", "label": "Output", "desc": "Đầu ra đo được"},
+          {"icon": "🔁", "label": "Lặp lại", "desc": "Thành chuỗi giá trị"}
+        ]
+      }
+    },
+    {
+      "type": "theory",
+      "data": {
+        "title": "WORKFLOW MINDSET #2 · MA TRẬN ƯU TIÊN",
+        "content": [
+          {"label": "Trục X:", "text": "Độ phức tạp (Dễ → Khó)"},
+          {"label": "Trục Y:", "text": "Hiệu quả (Thấp → Cao)"},
+          {"label": "4 góc:", "text": "🟢 Làm ngay (quick win) · 🟡 Lên kế hoạch · ⚪ Khi rảnh · 🔴 Bỏ"},
+          {"label": "Quy tắc:", "text": "Quyết định automate use-case nào TRƯỚC quan trọng hơn dùng tool nào."}
+        ]
+      }
+    },
+    {
+      "type": "theory",
+      "data": {
+        "title": "WORKFLOW MINDSET #3 · PROCESS ĐÁNG TIN CẬY",
+        "content": [
+          {"label": "6 thuộc tính:", "text": "fault-tolerant (chịu lỗi) · observable (đo lường) · scalable (mở rộng) · workable (chạy được) · idempotent (chạy lại không lệch) · auditable (kiểm toán)"},
+          {"label": "Cảnh báo:", "text": "Thiếu thuộc tính nào, production sẽ sập ở thuộc tính đó."}
+        ]
+      }
+    },
+    {
+      "type": "theory",
+      "data": {
+        "title": "WORKFLOW MINDSET #4 · MÔ TẢ & TRỰC QUAN HÓA",
+        "content": [
+          {"label": "Diagram:", "text": "Activity diagram (luồng công việc) · Sequence diagram (tương tác role/hệ thống)"},
+          {"label": "Ngôn ngữ:", "text": "Mermaidjs / PlantUML"},
+          {"label": "AI:", "text": "Render diagram thành ảnh trực quan đẹp"}
+        ]
+      }
+    },
+    {
+      "type": "module_header",
+      "data": {
+        "module_number": 2,
+        "module_title": "PHẦN 2 · DEMO 6 BÀI TẬP",
+        "subtitle": "Output bài N = input bài N+1 · Use-case: tổ chức tài liệu",
+        "teacher": "GV: Cường",
+        "duration": "~30 phút"
+      }
+    },
+    {
+      "type": "prompt",
+      "data": {
+        "title": "BT1 · USECASE DESIGN — MA TRẬN ƯU TIÊN",
+        "context_label": "BỐI CẢNH:",
+        "context": "Folder 'Tài liệu' thành bãi rác: ~1.200 file, tên tùy tiện, version lộn xộn. Chọn use-case nên automate trước.",
+        "instructions_label": "CHỈ DẪN:",
+        "instructions": [
+          "1. List 8-10 vấn đề tài liệu (đặt tên tếu, trùng, sai chỗ, tìm không ra...)",
+          "2. Chấm mỗi use-case: Impact (1-5) × Difficulty (1-5)",
+          "3. Xếp 4 góc: Làm ngay · Lên kế hoạch · Khi rảnh · Bỏ",
+          "4. Suggest top-3 nên automate TRƯỚC"
+        ]
+      }
+    },
+    {
+      "type": "practice",
+      "data": {
+        "title": "THỰC HÀNH BT1 — MA TRẬN USE-CASE",
+        "steps": [
+          {"label": "Bước 1:", "text": "Mở file synthetic (10 vấn đề tài liệu)"},
+          {"label": "Bước 2:", "text": "Dán prompt BT1 vào Claude/Gemini"},
+          {"label": "Bước 3:", "text": "Xem ma trận AI đề xuất, điều chỉnh nếu chấm sai"}
+        ],
+        "output": "Ma trận 4 góc + top-3 use-case → input BT2",
+        "timer_minutes": 5
+      }
+    },
+    {
+      "type": "prompt",
+      "data": {
+        "title": "BT2 · WORKFLOW DESIGN — AS-IS → ESIA TO-BE",
+        "context_label": "BỐI CẢN:",
+        "context": "Use-case chọn: tự động tổ chức tài liệu. Workflow đơn giản: AI chuẩn hóa tên + build plan → user review → AI Agent chạy script copy file.",
+        "instructions_label": "CHỈ DẪN:",
+        "instructions": [
+          "1. Mô tả as-is (bảng 5 cột: Bước · Người · Input · Output · Nghẽn)",
+          "2. Áp ESIA: Eliminate · Simplify · Integrate · Automate",
+          "3. Mỗi bước A ghi nhánh: n8n / AI Agent / app vibe coding",
+          "4. Bước rủi ro cao → bắt buộc HITL"
+        ]
+      }
+    },
+    {
+      "type": "practice",
+      "data": {
+        "title": "THỰC HÀNH BT2 — ESIA TO-BE",
+        "steps": [
+          {"label": "Bước 1:", "text": "Lấy top-1 use-case từ BT1 (cùng đoạn chat)"},
+          {"label": "Bước 2:", "text": "Dán prompt BT2 → AI mô tả as-is + áp ESIA"},
+          {"label": "Bước 3:", "text": "Rà soát bước Automate sai → chuyển HITL"},
+          {"label": "Bước 4:", "text": "Ghi nhánh automation mỗi bước A"}
+        ],
+        "output": "Workflow Design Doc (as-is + to-be) → input BT3",
+        "timer_minutes": 6
+      }
+    },
+    {
+      "type": "prompt",
+      "data": {
+        "title": "BT3 · IMPROVE CHO PRODUCTION — HARDENING",
+        "context_label": "BỐI CẢN:",
+        "context": "Workflow to-be mới chỉ là happy case. Production cần 4 lớp hardening.",
+        "instructions_label": "CHỈ DẪN:",
+        "instructions": [
+          "1. Fallback branch: input kém chất lượng / AI lỗi → nhánh xử lý",
+          "2. Execution log: log mọi hành vi (KHÔNG lưu PII gốc)",
+          "3. Edge case: file rỗng, format sai, trùng tên, file đang mở",
+          "4. Human-in-the-loop: bước cần con người review"
+        ]
+      }
+    },
+    {
+      "type": "practice",
+      "data": {
+        "title": "THỰC HÀNH BT3 — HARDENING",
+        "steps": [
+          {"label": "Bước 1:", "text": "Lấy to-be từ BT2"},
+          {"label": "Bước 2:", "text": "Dán prompt BT3 → AI bổ sung 4 lớp"},
+          {"label": "Bước 3:", "text": "Rà soát bước tiền bạc/PII → bắt buộc HITL"}
+        ],
+        "output": "Design doc phần hardening (4 lớp) → input BT4",
+        "timer_minutes": 5
+      }
+    },
+    {
+      "type": "prompt",
+      "data": {
+        "title": "BT4 · VẼ MERMAID — ACTIVITY / SEQUENCE DIAGRAM",
+        "context_label": "BỐI CẢN:",
+        "context": "Workflow to-be + hardening cần visualize. Node AI xanh, node HITL đỏ, node fallback xám.",
+        "instructions_label": "CHỈ DẪN:",
+        "instructions": [
+          "1. Dán prompt BT4 vào AI → nhận mã Mermaid",
+          "2. Mở mermaid.live, paste mã → xem render",
+          "3. Tối đa 8 node, tối thiểu 1 HITL",
+          "4. Chỉnh nếu syntax lỗi"
+        ]
+      }
+    },
+    {
+      "type": "practice",
+      "data": {
+        "title": "THỰC HÀNH BT4 — MERMAID",
+        "steps": [
+          {"label": "Bước 1:", "text": "Lấy to-be + hardening từ BT2, BT3"},
+          {"label": "Bước 2:", "text": "Dán prompt BT4 → AI sinh mã Mermaid"},
+          {"label": "Bước 3:", "text": "Paste vào mermaid.live → render"}
+        ],
+        "output": "1 Mermaid diagram đã render → input BT5",
+        "timer_minutes": 5
+      }
+    },
+    {
+      "type": "prompt",
+      "data": {
+        "title": "BT5 · GENERATE ẢNH WORKFLOW — INFOGRAPHIC",
+        "context_label": "BỐI CẢN:",
+        "context": "Ảnh infographic kể chuyện cho lãnh đạo tốt hơn text. Style isometric, pastel palette, label tiếng Việt.",
+        "instructions_label": "CHỈ DẪN:",
+        "instructions": [
+          "1. Dán prompt BT5 (style spec + Mermaid source) vào Codex/Nano Banana/Gemini",
+          "2. Xem ảnh sinh ra",
+          "3. Chỉnh prompt nếu chữ lỗi/font sai (thêm: Vietnamese diacritics render correctly)"
+        ]
+      }
+    },
+    {
+      "type": "practice",
+      "data": {
+        "title": "THỰC HÀNH BT5 — ẢNH WORKFLOW",
+        "steps": [
+          {"label": "Bước 1:", "text": "Lấy Mermaid từ BT4"},
+          {"label": "Bước 2:", "text": "Dán prompt BT5 vào AI image generator"},
+          {"label": "Bước 3:", "text": "Xem ảnh, chỉnh prompt nếu lỗi"}
+        ],
+        "output": "1 ảnh workflow infographic → input BT6",
+        "timer_minutes": 4
+      }
+    },
+    {
+      "type": "prompt",
+      "data": {
+        "title": "BT6 · NOTEBOOKLM DECK — THAM MƯU LÃNH ĐẠO 30 NGÀY",
+        "context_label": "BỐI CẢN:",
+        "context": "Đưa toàn bộ artifact (design doc + Mermaid + ảnh) vào NotebookLM → generate deck thuyết minh ý tưởng tham mưu lãnh đạo triển khai 30 ngày. Dùng prompt CRAFT (Context/Role/Action/Format/Tone).",
+        "instructions_label": "CHỈ DẪN:",
+        "instructions": [
+          "1. Tạo notebook NotebookLM, add source (design doc + Mermaid)",
+          "2. Dán prompt BT6 CRAFT → generate deck",
+          "3. Deck: vấn đề → quy trình mới → lợi ích → hardening → lộ trình 30 ngày → rủi ro → decision ask"
+        ]
+      }
+    },
+    {
+      "type": "practice",
+      "data": {
+        "title": "THỰC HÀNH BT6 — NOTEBOOKLM DECK",
+        "steps": [
+          {"label": "Bước 1:", "text": "Tạo notebook, add source (design doc + Mermaid)"},
+          {"label": "Bước 2:", "text": "Dán prompt CRAFT → generate deck"},
+          {"label": "Bước 3:", "text": "Chỉnh tiêu đề + số liệu lợi ích"}
+        ],
+        "output": "1 deck tham mưu lãnh đạo 30 ngày — FINAL output chuỗi 6 bài",
+        "timer_minutes": 5
+      }
+    },
+    {
+      "type": "theory",
+      "data": {
+        "title": "🔁 WORKFLOW MỞ RỘNG — TÌM KIẾM TÀI LIỆU THAM KHẢO",
+        "content": [
+          {"label": "Input:", "text": "Nội dung đang cần làm (vd: 'soạn đề xuất đào tạo AI cho bệnh viện')"},
+          {"label": "Process:", "text": "extract keyword → search folder/Drive → candidate → AI rerank → top → đọc sâu extract điểm hữu ích → reference_map.md → copy vào folder reference/"},
+          {"label": "Output:", "text": "folder reference/ + reference_map.md (File · Vị trí · Điểm hữu ích · Trích đoạn)"}
+        ]
+      }
+    },
+    {
+      "type": "module_header",
+      "data": {
+        "module_number": 3,
+        "module_title": "PHẦN 3 · THỰC HÀNH & NỘP BÀI",
+        "subtitle": "HV chạy 1 bài trên use-case của mình + nộp form",
+        "teacher": "GV: Cường",
+        "duration": "~15 phút"
+      }
+    },
+    {
+      "type": "practice_blank",
+      "data": {
+        "title": "15' THỰC HÀNH — CHỌN BT1 HOẶC BT2",
+        "timer_minutes": 15
+      }
+    },
+    {
+      "type": "theory",
+      "data": {
+        "title": "SHOWCASE: VIETTEL NETWORK 5 NGÀY",
+        "content": [
+          {"label": "Bằng chứng:", "text": "Bài tập nhóm Viettel Network — redesign ESIA, hardening (fallback/log/edge/HITL), đưa lên production có retry/monitoring/rollback."},
+          {"label": "Thông điệp:", "text": "Webinar này là điểm bắt đầu. K1 đưa workflow của bạn lên cấp chạy thật trong công ty."}
+        ]
+      }
+    },
+    {
+      "type": "summary",
+      "data": {
+        "session_number": 3,
+        "products": [
+          {"number": 1, "title": "Ma trận use-case", "description": "Hiệu quả × Phức tạp + top-3 nên automate"},
+          {"number": 2, "title": "Workflow Design Doc", "description": "As-is + to-be ESIA + hardening (fallback/log/edge/HITL)"},
+          {"number": 3, "title": "Mermaid + ảnh workflow", "description": "Diagram + infographic"},
+          {"number": 4, "title": "Deck NotebookLM", "description": "Tham mưu lãnh đạo triển khai 30 ngày"}
+        ]
+      }
+    },
+    {
+      "type": "next_session",
+      "data": {
+        "next_session_number": "K1",
+        "next_session_title": "AI Automation K1 — Đưa workflow lên cấp production thật",
+        "date": "Khai giảng Early Bird",
+        "teacher": "GV: Cường",
+        "prep_items": ["Nộp bài webinar (≥15/25)", "Giữ chỗ Early Bird K1", "Landing: aiautomation.alobase.vn"]
+      }
+    },
+    {
+      "type": "thank_you",
+      "data": {
+        "message": "Workflow Mindset: tự động hóa những gì đã đáng tin cậy, không phải những gì đang lộn xộn. Hẹn gặp ở K1!"
+      }
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+%% W4 — Mermaid: Contract Review workflow (to-be + hardening)
+%% Render tại mermaid.live. ≤8 node, node AI xanh, ≥1 node HITL đỏ.
+%% Node icons trong render infographic (BT5) được mô tả riêng trong 05-image-prompt.md.
+flowchart LR
+  A[("contract.docx")] --> R["Code node<br/>Redact 4 cấp"]
+  R -->|"cấp 4 mật = GATE DỪNG"| STOP["STOP → AI local"]
+  R -->|OK| E["AI node<br/>extract clauses"]
+  E --> S{"Code node<br/>schema PASS?"}
+  S -->|FAIL ×2| RR["Retry AI<br/>need_review"]
+  S -->|PASS| V["Code node<br/>evidence + omission"]
+  V --> F[("report.xlsx")]
+  F --> H{"Pháp chế duyệt<br/>(HITL)"}
+  H -->|redline HIGH| T["Trưởng phòng<br/>duyệt kép"]
+  H -->|OK / sửa| K[("Ký + Sheet")]
+
+  classDef aiNode fill:#FFE0B2,stroke:#FB8C00,stroke-width:2px;
+  classDef hitlNode fill:#FFCDD2,stroke:#E53935,stroke-width:2px;
+  classDef fallbackNode fill:#ECEFF1,stroke:#607D8B,stroke-width:2px;
+  class E aiNode;
+  class H,T hitlNode;
+  class RR,STOP fallbackNode;

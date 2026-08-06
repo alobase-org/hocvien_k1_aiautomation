@@ -1,0 +1,22 @@
+{
+  "project_id": "WORKFLOW-FIRST-VIDEO-01",
+  "source_mode": "MANUAL",
+  "brief_id": null,
+  "source_angle_id": null,
+  "title": "Không phải cứ AI Automation là n8n",
+  "platform": "TIKTOK",
+  "aspect_ratio": "9:16",
+  "total_duration_seconds": 48,
+  "target_audience": "Chủ doanh nghiệp nhỏ và quản lý vận hành",
+  "brand_style": "Thực tế, sáng, hiện đại, không phô trương",
+  "forbidden_elements": ["logo bên thứ ba", "chữ nhỏ do model sinh", "cam kết hiệu suất"],
+  "scenes": [
+    {"scene_id":"SC-01","source_block":"HOOK","duration_seconds":6,"visual":"Màn hình workflow dày đặc node, người vận hành bối rối.","dialogue":"Không phải cứ kéo thật nhiều node là có AI Automation."},
+    {"scene_id":"SC-02","source_block":"PROBLEM","duration_seconds":7,"visual":"Dữ liệu chạy sai nhánh và báo cáo trống.","dialogue":"Khi đầu vào chưa rõ, công cụ chỉ tự động hóa sự lộn xộn."},
+    {"scene_id":"SC-03","source_block":"PROBLEM","duration_seconds":7,"visual":"Một kết quả AI đẹp nhưng không ai biết ai duyệt.","dialogue":"Đầu ra không có tiêu chí và người duyệt thì chưa thể dùng thật."},
+    {"scene_id":"SC-04","source_block":"SOLUTION","duration_seconds":7,"visual":"Workflow Card hiện các ô input, process và output.","dialogue":"Bắt đầu bằng một quy trình có đầu vào và đầu ra rõ."},
+    {"scene_id":"SC-05","source_block":"SOLUTION","duration_seconds":7,"visual":"Dữ liệu mẫu, output mẫu và checklist xếp thành chuỗi.","dialogue":"Thêm dữ liệu mẫu, kết quả mẫu và tiêu chí chất lượng."},
+    {"scene_id":"SC-06","source_block":"SOLUTION","duration_seconds":7,"visual":"Người thật bấm Approved, log ghi một dòng mới.","dialogue":"Đặt người duyệt và log ở đúng điểm rủi ro."},
+    {"scene_id":"SC-07","source_block":"CTA","duration_seconds":7,"visual":"Canvas gọn lại thành một luồng rõ ràng.","dialogue":"Viết một công việc lặp lại bạn muốn tự động hóa trước khi chọn tool."}
+  ]
+}
