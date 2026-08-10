@@ -1,0 +1,111 @@
+{
+  "_comment": "FAQ mẫu synthetic cho TH1 — bối cảnh CSKH dịch vụ bán lẻ. TEST ONLY.",
+  "dich_vu": "Retail Care Demo",
+  "faq": [
+    {
+      "id": "F01",
+      "nhom": "đơn hàng",
+      "cau_hoi": "Tôi đặt hàng rồi, khi nào được giao?",
+      "cau_tra_loi": "Đơn nội thành giao trong 24-48 giờ; đơn tỉnh giao trong 3-5 ngày làm việc.",
+      "nguon": "Mục 1. Giao nhận"
+    },
+    {
+      "id": "F02",
+      "nhom": "đơn hàng",
+      "cau_hoi": "Tôi muốn kiểm tra trạng thái đơn hàng thì làm sao?",
+      "cau_tra_loi": "Gửi mã đơn hàng qua Zalo CSKH hoặc tra cứu tại trang theo dõi đơn. CSKH phản hồi trong 2 giờ làm việc.",
+      "nguon": "Mục 1. Giao nhận"
+    },
+    {
+      "id": "F03",
+      "nhom": "đơn hàng",
+      "cau_hoi": "Có phí giao hàng không?",
+      "cau_tra_loi": "Miễn phí giao hàng cho đơn từ 500.000 VNĐ trong nội thành. Đơn dưới mức này tính phí theo đối tác vận chuyển.",
+      "nguon": "Mục 1. Giao nhận"
+    },
+    {
+      "id": "F04",
+      "nhom": "thanh toán",
+      "cau_hoi": "Có những hình thức thanh toán nào?",
+      "cau_tra_loi": "Khách có thể thanh toán COD, chuyển khoản ngân hàng, thẻ nội địa hoặc ví điện tử.",
+      "nguon": "Mục 2. Thanh toán"
+    },
+    {
+      "id": "F05",
+      "nhom": "thanh toán",
+      "cau_hoi": "Tôi chuyển khoản xong rồi, sao chưa thấy xác nhận?",
+      "cau_tra_loi": "Gửi mã đơn hàng và mã giao dịch qua Zalo CSKH. Xác nhận trong 2 giờ làm việc.",
+      "nguon": "Mục 2. Thanh toán"
+    },
+    {
+      "id": "F06",
+      "nhom": "thanh toán",
+      "cau_hoi": "Có xuất hóa đơn VAT không?",
+      "cau_tra_loi": "Có. Gửi email cskh@demo.vn kèm thông tin công ty trong vòng 24 giờ sau khi đặt hàng.",
+      "nguon": "Mục 2. Thanh toán"
+    },
+    {
+      "id": "F07",
+      "nhom": "đổi trả",
+      "cau_hoi": "Tôi muốn đổi size hoặc đổi màu sản phẩm thì được không?",
+      "cau_tra_loi": "Được đổi trong 7 ngày nếu sản phẩm chưa qua sử dụng, còn tem nhãn và hóa đơn.",
+      "nguon": "Mục 3. Đổi trả"
+    },
+    {
+      "id": "F08",
+      "nhom": "đổi trả",
+      "cau_hoi": "Sản phẩm bị lỗi do nhà sản xuất thì xử lý thế nào?",
+      "cau_tra_loi": "CSKH tiếp nhận hình ảnh/video lỗi và chuyển bộ phận kiểm tra. Nếu lỗi xác nhận từ nhà sản xuất, khách được đổi mới hoặc hoàn tiền theo chính sách.",
+      "nguon": "Mục 3. Đổi trả"
+    },
+    {
+      "id": "F09",
+      "nhom": "đổi trả",
+      "cau_hoi": "Tôi không thích sản phẩm nữa, có được hoàn tiền không?",
+      "cau_tra_loi": "Trường hợp đổi ý cá nhân chỉ hỗ trợ đổi sản phẩm trong 7 ngày nếu đủ điều kiện; hoàn tiền cần CSKH cấp 2 xem xét.",
+      "nguon": "Mục 3. Đổi trả"
+    },
+    {
+      "id": "F10",
+      "nhom": "bảo hành",
+      "cau_hoi": "Sản phẩm được bảo hành bao lâu?",
+      "cau_tra_loi": "Sản phẩm điện tử và phụ kiện chính hãng được bảo hành 12 tháng theo số serial hoặc hóa đơn.",
+      "nguon": "Mục 4. Bảo hành"
+    },
+    {
+      "id": "F11",
+      "nhom": "bảo hành",
+      "cau_hoi": "Tôi cần gửi sản phẩm đi bảo hành thì làm sao?",
+      "cau_tra_loi": "Gửi mã đơn hàng, mô tả lỗi và hình ảnh/video qua Zalo CSKH. CSKH cấp mã tiếp nhận trong 1 ngày làm việc.",
+      "nguon": "Mục 4. Bảo hành"
+    },
+    {
+      "id": "F12",
+      "nhom": "bảo hành",
+      "cau_hoi": "Sản phẩm rơi vỡ có được bảo hành không?",
+      "cau_tra_loi": "Không bảo hành lỗi do rơi vỡ, vào nước hoặc sử dụng sai hướng dẫn.",
+      "nguon": "Mục 4. Bảo hành"
+    },
+    {
+      "id": "F13",
+      "nhom": "khiếu nại",
+      "cau_hoi": "Tôi muốn khiếu nại thái độ giao hàng.",
+      "cau_tra_loi": "Gửi mã đơn hàng và nội dung khiếu nại tới cskh@demo.vn, tiêu đề 'Khiếu nại'. Xử lý trong 3 ngày làm việc.",
+      "nguon": "Mục 5. Khiếu nại"
+    },
+    {
+      "id": "F14",
+      "nhom": "liên hệ",
+      "cau_hoi": "Tôi muốn liên hệ trực tiếp thì sao?",
+      "cau_tra_loi": "Zalo CSKH 0900.000.123 (8:00-20:00) hoặc email cskh@demo.vn.",
+      "nguon": "Mục 6. Liên hệ"
+    },
+    {
+      "id": "F15",
+      "nhom": "liên hệ",
+      "cau_hoi": "Khiếu nại hoàn tiền liên hệ ai?",
+      "cau_tra_loi": "Đội CSKH cấp 2 xử lý khiếu nại hoàn tiền qua hotline 0900.000.456 hoặc email cskh@demo.vn.",
+      "nguon": "Mục 5 + 6"
+    }
+  ]
+}

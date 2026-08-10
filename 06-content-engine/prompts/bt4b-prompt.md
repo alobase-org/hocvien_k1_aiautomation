@@ -1,26 +1,35 @@
 # Prompt TH4b — Vibe-code app duyệt nội dung
 
-> Chạy ngay sau bt4a, trong cùng phiên chat. Cần hai webhook URL mà bt4a vừa in ra.
+> Chạy ngay sau bt4a, trong cùng phiên chat. Cần ba webhook URL mà bt4a vừa in ra.
 > Đây là sản phẩm cuối buổi.
 
 ```text
 BỐI CẢNH:
-Backend đã xong ở bước trước: workflow n8n sinh nội dung và ảnh, đẩy vào Google Sheets với
-Status "Needs Review", và có một webhook /b6/approve nhận quyết định duyệt.
-Giờ dựng phần người thật nhìn vào: một màn duyệt để người phụ trách xem bài, xem ảnh,
-rồi quyết định cho đăng hay trả về sửa.
+Backend đã xong ở bước trước: workflow n8n có BA webhook — `/b6/angles` (chỉ sinh 5 ý tưởng,
+rẻ và nhanh), `/b6/generate` (viết đầy đủ bài+kịch bản+seeding+ảnh từ MỘT ý tưởng đã chọn),
+và `/b6/approve` (nhận quyết định duyệt). Content đẩy vào Google Sheets với Status "Needs Review".
+Giờ dựng phần người thật nhìn vào — không chỉ màn duyệt cuối, mà cả bước chọn ý tưởng TRƯỚC
+khi cam kết viết đầy đủ (tránh chờ mù rồi mới biết AI viết về gì, tốn phí ảnh cho ý tưởng
+không ai muốn).
 
 INPUT PHẢI ĐỌC TRƯỚC KHI XÂY:
 - content-draft.json từ TH2 — biết bài Fanpage và kịch bản TikTok có cấu trúc gì.
 - content-assets.json từ TH3 — biết seeding và image brief có cấu trúc gì.
 - schemas/content-draft.schema.json và schemas/content-assets.schema.json — hợp đồng dữ liệu.
 - templates/brand-voice.md — danh sách 8 điều cấm, dùng làm checklist duyệt.
-- Hai webhook URL từ bt4a.
+- BA webhook URL từ bt4a.
 
 YÊU CẦU THỰC HIỆN:
 1. Tạo một file index.html duy nhất, HTML/CSS/JS thuần, không build step, không thư viện ngoài.
    Mở trực tiếp bằng trình duyệt là chạy.
-2. Đầu file có khu cấu hình gấp lại được, chứa hai ô nhập webhook URL. Không hardcode URL vào code.
+2. Đầu file có khu cấu hình gấp lại được, chứa BA ô nhập webhook URL. Không hardcode URL vào code.
+2b. Trước màn duyệt, thêm một bước chọn ý tưởng:
+   - Nút "Sinh ý tưởng" gọi `/b6/angles`, hiện 5 thẻ ý tưởng (angle_id, ý tưởng, chân dung,
+     mục tiêu, kênh phù hợp) để người đọc rồi bấm chọn 1.
+   - Nút "Tự đưa ý tưởng" cho người gõ tay ý tưởng riêng (chọn chân dung + mục tiêu qua
+     dropdown), bỏ qua bước AI sinh ý tưởng hoàn toàn.
+   - Sau khi có ý tưởng đã chọn (từ 1 trong 2 đường), mới hiện nút "Viết nội dung đầy đủ"
+     gọi `/b6/generate` kèm nguyên object ý tưởng đã chọn trong body (field `angle`).
 3. Màn hình chia hai cột trên máy tính, xếp dọc trên điện thoại:
    - Cột trái: ẢNH do workflow sinh ra, hiển thị đúng tỷ lệ trong image_brief.
      Dưới ảnh là image brief đủ 9 mục dạng bảng.

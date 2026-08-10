@@ -56,6 +56,10 @@ Một app duyệt nội dung: hiện bài Fanpage, kịch bản TikTok, ảnh v�
 
 Trạng thái cao nhất là **Approved**. Không có nút đăng bài — cố ý.
 
+## Tự làm ở nhà với dữ liệu thật
+
+`lab.md` là bài trên lớp, dùng brief/chân dung Sunrise Kids mẫu, có GV dẫn. Nếu muốn thực hành thêm với sản phẩm thật của bạn, làm theo `lab_tulam.md` — nộp trên repo GitHub riêng của bạn, không phải repo `hocvien_k1_aiautomation`. Khác `prompts/custom-input-prompt.md` (sửa tiếp engine đã dựng sẵn trên lớp), `lab_tulam.md` hướng dẫn dựng lại từ đầu trong repo riêng.
+
 ## Nối sang Buổi 7
 
 Kịch bản TikTok trong `content-draft.json` là input của Buổi 7 (Tạo video AI). Cột `hinh_anh` phải ghi đủ để người khác dựng được video — đừng để trống.

@@ -29,9 +29,14 @@ YÊU CẦU THỰC HIỆN:
    Lớp 1 — Sinh ý tưởng:
    nhận brief mới + file chân dung, gọi Gemini bằng HTTP Request,
    tạo content_angles đúng schema TH1. Bắt buộc phủ tối thiểu 2 chân dung.
+   Lớp này đứng sau MỘT webhook RIÊNG (`/b6/angles`) — chỉ trả về danh sách ý tưởng,
+   KHÔNG viết tiếp sang Lớp 2. Đây là chỗ người dùng biết sẽ viết về gì TRƯỚC KHI
+   AI viết đầy đủ, tránh chờ mù rồi mới thấy nội dung không như ý.
 
    Lớp 2 — Viết nội dung:
-   chọn angle theo tham số đầu vào (mặc định angle đầu tiên),
+   đứng sau webhook `/b6/generate`, nhận THẲNG một ý tưởng đã chọn qua `$json.body.angle`
+   (không tự chạy Lớp 1, không tự lấy angle đầu tiên) — ý tưởng này có thể do người dùng
+   chọn trong danh sách Lớp 1 trả về, hoặc do người dùng tự gõ tay (App bt4b cho cả 2 đường),
    tạo content_draft đúng schema TH2: bài Fanpage 120-200 từ và kịch bản TikTok đúng 4 khối.
 
    Lớp 3 — Seeding, image brief và ẢNH:
@@ -48,7 +53,7 @@ YÊU CẦU THỰC HIỆN:
 5. Status hợp lệ chỉ gồm: Idea, Draft, Needs Review, Approved, Scheduled.
    KHÔNG tạo trạng thái Published và KHÔNG thêm bất kỳ node đăng bài nào lên mạng xã hội.
    Buổi học dừng ở Approved.
-6. Cả hai node Webhook phải bật CORS với Allowed Origins = *, vì app duyệt là file HTML
+6. Cả BA node Webhook phải bật CORS với Allowed Origins = *, vì app duyệt là file HTML
    mở trực tiếp trong trình duyệt nên gọi cross-origin.
 7. Mọi expression đọc dữ liệu webhook phải qua $json.body.xxx, không phải $json.xxx.
 8. Học viên không phải tự viết expression dài. Bạn chịu trách nhiệm cấu hình node, expression,
@@ -63,8 +68,8 @@ TIÊU CHUẨN BÀN GIAO:
 - workflow_id và tên workflow trên n8n.
 - File export JSON parse được.
 - Danh sách node theo bốn lớp.
-- HAI webhook URL production: đường sinh nội dung và đường /b6/approve.
-  Đây là thứ bt4b cần — in ra rõ ràng.
+- BA webhook URL production: `/b6/angles` (sinh ý tưởng), `/b6/generate` (viết đầy đủ
+  từ ý tưởng đã chọn), `/b6/approve`. Đây là thứ bt4b cần — in ra rõ ràng.
 - Kết quả validation, và nêu rõ phần nào chưa runtime-test được.
 - Hướng dẫn đúng một thao tác để chạy brief holdout.
 

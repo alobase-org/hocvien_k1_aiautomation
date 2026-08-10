@@ -36,15 +36,14 @@
     "ty_le": "4:5",
     "phong_cach": "Ấm, sáng, chất liệu giấy và gỗ. Ánh sáng tự nhiên buổi sáng. Không dùng tông công nghệ xanh dương lạnh",
     "bo_cuc": "Cận cảnh một bản báo cáo giấy đặt trên bàn gỗ sáng, bàn tay người lớn đang lật trang. Chụp từ trên xuống, chừa khoảng trống góc trên để chèn chữ",
-    "chu_tren_anh": "Mỗi tháng, ba mẹ biết con đang ở đâu",
+    "chu_tren_anh": "Mỗi tháng biết con ở đâu",
     "khong_duoc_xuat_hien": [
-      "Mặt trẻ em",
       "Bảng điểm hoặc điểm số",
       "Logo của trung tâm khác",
       "Chữ tiếng Anh",
       "Ảnh stock kiểu phương Tây"
     ]
   },
-  "image_prompt": "Top-down close-up of a printed student progress report on a light wooden desk, an adult hand turning a page, handwritten notes visible in the margin. Warm natural morning light, soft shadows, shallow depth of field, paper and wood textures, calm and trustworthy mood. Vertical 4:5 aspect ratio. Leave clear empty space in the upper area for text to be added later. No human faces, no children, no text or lettering of any kind, no score sheets or grade tables, no logos, no western stock-photo styling.",
-  "review_note": "Soi hai chỗ trước khi duyệt: bài còn hai chỗ [cần bổ sung] là học phí và ngày khai giảng, cần điền trước khi đăng; và ảnh phải không có mặt trẻ em nào."
+  "image_prompt": "Warm, inviting classroom scene: a native English teacher and a Vietnamese teaching assistant sitting with a small group of children at a low table, a printed student progress report visible on the table, natural morning light, soft shadows, shallow depth of field, calm and trustworthy mood, genuine warm expressions. Vertical 4:5 aspect ratio. In the upper area, clean elegant Vietnamese text overlay, spelled exactly with full diacritics, sans-serif bold font, high contrast: 'Mỗi tháng biết con ở đâu'. No other text or lettering anywhere else in the image, no score sheets or grade tables, no logos, no western stock-photo styling.",
+  "review_note": "Soi hai chỗ trước khi duyệt: bài còn hai chỗ [cần bổ sung] là học phí và ngày khai giảng, cần điền trước khi đăng; và kiểm dòng chữ trên ảnh có đúng, không bị lặp/thiếu/sai chính tả."
 }

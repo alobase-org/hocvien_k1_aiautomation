@@ -1,6 +1,6 @@
 # Lab Handout — Buổi 06: Content Engine
 
-> Dành cho học viên · 120 phút · GV: Giang · Dữ liệu synthetic · Không đăng bài thật trong lớp.
+> Dành cho học viên · 132 phút · GV: Giang · Dữ liệu synthetic · Không đăng bài thật trong lớp.
 
 ## 1. Kết quả cuối buổi
 
@@ -106,10 +106,10 @@ Workflow và app hoàn chỉnh là **đáp án cứu hộ của TH4**, không ph
 - `brief_id` và `source_angle_id` khớp hai lớp trước.
 - Đúng 5 seeding. Không câu nào là lời khen doanh nghiệp. Có ít nhất 2 câu hỏi thật page trả lời được.
 - `vai_tro` dùng token: ASK / RELATE / EXPERIENCE / CONDITION / CTA_NUDGE.
-- `image_brief` đủ 9 mục. `khong_duoc_xuat_hien` không rỗng và có ràng buộc về mặt trẻ em.
-- `image_prompt` viết tiếng Anh, **không chứa chữ cần hiển thị trên ảnh**, có `no text` và `no children`.
+- `image_brief` đủ 9 mục. `khong_duoc_xuat_hien` không rỗng (điều thật sự không muốn thấy — không bắt buộc phải về trẻ em).
+- `image_prompt` viết tiếng Anh, **được phép có tối đa 1 dòng tiêu đề/CTA ngắn (≤8 từ tiếng Việt) khớp `chu_tren_anh`**, viết đúng chính tả có dấu. Nội dung dài hơn để trống, chèn sau bằng Canva. Ảnh có người/trẻ em KHÔNG bị cấm — đây là ảnh AI sinh hoàn toàn, không tham chiếu ai thật.
 
-**Vì sao image_prompt cấm chữ:** model sinh ảnh viết sai chính tả tiếng Việt gần như chắc chắn. Chữ chèn sau bằng Canva.
+**Vì sao image_prompt được phép có chữ ngắn (đổi hướng 2026-08-09):** trước đây cấm hoàn toàn vì giả định "model viết sai chính tả tiếng Việt gần như chắc chắn" — test thật cho thấy giả định này sai với model hiện tại (`nano-banana-pro`), render đúng gần như tuyệt đối. Vẫn giữ giới hạn 1 dòng ngắn vì model đôi khi lặp thừa chữ — xem `checkpoint-bt3.md`.
 
 **Kế thừa:** ba artifact đã kiểm chứng trở thành specification và expected output cho TH4.
 
@@ -129,14 +129,16 @@ Chia hai chặng. Làm xong bt4a mới sang bt4b — app cần webhook URL do bt
 2. Copy `prompts/bt4a-prompt.md` và chạy trong cùng chat.
 3. Agent phải **đọc ba artifact trước**, xác nhận `brief_id` khớp, rồi mới xây.
 4. Gắn credential, thay `REPLACE_SPREADSHEET_ID` bằng ID workbook của mình, activate.
-5. Ghi lại **hai webhook URL**.
+5. Ghi lại **ba webhook URL**: `/b6/angles` (sinh ý tưởng), `/b6/generate` (viết đầy đủ từ ý tưởng đã chọn), `/b6/approve`.
 
 **Nghiệm thu:**
 
 - Workflow có bốn vùng, mỗi vùng một sticky note tiếng Việt.
+- `/b6/angles` chỉ chạy Lớp 1, trả về danh sách ý tưởng — không tự viết tiếp.
+- `/b6/generate` không tự chạy Lớp 1 và không tự lấy ý tưởng đầu tiên — nhận ý tưởng đã chọn qua `$json.body.angle`.
 - Lớp 3 có node sinh ảnh dùng chính `image_prompt` của TH3.
 - Status mặc định `Needs Review`. **Không có** trạng thái `Published`, không có node đăng bài.
-- Cả hai webhook bật CORS `Allowed Origins = *`.
+- Cả BA webhook bật CORS `Allowed Origins = *`.
 - Không có API key nào nằm trong workflow.
 
 ⚠️ Hai chỗ hay mất thời gian nhất, biết trước để khỏi vấp:
@@ -149,14 +151,16 @@ Chia hai chặng. Làm xong bt4a mới sang bt4b — app cần webhook URL do bt
 **Thực hiện:**
 
 1. Copy `prompts/bt4b-prompt.md` và chạy trong cùng chat.
-2. Dán hai webhook URL vào phần Cấu hình của app.
-3. Bấm **Tạo nội dung mới** → workflow chạy bốn lớp, app hiện bài và ảnh.
-4. Đọc, sửa lại vài chữ nếu cần, điền tên người duyệt, bấm **Duyệt — Approved**.
-5. Mở Google Sheets kiểm tra.
+2. Dán ba webhook URL vào phần Cấu hình của app.
+3. Bấm **Sinh ý tưởng** (hoặc **Tự đưa ý tưởng** nếu muốn tự viết) → đọc/chọn 1 trong các ý tưởng.
+4. Bấm **Viết nội dung đầy đủ** → workflow chạy Lớp 2-4, app hiện bài và ảnh.
+5. Đọc, sửa lại vài chữ nếu cần, điền tên người duyệt, bấm **Duyệt — Approved**.
+6. Mở Google Sheets kiểm tra.
 
 **Nghiệm thu:**
 
 - App là một file HTML, mở trực tiếp là chạy, không thư viện ngoài.
+- Có bước chọn ý tưởng (AI đề xuất hoặc tự gõ tay) TRƯỚC khi viết đầy đủ — không viết mù rồi mới biết nội dung.
 - Hiện được: ảnh, image brief 9 mục, bài Fanpage, kịch bản TikTok 4 dòng, 5 seeding.
 - Bài Fanpage và cột hình ảnh / lời thoại sửa trực tiếp được.
 - Có cảnh báo `[cần bổ sung]`, từ cấm, cột hình ảnh trống — **chỉ cảnh báo, không chặn**.
@@ -218,3 +222,7 @@ Chia hai chặng. Làm xong bt4a mới sang bt4b — app cần webhook URL do bt
 2. Chạy lại engine, tạo ít nhất 3 bài đã duyệt.
 3. Ghi lại: chỗ nào AI làm tốt, chỗ nào bạn phải sửa tay nhiều nhất.
 4. Mang kịch bản TikTok sang Buổi 7 để dựng video.
+
+## 9. Mở rộng (không bắt buộc, không tính giờ TH4)
+
+Muốn hiểu vì sao quy tắc cứng (schema, đếm chuỗi) không bắt được mọi lỗi — ví dụ AI bịa số mà quên đánh dấu, hoặc ảnh sinh ra vẫn lọt chữ tiếng Việt sai chính tả dù prompt đã cấm — xem `prompts/judge-extension-prompt.md`: thêm một LLM thứ hai làm "Judge" chấm nội dung/ảnh trước khi tới người duyệt, tham khảo đúng tư duy LLM-as-Judge đã học ở Buổi 5. GV có thể demo trên lớp hoặc giao tự làm sau giờ.

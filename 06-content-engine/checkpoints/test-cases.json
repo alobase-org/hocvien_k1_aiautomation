@@ -1,0 +1,105 @@
+{
+  "_comment": "Bộ test case cho interactive_b6_runner.py — gọi webhook n8n THẬT, không mock. Khác kiểu buổi 5 (workflow B5 định tuyến bằng Code node tất định, so đúng/sai route 1-1): buổi 6 là pipeline SINH NỘI DUNG bằng LLM thật + ảnh thật, không tất định, nên ky_vong chỉ kiểm bất biến cấu trúc (số lượng, có/không field, brief_id echo đúng, không tự bịa chân dung ngoài input) — không so khớp chuỗi chữ.",
+  "cases": [
+    {
+      "id": "TC01",
+      "loai": "angles",
+      "mo_ta": "Brief đầy đủ Sunrise Kids (đúng NGUYEN_LIEU trong app-duyet-solution.html) — ca chuẩn",
+      "payload": {
+        "brief_id": "SUNRISE-KIDS-TUYENSINH-2026-08",
+        "brief": "Trung tâm Anh ngữ Sunrise Kids, 2 cơ sở TP.HCM (Gò Vấp, Tân Bình). Dạy tiếng Anh trẻ tiểu học 6-11 tuổi.\nKhóa \"Tiếng Anh giao tiếp nền tảng\": 3 buổi/tuần, 75 phút/buổi, 4 cấp độ. Lớp tối đa 15 bé, một giáo viên bản ngữ + một trợ giảng người Việt theo cả buổi.\nKiểm tra đầu vào miễn phí, học thử 1 buổi. Cuối mỗi tháng gửi phụ huynh báo cáo tiến độ. Nhóm Zalo riêng từng lớp.\nKHÔNG cam kết điểm số hay chứng chỉ. KHÔNG dạy luyện thi. KHÔNG nhận bé dưới 6 tuổi.\nKênh đăng: Fanpage và TikTok. Mục tiêu: phụ huynh nhắn tin hỏi và đăng ký học thử.\nTHIẾU: học phí, ưu đãi khai giảng, ngày khai giảng, số học viên đã học. Không được tự điền số.",
+        "personas": "PH1 — Mẹ bé lớp 1-2. Sốt ruột vì con học ở trường mà về nhà không nói được.\nPH2 — Phụ huynh con lớp 4-5. Sắp hết cấp một, tiếng Anh là phần con yếu nhất.\nPH3 — Phụ huynh đã thất vọng ở trung tâm khác vì lớp đông, con không tiến bộ."
+      },
+      "ky_vong": { "so_angle": 5, "min_personas_covered": 2, "brief_id_echo": "SUNRISE-KIDS-TUYENSINH-2026-08" }
+    },
+    {
+      "id": "TC02",
+      "loai": "angles",
+      "mo_ta": "Personas đầu vào CHỈ có PH1 — kiểm workflow không tự bịa PH2/PH3 không có trong input",
+      "payload": {
+        "brief_id": "SUNRISE-KIDS-1PERSONA-TEST",
+        "brief": "Trung tâm Anh ngữ Sunrise Kids, dạy tiếng Anh trẻ tiểu học 6-11 tuổi. Lớp tối đa 15 bé. KHÔNG nhận bé dưới 6 tuổi. KHÔNG cam kết điểm số.",
+        "personas": "PH1 — Mẹ bé lớp 1-2. Sốt ruột vì con học ở trường mà về nhà không nói được."
+      },
+      "ky_vong": { "so_angle": 5, "chi_duoc_persona": ["PH1"], "brief_id_echo": "SUNRISE-KIDS-1PERSONA-TEST" }
+    },
+    {
+      "id": "TC03",
+      "loai": "angles",
+      "mo_ta": "Thương hiệu KHÁC hẳn (không phải trung tâm Anh ngữ) — kiểm workflow không hardcode riêng Sunrise Kids",
+      "payload": {
+        "brief_id": "LANG-COFFEE-TEST",
+        "brief": "Quán cà phê Làng, 1 cơ sở Đà Lạt. Bán cà phê pha máy và bánh ngọt tự làm mỗi sáng. Không gian nhỏ, chỉ 20 chỗ. KHÔNG có chi nhánh khác, KHÔNG giao hàng ngoài Đà Lạt. Mục tiêu: khách địa phương ghé quán buổi sáng.",
+        "personas": "KH1 — Dân văn phòng làm việc từ xa, cần chỗ ngồi lâu yên tĩnh.\nKH2 — Khách du lịch tìm quán cà phê có góc chụp ảnh đẹp."
+      },
+      "ky_vong": { "so_angle": 5, "min_personas_covered": 1, "brief_id_echo": "LANG-COFFEE-TEST" }
+    },
+    {
+      "id": "TC04",
+      "loai": "generate",
+      "mo_ta": "Gọi /b6/generate mà THIẾU field angle — không được âm thầm tự bịa ý tưởng/source_angle_id",
+      "payload": {
+        "brief_id": "SUNRISE-KIDS-TUYENSINH-2026-08",
+        "brief": "(rút gọn, không quan trọng ở case này)",
+        "brand_voice": "(rút gọn, không quan trọng ở case này)"
+      },
+      "ky_vong": { "khong_duoc_co_source_angle_id_hop_le": true }
+    },
+    {
+      "id": "TC05",
+      "loai": "generate_full",
+      "mo_ta": "Đường đầy đủ Lớp 2→3→4 với 1 angle thật (lấy từ kết quả TC01) — TỐN PHÍ ẢNH THẬT, chỉ chạy khi bật --full",
+      "dung_angle_tu": "TC01",
+      "payload_template": {
+        "brief_id": "SUNRISE-KIDS-TUYENSINH-2026-08",
+        "brief": "(dùng lại brief của TC01)",
+        "brand_voice": "Nói chuyện như người cũng đang có con đi học. Bình tĩnh, cụ thể, không lên gân.\nCẤM: cam kết kết quả; nội dung luyện thi/chứng chỉ/điểm số; hù dọa phụ huynh; nêu tên đối thủ; số liệu không có trong brief; ảnh trẻ em thật; câu tuyệt đối; quá 2 emoji."
+      },
+      "ky_vong": {
+        "source_angle_id_khop_angle_da_chon": true,
+        "co_du_field": ["draft", "assets", "image_ok", "judge_van_phong", "judge_anh"],
+        "judge_van_phong_dung_field": ["confidence", "reason", "nghi_bia_so"],
+        "judge_anh_dung_field": ["vi_pham_chinh_sach", "reason"]
+      }
+    },
+    {
+      "id": "TC06",
+      "loai": "approve",
+      "mo_ta": "Duyệt hợp lệ, đủ người duyệt — ca chuẩn",
+      "payload": {
+        "post_id": "AUTOTEST-TC06",
+        "status": "Approved",
+        "noi_dung": "Bài test tự động — không phải nội dung thật, xoá được sau khi xem log.",
+        "nguoi_duyet": "Automated Test Runner",
+        "ghi_chu": "Sinh bởi interactive_b6_runner.py"
+      },
+      "ky_vong": { "status_echo": "Approved", "co_log_id": true }
+    },
+    {
+      "id": "TC07",
+      "loai": "approve",
+      "mo_ta": "Gửi status RÁC 'Published' (giá trị cố tình cấm) — kiểm n8n tự CLAMP về Needs Review, không bao giờ echo lại Published",
+      "payload": {
+        "post_id": "AUTOTEST-TC07",
+        "status": "Published",
+        "noi_dung": "Bài test tự động — kiểm status bị chặn.",
+        "nguoi_duyet": "Automated Test Runner",
+        "ghi_chu": "Sinh bởi interactive_b6_runner.py — cố tình gửi status cấm"
+      },
+      "ky_vong": { "status_echo": "Needs Review", "co_log_id": true }
+    },
+    {
+      "id": "TC08",
+      "loai": "approve",
+      "mo_ta": "Duyệt Needs Review kèm ghi chú — kiểm ghi_chu không bị rớt mất",
+      "payload": {
+        "post_id": "AUTOTEST-TC08",
+        "status": "Needs Review",
+        "noi_dung": "Bài test tự động — cần sửa lại đoạn mở đầu.",
+        "nguoi_duyet": "Automated Test Runner",
+        "ghi_chu": "Sinh bởi interactive_b6_runner.py — case Needs Review"
+      },
+      "ky_vong": { "status_echo": "Needs Review", "co_log_id": true }
+    }
+  ]
+}
