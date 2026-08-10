@@ -1,0 +1,33 @@
+{
+  "risks": [
+    {
+      "id_clause": "HD03",
+      "loai": "mập mờ",
+      "mo_ta": "'thanh toán trong thời hạn hợp lý' — không định nghĩa 'hợp lý'.",
+      "muc_do": "HIGH",
+      "de_xuat": "Thay bằng 'trong vòng 15 ngày kể từ ngày nhận hóa đơn'."
+    },
+    {
+      "id_clause": "HD05",
+      "loai": "thiếu cân bằng",
+      "mo_ta": "Bên B 'có thể đơn phương gia hạn' không cần đồng ý Bên A.",
+      "muc_do": "HIGH",
+      "de_xuat": "Gia hạn phải có đồng ý văn bản của cả hai bên."
+    },
+    {
+      "id_clause": "HD06",
+      "loai": "không giới hạn",
+      "mo_ta": "Bồi thường 'theo thiệt hại thực tế, không giới hạn'.",
+      "muc_do": "HIGH",
+      "de_xuat": "Thêm trần: 'tối đa không quá giá trị hợp đồng 500 triệu'."
+    },
+    {
+      "id_clause": "HD02",
+      "loai": "mập mờ",
+      "mo_ta": "'nghĩa vụ phù hợp với quy định pháp luật' — mơ hồ.",
+      "muc_do": "MED",
+      "de_xuat": "Liệt kê cụ thể nghĩa vụ."
+    }
+  ],
+  "_tom_tat": "3 HIGH + 1 MED."
+}

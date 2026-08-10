@@ -1,0 +1,22 @@
+{
+  "source_candidate_id": "CV001",
+  "criteria": [
+    {"id":"sales_experience","name":"Kinh nghiệm Sales/CS có KPI","score":16,"max_points":20,"evidence":"Sales Executive từ 01/2025 đến 06/2026","scoring_note":"Có 18 tháng kinh nghiệm."},
+    {"id":"b2b_experience","name":"Kinh nghiệm B2B","score":12,"max_points":15,"evidence":"Tìm kiếm khách hàng SME và tư vấn chủ doanh nghiệp","scoring_note":"Có 18 tháng B2B."},
+    {"id":"prospecting","name":"Tìm kiếm và tiếp cận khách hàng","score":15,"max_points":15,"evidence":"Điện thoại, email và LinkedIn","scoring_note":"Có ba kênh prospecting."},
+    {"id":"communication","name":"Tư vấn, giao tiếp và đàm phán","score":12,"max_points":15,"evidence":"Tư vấn giải pháp SaaS và đàm phán với chủ doanh nghiệp","scoring_note":"Có bằng chứng rõ."},
+    {"id":"crm_pipeline","name":"CRM và quản lý pipeline","score":10,"max_points":10,"evidence":"Quản lý pipeline trên HubSpot","scoring_note":"Có CRM."},
+    {"id":"quantified_achievement","name":"Thành tích có số liệu","score":15,"max_points":15,"evidence":"Đạt 112% KPI; 24 cuộc hẹn/tháng","scoring_note":"Có kết quả định lượng."},
+    {"id":"market_fit","name":"Hiểu SaaS/phần mềm/giáo dục/dịch vụ B2B","score":5,"max_points":5,"evidence":"Tư vấn giải pháp SaaS","scoring_note":"Phù hợp thị trường."},
+    {"id":"tools_and_cv_quality","name":"Công cụ và chất lượng CV","score":5,"max_points":5,"evidence":"Excel và Google Sheets","scoring_note":"Có ít nhất hai công cụ."}
+  ],
+  "total_score": 90,
+  "result": "STRONG_REVIEW",
+  "human_review_required": true,
+  "scoring_summary": "Ưu tiên HR đọc hồ sơ và bằng chứng; workflow không tự mời phỏng vấn.",
+  "interview_questions": [
+    "Bạn có thể mô tả quy trình tìm kiếm và chuyển đổi khách hàng SME từ LinkedIn thành cuộc hẹn?",
+    "Kết quả 112% KPI được tính trên chỉ tiêu nào và vai trò trực tiếp của bạn trong kết quả đó là gì?",
+    "Bạn đã sử dụng HubSpot để quản lý các giai đoạn pipeline và hoạt động follow-up như thế nào?"
+  ]
+}

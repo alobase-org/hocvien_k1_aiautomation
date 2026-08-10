@@ -1,0 +1,44 @@
+{
+  "brief_id": "SUNRISE-KIDS-2026-08",
+  "source_angle_id": "A-03",
+  "chan_dung": "PH2",
+  "fanpage": {
+    "noi_dung": "Chị kể là cho con học tiếng Anh gần một năm, hỏi con học tới đâu rồi thì con bảo \"cũng bình thường\".\n\nChị không biết tiếng Anh nên cũng không kiểm tra được. Đóng tiền đều, mà trong lòng không chắc.\n\nBên mình xử lý chuyện này bằng một bản báo cáo gửi ba mẹ mỗi tháng. Không phải bảng điểm. Là ghi lại: tháng này bé nói được những gì, chỗ nào còn vướng, ở nhà nên luyện thêm phần nào.\n\nTrợ giảng người Việt theo lớp cả buổi nên nắm được từng bé. Lớp tối đa 15 bé, không phải kiểu ba mươi mấy em một cô.\n\nBa mẹ không cần biết tiếng Anh vẫn theo được con.\n\nKhai giảng khóa mới: [cần bổ sung]\nHọc phí: [cần bổ sung]\n\nAnh chị muốn xem thử một bản báo cáo mẫu thì nhắn tin cho page, bên mình gửi qua.",
+    "so_tu": 152,
+    "hook": "Chị kể là cho con học tiếng Anh gần một năm, hỏi con học tới đâu rồi thì con bảo \"cũng bình thường\".",
+    "cta": "Anh chị muốn xem thử một bản báo cáo mẫu thì nhắn tin cho page, bên mình gửi qua."
+  },
+  "tiktok": {
+    "tong_thoi_luong_giay": 42,
+    "khoi": [
+      {
+        "ten_khoi": "HOOK",
+        "thoi_gian": "0-3s",
+        "hinh_anh": "Chữ trắng trên nền tối: \"Con học tiếng Anh 1 năm rồi\". Cắt nhanh sang cận mặt phụ huynh đang suy nghĩ, quay từ phía sau vai.",
+        "loi_thoai": "Ba mẹ có bao giờ hỏi con học tới đâu rồi, con trả lời \"cũng bình thường\" chưa?"
+      },
+      {
+        "ten_khoi": "PROBLEM",
+        "thoi_gian": "3-10s",
+        "hinh_anh": "Cận tay phụ huynh cầm điện thoại lướt nhóm Zalo lớp, ngón tay dừng lại rồi thả xuống bàn.",
+        "loi_thoai": "Mình không biết tiếng Anh nên cũng không kiểm tra được. Đóng tiền đều mà trong lòng không chắc."
+      },
+      {
+        "ten_khoi": "SOLUTION",
+        "thoi_gian": "10-35s",
+        "hinh_anh": "Cận bản báo cáo giấy trên bàn gỗ, tay lật từng trang, dừng ở phần ghi chú viết tay. Cắt sang toàn cảnh lớp học quay từ sau lưng các bé, thấy trợ giảng đang cúi xuống bàn một bé.",
+        "loi_thoai": "Nên mỗi tháng bên mình gửi ba mẹ một bản báo cáo. Không phải bảng điểm, mà là tháng này bé nói được gì, còn vướng chỗ nào. Lớp mười lăm bé, có trợ giảng người Việt theo cả buổi nên nhớ được từng bé một."
+      },
+      {
+        "ten_khoi": "CTA",
+        "thoi_gian": "35-42s",
+        "hinh_anh": "Chữ đen trên nền trắng: \"Xem thử báo cáo mẫu\". Góc dưới hiện tên trung tâm cỡ nhỏ.",
+        "loi_thoai": "Ba mẹ muốn xem thử một bản báo cáo thì nhắn cho bên mình nha."
+      }
+    ]
+  },
+  "thieu_thong_tin": [
+    "Ngày khai giảng khóa mới",
+    "Học phí"
+  ]
+}

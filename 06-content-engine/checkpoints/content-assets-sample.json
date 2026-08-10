@@ -1,0 +1,50 @@
+{
+  "brief_id": "SUNRISE-KIDS-2026-08",
+  "source_angle_id": "A-03",
+  "seeding": [
+    {
+      "seed_id": "SEED-01",
+      "noi_dung": "Cho hỏi báo cáo này gửi qua Zalo hay bản giấy vậy ạ?",
+      "vai_tro": "ASK"
+    },
+    {
+      "seed_id": "SEED-02",
+      "noi_dung": "Nhà mình cũng đang vướng đúng chỗ này. Con học mà mình không biết con tới đâu.",
+      "vai_tro": "RELATE"
+    },
+    {
+      "seed_id": "SEED-03",
+      "noi_dung": "Lớp 15 bé thì trợ giảng theo được thật. Trước con mình học lớp hơn 30, cô không nhớ nổi tên con.",
+      "vai_tro": "EXPERIENCE"
+    },
+    {
+      "seed_id": "SEED-04",
+      "noi_dung": "Bé lớp 4 bắt đầu giờ còn kịp không ạ?",
+      "vai_tro": "CONDITION"
+    },
+    {
+      "seed_id": "SEED-05",
+      "noi_dung": "Có được xem thử một bản báo cáo trước khi đăng ký không ạ?",
+      "vai_tro": "CTA_NUDGE"
+    }
+  ],
+  "image_brief": {
+    "muc_tieu": "Làm phụ huynh dừng lướt và hiểu ngay bài này nói về việc theo dõi tiến độ của con",
+    "thong_diep_chinh": "Mỗi tháng, ba mẹ biết con đang ở đâu",
+    "doi_tuong": "Phụ huynh 30-45 tuổi, con học lớp 4-5",
+    "kenh": "Fanpage Facebook",
+    "ty_le": "4:5",
+    "phong_cach": "Ấm, sáng, chất liệu giấy và gỗ. Ánh sáng tự nhiên buổi sáng. Không dùng tông công nghệ xanh dương lạnh",
+    "bo_cuc": "Cận cảnh một bản báo cáo giấy đặt trên bàn gỗ sáng, bàn tay người lớn đang lật trang. Chụp từ trên xuống, chừa khoảng trống góc trên để chèn chữ",
+    "chu_tren_anh": "Mỗi tháng, ba mẹ biết con đang ở đâu",
+    "khong_duoc_xuat_hien": [
+      "Mặt trẻ em",
+      "Bảng điểm hoặc điểm số",
+      "Logo của trung tâm khác",
+      "Chữ tiếng Anh",
+      "Ảnh stock kiểu phương Tây"
+    ]
+  },
+  "image_prompt": "Top-down close-up of a printed student progress report on a light wooden desk, an adult hand turning a page, handwritten notes visible in the margin. Warm natural morning light, soft shadows, shallow depth of field, paper and wood textures, calm and trustworthy mood. Vertical 4:5 aspect ratio. Leave clear empty space in the upper area for text to be added later. No human faces, no children, no text or lettering of any kind, no score sheets or grade tables, no logos, no western stock-photo styling.",
+  "review_note": "Soi hai chỗ trước khi duyệt: bài còn hai chỗ [cần bổ sung] là học phí và ngày khai giảng, cần điền trước khi đăng; và ảnh phải không có mặt trẻ em nào."
+}

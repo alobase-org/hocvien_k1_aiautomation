@@ -1,0 +1,60 @@
+{
+  "metadata": {
+    "ben_a": "Công ty TNHH Dịch vụ Công nghệ ALPHA",
+    "ben_b": "Công ty Cổ phần Thương mại BETA",
+    "ngay_ky": "15/07/2026",
+    "gia_tri": "500.000.000 VNĐ",
+    "loai_hop_dong": "Cung cấp dịch vụ",
+    "thoi_han": "01/08/2026 – 31/07/2027"
+  },
+  "clauses": [
+    {
+      "id": "HD01",
+      "tieu_de": "ĐIỀU 1: ĐỐI TƯỢNG VÀ PHẠM VI DỊCH VỤ",
+      "noi_dung": "Cung cấp dịch vụ vận hành hệ thống quản lý đơn hàng 12 tháng.",
+      "vi_tri": "đoạn 1"
+    },
+    {
+      "id": "HD02",
+      "tieu_de": "ĐIỀU 2: QUYỀN VÀ NGHĨA VỤ CỦA CÁC BÊN",
+      "noi_dung": "Bên A cung cấp dịch vụ đúng tiến độ, Bên B thanh toán đầy đủ.",
+      "vi_tri": "đoạn 2"
+    },
+    {
+      "id": "HD03",
+      "tieu_de": "ĐIỀU 3: GIÁ TRỊ HỢP ĐỒNG VÀ PHƯƠNG THỨC THANH TOÁN",
+      "noi_dung": "500 triệu, thanh toán trong 'thời hạn hợp lý', chia 2 đợt.",
+      "vi_tri": "đoạn 3"
+    },
+    {
+      "id": "HD04",
+      "tieu_de": "ĐIỀU 4: THỜI HẠN THỰC HIỆN VÀ TIẾN ĐỘ",
+      "noi_dung": "Hiệu lực 01/08/2026 – 31/07/2027.",
+      "vi_tri": "đoạn 4"
+    },
+    {
+      "id": "HD05",
+      "tieu_de": "ĐIỀU 5: GIA HẠN HỢP ĐỒNG",
+      "noi_dung": "Bên B có thể đơn phương gia hạn 6 tháng.",
+      "vi_tri": "đoạn 5"
+    },
+    {
+      "id": "HD06",
+      "tieu_de": "ĐIỀU 6: TRÁCH NHIỆM BỒI THƯỜNG THIỆT HẠI",
+      "noi_dung": "Bồi thường theo thiệt hại thực tế, không giới hạn.",
+      "vi_tri": "đoạn 6"
+    },
+    {
+      "id": "HD07",
+      "tieu_de": "ĐIỀU 7: BẢO MẬT THÔNG TIN",
+      "noi_dung": "Bảo mật 3 năm, phạt 50 triệu nếu vi phạm.",
+      "vi_tri": "đoạn 7"
+    },
+    {
+      "id": "HD08",
+      "tieu_de": "ĐIỀU 8: GIẢI QUYẾT TRANH CHẤP VÀ PHÁP LUẬT ÁP DỤNG",
+      "noi_dung": "Thương lượng → Tòa án Q.1. Luật VN.",
+      "vi_tri": "đoạn 8"
+    }
+  ]
+}
