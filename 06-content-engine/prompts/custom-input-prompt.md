@@ -30,8 +30,12 @@ INPUT:
 
 CHỈ DẪN:
 1. Đọc workflow hiện tại từ n8n trước khi sửa. Không tạo bản trùng lặp.
-2. Chỉ thay phần nguyên liệu trong hằng số NGUYEN_LIEU của app và các biến đầu vào của lớp 1.
-   GIỮ NGUYÊN cấu trúc bốn lớp và ba schema.
+2. Chỉ thay nội dung 3 file `templates/product-brief-*.md`, `chan-dung-*.md`, `brand-voice.md` của tôi
+   và các biến đầu vào của lớp 1. App đọc trực tiếp 3 file này lúc chạy (`fetch` trong
+   app-duyet-solution.html, hàm `layNguyenLieu()`) — không có hằng số nào phải sửa trong app, không có
+   script nào phải chạy lại, chỉ cần load lại trang. GIỮ NGUYÊN cấu trúc bốn lớp và ba schema.
+   Lưu ý: vì app dùng `fetch()` đọc file cục bộ, phải mở qua local server
+   (`python -m http.server 8000` trong thư mục `06-content-engine`), không mở bằng double-click file.
 3. Trong app, sửa tiêu đề trang và các câu gợi ý cho hợp sản phẩm mới.
 4. Giữ nguyên luật: không bịa số liệu, thiếu thì ghi [cần bổ sung], không cam kết kết quả,
    không nêu tên đối thủ.
