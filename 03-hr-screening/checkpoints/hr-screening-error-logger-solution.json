@@ -1,0 +1,185 @@
+﻿{
+    "name":  "B3 K1 - HR Screening - ERROR LOGGER",
+    "nodes":  [
+                  {
+                      "parameters":  {
+
+                                     },
+                      "id":  "error-trigger",
+                      "name":  "Automatic Workflow Error",
+                      "type":  "n8n-nodes-base.errorTrigger",
+                      "typeVersion":  1,
+                      "position":  [
+                                       -280,
+                                       0
+                                   ]
+                  },
+                  {
+                      "parameters":  {
+                                         "mode":  "manual",
+                                         "assignments":  {
+                                                             "assignments":  [
+                                                                                 {
+                                                                                     "id":  "err-1",
+                                                                                     "name":  "run_id",
+                                                                                     "type":  "string",
+                                                                                     "value":  "={{ $json.execution?.id || \u0027\u0027 }}"
+                                                                                 },
+                                                                                 {
+                                                                                     "id":  "err-2",
+                                                                                     "name":  "candidate_id",
+                                                                                     "type":  "string",
+                                                                                     "value":  ""
+                                                                                 },
+                                                                                 {
+                                                                                     "id":  "err-3",
+                                                                                     "name":  "step",
+                                                                                     "type":  "string",
+                                                                                     "value":  "WORKFLOW_ERROR"
+                                                                                 },
+                                                                                 {
+                                                                                     "id":  "err-4",
+                                                                                     "name":  "status",
+                                                                                     "type":  "string",
+                                                                                     "value":  "ERROR"
+                                                                                 },
+                                                                                 {
+                                                                                     "id":  "err-5",
+                                                                                     "name":  "input_ref",
+                                                                                     "type":  "string",
+                                                                                     "value":  "={{ $json.workflow?.name || \u0027\u0027 }}"
+                                                                                 },
+                                                                                 {
+                                                                                     "id":  "err-6",
+                                                                                     "name":  "output_ref",
+                                                                                     "type":  "string",
+                                                                                     "value":  "={{ $json.execution?.lastNodeExecuted || \u0027\u0027 }}"
+                                                                                 },
+                                                                                 {
+                                                                                     "id":  "err-7",
+                                                                                     "name":  "schema_validation",
+                                                                                     "type":  "string",
+                                                                                     "value":  "NOT_RUN"
+                                                                                 },
+                                                                                 {
+                                                                                     "id":  "err-8",
+                                                                                     "name":  "error_code",
+                                                                                     "type":  "string",
+                                                                                     "value":  "={{ $json.execution?.error?.name || \u0027EXECUTION_ERROR\u0027 }}"
+                                                                                 },
+                                                                                 {
+                                                                                     "id":  "err-9",
+                                                                                     "name":  "error_message",
+                                                                                     "type":  "string",
+                                                                                     "value":  "={{ $json.execution?.error?.message || \u0027Execution error without message\u0027 }}"
+                                                                                 },
+                                                                                 {
+                                                                                     "id":  "err-10",
+                                                                                     "name":  "processed_at",
+                                                                                     "type":  "string",
+                                                                                     "value":  "={{ $now }}"
+                                                                                 }
+                                                                             ]
+                                                         },
+                                         "includeOtherFields":  false,
+                                         "options":  {
+
+                                                     }
+                                     },
+                      "id":  "error-log-set",
+                      "name":  "Normalize Error Run Log",
+                      "type":  "n8n-nodes-base.set",
+                      "typeVersion":  3.4,
+                      "position":  [
+                                       0,
+                                       0
+                                   ]
+                  },
+                  {
+                      "parameters":  {
+                                         "operation":  "append",
+                                         "documentId":  {
+                                                            "__rl":  true,
+                                                            "mode":  "id",
+                                                            "value":  "REPLACE_WITH_SPREADSHEET_ID"
+                                                        },
+                                         "sheetName":  {
+                                                           "__rl":  true,
+                                                           "mode":  "name",
+                                                           "value":  "Run Log"
+                                                       },
+                                         "columns":  {
+                                                         "mappingMode":  "autoMapInputData",
+                                                         "value":  {
+
+                                                                   },
+                                                         "schema":  [
+
+                                                                    ]
+                                                     },
+                                         "options":  {
+                                                         "cellFormat":  "RAW"
+                                                     }
+                                     },
+                      "id":  "error-log-sheet",
+                      "name":  "Append Error Run Log",
+                      "type":  "n8n-nodes-base.googleSheets",
+                      "typeVersion":  4.7,
+                      "position":  [
+                                       280,
+                                       0
+                                   ],
+                      "credentials":  {
+                                          "googleSheetsOAuth2Api":  {
+                                                                        "id":  "SELECT_GOOGLE_SHEETS_CREDENTIAL",
+                                                                        "name":  "Google Sheets account"
+                                                                    }
+                                      }
+                  },
+                  {
+                      "parameters":  {
+                                         "content":  "## Technical error log\\nError Trigger runs only for automatic executions, not manual Execute Workflow runs. Never log raw CV content or secrets.",
+                                         "height":  220,
+                                         "width":  520,
+                                         "color":  5
+                                     },
+                      "id":  "error-note",
+                      "name":  "Error Workflow Note",
+                      "type":  "n8n-nodes-base.stickyNote",
+                      "typeVersion":  1,
+                      "position":  [
+                                       -300,
+                                       -300
+                                   ]
+                  }
+              ],
+    "connections":  {
+                        "Automatic Workflow Error":  {
+                                                         "main":  [
+                                                                      [
+                                                                          {
+                                                                              "node":  "Normalize Error Run Log",
+                                                                              "type":  "main",
+                                                                              "index":  0
+                                                                          }
+                                                                      ]
+                                                                  ]
+                                                     },
+                        "Normalize Error Run Log":  {
+                                                        "main":  [
+                                                                     [
+                                                                         {
+                                                                             "node":  "Append Error Run Log",
+                                                                             "type":  "main",
+                                                                             "index":  0
+                                                                         }
+                                                                     ]
+                                                                 ]
+                                                    }
+                    },
+    "settings":  {
+                     "executionOrder":  "v1",
+                     "timezone":  "Asia/Ho_Chi_Minh",
+                     "saveManualExecutions":  true
+                 }
+}

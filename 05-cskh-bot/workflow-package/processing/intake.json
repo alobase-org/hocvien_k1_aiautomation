@@ -1,0 +1,26 @@
+{
+  "intake_id": "CSKH-RETAIL-05",
+  "use_case_name": "Tự động hóa CSKH Bán Lẻ với Semantic Search, FAQ Cache Fast Path & LLM-as-Judge",
+  "department": "Chăm sóc khách hàng & Vận hành Bán lẻ",
+  "constraint": "Bảo vệ thông tin cá nhân khách hàng (PII), không tự động hoàn tiền/xử lý khiếu nại (bắt buộc HITL ticket), chống Prompt Injection.",
+  "context": "Đội CSKH nhận 50-100 câu hỏi/tuần qua Chatbot/Landing Page. Quá tải câu hỏi lặp lặp về giao nhận, đổi trả, bảo hành, phí ship. Rủi ro bot hallucinate ưu đãi hoặc tự chấp nhận hoàn tiền.",
+  "objectives": [
+    "Giảm 70% thời gian phản hồi câu hỏi lặp lại bằng FAQ Cache exact/semantic match.",
+    "Giảm 0% rủi ro trả lời sai chính sách bằng Grounded LLM Fallback (bám sát faq-cskh.md và chinh-sach-ho-tro.md).",
+    "Kiểm soát rủi ro an toàn 100%: 2-stage verification với Prompt Injection Guardrail và Scope Router.",
+    "Tách biệt trách nhiệm: LLM-as-Judge chấm confidence independent, tự động đẩy Ticket sang nhân sự CSKH khi confidence < 0.7 hoặc intent nhạy cảm (khiếu nại/hoàn tiền)."
+  ],
+  "inputs": [
+    "templates/faq-cskh.md (15 FAQ chuẩn)",
+    "templates/chinh-sach-ho-tro.md (Chính sách bán lẻ)",
+    "checkpoints/test-cases.json (5 Test cases)"
+  ],
+  "tools": [
+    "n8n (Workflow Automation Webhook & Router)",
+    "Vector Store / Embedding API (Cosine Similarity)",
+    "LLM Answer (Google AI Studio / OpenAI)",
+    "LLM-as-Judge (LLM thứ 2 độc lập)",
+    "Google Sheets / Ticket Log (HITL)",
+    "Vibe Coding Landing Page (Chatbot UI Widget)"
+  ]
+}
