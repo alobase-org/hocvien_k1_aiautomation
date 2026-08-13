@@ -1,0 +1,50 @@
+{
+  "_comment": "Test case cho đường B6_APPROVED của B7 (bt1/bt2-prompt.md khi SOURCE_MODE=B6_APPROVED). Không gọi webhook — đây là kiểm cấu trúc/nghiệp vụ bằng cách dry-run phép biến đổi content-draft.json (B6) -> video-script.json (B7) đúng theo chữ trong prompt hiện tại, rồi so với schemas/video-script.schema.json + bất biến nghiệp vụ. Payload TC-B6-01 lấy nguyên văn từ run-output/content-draft.json thật (không bịa).",
+  "cases": [
+    {
+      "id": "TC-B6-01",
+      "mo_ta": "Draft B6 thật (SUNRISE-KIDS) — kiểm việc tách 4 khối thành 6-9 scene và giữ traceability",
+      "payload_source": "giao_trinh/giang-day/05-thuc-hanh/06-content-engine/run-output/content-draft.json",
+      "block_widths_seconds": {"HOOK": 3, "PROBLEM": 7, "SOLUTION": 25, "CTA": 10},
+      "block_sentence_count": {"HOOK": 1, "PROBLEM": 2, "SOLUTION": 2, "CTA": 1},
+      "ky_vong": {
+        "video_script_schema_pass": true,
+        "brief_id_khop_content_draft": "SUNRISE-KIDS-TUYENSINH-2026-08",
+        "source_angle_id_khop_content_draft": "A-01",
+        "tong_scene_duration_seconds_bang_tong_thoi_luong_giay": 45,
+        "moi_scene_duration_trong_khoang": [3, 10],
+        "SOLUTION_can_toi_thieu_may_scene": 3,
+        "khong_duoc_bia_loi_thoai_moi_ngoai_content_draft": true,
+        "ghi_chu": "SOLUTION rộng 25s nhưng chỉ có 2 câu loi_thoai, trong khi cần tối thiểu 3 scene (vì mỗi scene tối đa 10s theo schema video-script). Không thể có đủ 3 câu thoại gốc cho 3 scene mà không bịa thêm — đây là điểm prompt hiện tại KHÔNG có hướng dẫn xử lý."
+      }
+    },
+    {
+      "id": "TC-B6-02",
+      "mo_ta": "Biến thể ép buộc — một khối chỉ có 1 câu thoại nhưng bề rộng thời gian buộc phải tách ≥2 scene (khối HOOK giả định kéo dài 12s thay vì 3s)",
+      "payload_synthetic": {"ten_khoi": "HOOK", "thoi_gian": "0-12s", "hinh_anh": "...", "loi_thoai": "Một câu duy nhất, không thể chia đôi mà vẫn có nghĩa."},
+      "ky_vong": {
+        "can_toi_thieu_scene": 2,
+        "so_cau_thoai_co_san": 1,
+        "van_de": "Không đủ câu gốc để chia — buộc chọn 1 trong 2: (a) bịa thêm lời thoại chưa qua duyệt B6, hoặc (b) để một scene dialogue rỗng (visual-only/b-roll). Prompt hiện tại không nói chọn cái nào."
+      }
+    },
+    {
+      "id": "TC-B6-03",
+      "mo_ta": "Kiểm nguồn dữ liệu cho các field video-script không có trong content-draft.json",
+      "cac_field_khong_co_nguon": ["title", "project_id", "aspect_ratio (suy luận được nhưng không ghi rõ)", "target_audience (chan_dung chỉ là mã PH1, không phải mô tả)", "brand_style (không có trong content-draft.json, nằm ở brand-voice.md của B6)", "forbidden_elements (rải rác trong từng hinh_anh, không có danh sách gộp)"],
+      "ky_vong": {
+        "target_audience_can_mo_ta_that": "vd 'Mẹ của bé mới vào tiểu học, lo con học tiếng Anh ở trường mà về nhà không nói được' — chỉ suy ra được nếu có chan-dung-khach-hang.md của B6, nhưng INPUT list của bt2-prompt.md (B7, B6_APPROVED) không liệt kê file này.",
+        "brand_style_can_nguon_that": "brand-voice.md của B6 — cũng không có trong INPUT list của B7."
+      }
+    },
+    {
+      "id": "TC-B6-04",
+      "mo_ta": "Kiểm câu điều kiện status trong bt2-prompt.md (B7) có khớp schema B6 không",
+      "cau_dang_kiem": "Nếu có status mà khác Approved, dừng và báo.",
+      "ky_vong": {
+        "content_draft_schema_co_field_status": false,
+        "ket_luan": "content-draft.schema.json (B6) không có field status ở bất kỳ đâu — trạng thái Approved chỉ tồn tại ở Google Sheets Content_Queue, một tầng sau file JSON này (do n8n TH4a/app TH4b của B6 tạo ra, không nằm trong content-draft.json). Câu điều kiện trong B7 không bao giờ có dữ liệu để kích hoạt — không sai kỹ thuật (vì có chữ 'nếu có') nhưng không hướng dẫn học viên cách thật sự XÁC NHẬN đã qua cổng Approved của B6 trước khi dùng content-draft.json ở B7."
+      }
+    }
+  ]
+}

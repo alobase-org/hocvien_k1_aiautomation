@@ -1,0 +1,57 @@
+{
+  "project_id": "SUNRISE-KIDS-TUYENSINH-2026-08",
+  "source_mode": "B6_APPROVED",
+  "brief_id": "SUNRISE-KIDS-TUYENSINH-2026-08",
+  "source_angle_id": "A-01",
+  "title": "Con học tiếng Anh nhiều năm vẫn không dám mở miệng",
+  "platform": "TIKTOK",
+  "aspect_ratio": "9:16",
+  "total_duration_seconds": 45,
+  "target_audience": "PH1 — Mẹ của bé mới vào tiểu học, sốt ruột vì con học tiếng Anh ở trường mà về nhà không nói được câu nào, sợ chọn nhầm chỗ khiến con chán học.",
+  "brand_style": "Bình tĩnh, cụ thể, không cam kết kết quả, không hù dọa phụ huynh — giọng người cũng đang có con đi học, không phải giọng quảng cáo.",
+  "forbidden_elements": ["quay mặt trẻ em thật", "logo đối thủ", "cam kết tiến bộ cụ thể", "số liệu ngoài content-draft.json"],
+  "scenes": [
+    {
+      "scene_id": "SC-01",
+      "source_block": "HOOK",
+      "duration_seconds": 3,
+      "visual": "Cận cảnh bàn tay bé lật cuốn tập tiếng Anh, chữ 'Sunrise Kids' hiện trên nền trắng phía sau, không quay mặt bé",
+      "dialogue": "Con học tiếng Anh mấy năm rồi mà gặp người nước ngoài vẫn im re?"
+    },
+    {
+      "scene_id": "SC-02",
+      "source_block": "PROBLEM",
+      "duration_seconds": 7,
+      "visual": "Chữ chạy trên nền trắng liệt kê từng nỗi lo của phụ huynh, không quay mặt bé",
+      "dialogue": "Không phải con dở đâu. Chỉ là cả buổi học con toàn ngồi nghe, ít khi được nói."
+    },
+    {
+      "scene_id": "SC-03",
+      "source_block": "SOLUTION",
+      "duration_seconds": 9,
+      "visual": "Toàn cảnh lớp học quay từ phía sau lưng các bé, trợ giảng đứng cạnh chỉ tay vào một bé đang nói, không lộ mặt trẻ em",
+      "dialogue": "Ở Sunrise Kids, mỗi buổi bảy mươi lăm phút, con được gọi lên nói ít nhất ba lượt."
+    },
+    {
+      "scene_id": "SC-04",
+      "source_block": "SOLUTION",
+      "duration_seconds": 8,
+      "visual": "Cận cảnh trợ giảng theo sát một bé, tay chỉ vào sách, không lộ mặt trẻ em",
+      "dialogue": "Lớp mười lăm bé, một trợ giảng theo sát cả buổi."
+    },
+    {
+      "scene_id": "SC-05",
+      "source_block": "SOLUTION",
+      "duration_seconds": 8,
+      "visual": "Toàn cảnh rộng cả lớp học đang hoạt động, ánh sáng ấm, không lộ mặt trẻ em — b-roll không lời, nối tiếp ý của hai scene trước",
+      "dialogue": ""
+    },
+    {
+      "scene_id": "SC-06",
+      "source_block": "CTA",
+      "duration_seconds": 10,
+      "visual": "Chữ 'Nhắn tin đặt lịch học thử' hiện trên nền trắng, logo Sunrise Kids ở góc dưới",
+      "dialogue": "Nhắn tin cho page để đặt lịch học thử cho con nhé."
+    }
+  ]
+}

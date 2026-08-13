@@ -24,26 +24,23 @@ class N8nAPIClient:
         self._cookie = None
 
     def login(self):
-        passwords_to_try = [self.password, "Password123!", "local-demo-password"]
-        for pwd in passwords_to_try:
-            payload = json.dumps({"emailOrLdapLoginId": self.email, "password": pwd}).encode()
-            req = urllib.request.Request(
-                f"{self.base_url}/rest/login",
-                data=payload,
-                headers={"Content-Type": "application/json"},
-                method="POST"
-            )
-            try:
-                with urllib.request.urlopen(req, timeout=10) as resp:
-                    raw_cookie = resp.headers.get("Set-Cookie", "")
-                    if raw_cookie:
-                        self._cookie = raw_cookie.split(";")[0].strip()
-                    print("  ✓ Đăng nhập n8n REST API thành công.")
-                    return True
-            except Exception:
-                continue
-        print(f"  ⚠️ Login lỗi: Không thể đăng nhập với email {self.email}")
-        return False
+        payload = json.dumps({"emailOrLdapLoginId": self.email, "password": self.password}).encode()
+        req = urllib.request.Request(
+            f"{self.base_url}/rest/login",
+            data=payload,
+            headers={"Content-Type": "application/json"},
+            method="POST"
+        )
+        try:
+            with urllib.request.urlopen(req, timeout=10) as resp:
+                raw_cookie = resp.headers.get("Set-Cookie", "")
+                if raw_cookie:
+                    self._cookie = raw_cookie.split(";")[0].strip()
+                print("  ✓ Đăng nhập n8n REST API thành công.")
+                return True
+        except Exception as exc:
+            print(f"  ⚠️ Login lỗi: {exc}")
+            return False
 
     def _headers(self):
         headers = {"Content-Type": "application/json", "Accept": "application/json"}
@@ -79,20 +76,6 @@ class N8nAPIClient:
             print("  ✓ Workflow đã active.")
         except Exception as exc:
             print(f"  ℹ️ Activate notice: {exc}")
-
-    def delete_workflow(self, workflow_id):
-        try:
-            try:
-                self.request("POST", f"/rest/workflows/{workflow_id}/deactivate")
-            except Exception:
-                pass
-            try:
-                self.request("POST", f"/rest/workflows/{workflow_id}/archive")
-            except Exception:
-                pass
-            return self.request("DELETE", f"/rest/workflows/{workflow_id}")
-        except Exception as exc:
-            print(f"  ⚠️ Delete workflow notice: {exc}")
 
     def post_webhook(self, path, payload):
         req = urllib.request.Request(

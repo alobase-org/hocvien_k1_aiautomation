@@ -25,14 +25,27 @@ CHỈ DẪN:
    - schemas/video-plan.schema.json
 4. Mọi object nghiệp vụ dùng additionalProperties=false. Dùng required/type/enum/pattern phù hợp.
 5. video-script phải cho phép source_mode B6_APPROVED hoặc MANUAL; trường brief_id và
-   source_angle_id được null khi MANUAL; scenes có minItems=6, maxItems=9.
+   source_angle_id được null khi MANUAL, nhưng khi source_mode=B6_APPROVED thì hai trường này
+   BẮT BUỘC là chuỗi hợp lệ, không được null (dùng if/then trong schema: nếu source_mode là
+   B6_APPROVED thì brief_id/source_angle_id phải khớp type string — đây là ràng buộc truy vết được
+   bằng cấu trúc, không phải tiêu chí nghệ thuật, nên được phép khóa cứng); scenes có minItems=6,
+   maxItems=9.
 6. Mỗi scene có scene_id dạng SC-01, source_block, duration_seconds, visual và dialogue.
 7. storyboard giữ project_id; mỗi frame có frame_id, scene_id, image_prompt, negative_prompt,
-   status DRAFT/NEEDS_REVIEW/APPROVED, image_asset_ref có thể null.
+   status DRAFT/NEEDS_REVIEW/APPROVED, image_asset_ref có thể null. Ngoài style_bible, storyboard
+   còn có **voice_bible**: 1 mô tả giọng DUY NHẤT cho cả video (giới tính, chất giọng, tốc độ,
+   phong cách) — dùng lặp lại y nguyên ở audio.voice_profile của MỌI clip, không đổi theo scene.
 8. video-plan có một execution_mode SEQUENTIAL; mỗi clip có clip_id, scene_id, frame_id,
-   image_asset_ref, duration, visual motion, audio, video_prompt, status và video_asset_ref.
-   Audio bắt buộc có dialogue, language, voice_profile, delivery, ambient, sound_effects,
-   music và negative_audio.
+   image_asset_ref, duration_seconds, visual motion, audio, video_prompt, **negative_prompt**,
+   status và video_asset_ref.
+   Audio bắt buộc có dialogue, language, voice_profile (phải khớp voice_bible), delivery, ambient,
+   sound_effects, music và negative_audio.
+   negative_prompt của clip khác negative_prompt của frame ảnh — tối thiểu phải liệt kê được:
+   visible speaker/narrator/person, human face, hands entering frame, on-screen text/caption
+   (chặn công cụ sinh video tự vẽ thêm người đọc thoại vào khung hình khi prompt có mô tả lời thoại).
+   duration_seconds không nên để dải tự do 3-10 nếu công cụ sinh video thật của lớp chỉ nhận vài
+   giá trị cố định (kiểm tài liệu công cụ trước khi chốt schema) — nếu cần ép tròn, làm việc đó
+   TRƯỚC khi viết video_prompt/dialogue ở TH2, không phải sau, để khỏi lệch số giây trong prompt.
 9. Status clip hợp lệ: BLOCKED, READY_TO_GENERATE, GENERATING, SUCCESS, ERROR, NEEDS_REVIEW,
    APPROVED. Chỉ frame APPROVED mới làm clip READY_TO_GENERATE.
 10. Sinh ba sample JSON có cùng project_id, đủ 6 scene và các reference khớp.

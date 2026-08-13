@@ -13,7 +13,7 @@ Tự động khởi chạy n8n, import workflow solution vào n8n local qua Note
 |---|---|
 | `test/05_cskh_bot_lab_demo.ipynb` | Notebook demo tự động import workflow và gửi test case |
 | `checkpoints/n8n-cskh-bot-solution.json` | Workflow solution để auto-import vào n8n |
-| `templates/faq-cskh.md` | 15 FAQ bán lẻ dạng Markdown, có `id`, `nhom`, `cau_hoi`, `cau_tra_loi`, `nguon` |
+| `templates/faq-khoa-hoc.json` | 15 FAQ bán lẻ, có `id`, `nhom`, `cau_hoi`, `cau_tra_loi`, `nguon` |
 | Embedding credential | Google AI Studio/OpenAI credential từ B2 |
 | Prompt hỗ trợ | [`prompts/bt1-prompt.md`](./prompts/bt1-prompt.md) |
 
@@ -23,7 +23,7 @@ Tự động khởi chạy n8n, import workflow solution vào n8n local qua Note
 2. Chạy **Step 0** để tự động khởi chạy n8n và import `checkpoints/n8n-cskh-bot-solution.json`.
 3. Mở `http://localhost:5678`, kiểm tra workflow **B5 K1 - Retail CSKH Bot (Guard + Cache + Landing Chatbot)** đã có sẵn.
 4. Chạy **Step 1** trong notebook để inspect các node workflow từ n8n API.
-5. Load `templates/faq-cskh.md` vào n8n hoặc notebook.
+5. Load `templates/faq-khoa-hoc.json` vào n8n hoặc notebook.
 6. Dùng HTTP Request Node gọi Embedding API cho từng FAQ.
 7. Text đưa vào embedding nên ghép `cau_hoi + " " + cau_tra_loi`.
 8. Dùng Code Node gom kết quả thành `vector-store.json`.
