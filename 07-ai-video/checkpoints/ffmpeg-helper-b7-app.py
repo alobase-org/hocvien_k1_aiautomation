@@ -99,6 +99,20 @@ async def concat(
             capture_output=True, text=True, timeout=300,
         )
         if ffmpeg.returncode != 0 or not os.path.exists(output_path):
+            # "-c copy" đòi các clip khớp y hệt tham số codec để nối trực tiếp — các clip Veo
+            # sinh độc lập (mỗi lần gọi /b7/generate-clip riêng) hay lệch nhẹ keyframe/timestamp
+            # nên hay vỡ ở đây dù từng clip lẻ chạy tốt. Fallback: re-encode để nối được, chấp
+            # nhận chậm hơn và giảm chất lượng nhẹ thay vì fail cứng.
+            ffmpeg = subprocess.run(
+                [
+                    "ffmpeg", "-y", "-f", "concat", "-safe", "0",
+                    "-i", list_path,
+                    "-c:v", "libx264", "-c:a", "aac",
+                    output_path,
+                ],
+                capture_output=True, text=True, timeout=300,
+            )
+        if ffmpeg.returncode != 0 or not os.path.exists(output_path):
             raise HTTPException(status_code=502, detail=f"ffmpeg concat failed: {ffmpeg.stderr[-800:]}")
 
         with open(output_path, "rb") as f:
