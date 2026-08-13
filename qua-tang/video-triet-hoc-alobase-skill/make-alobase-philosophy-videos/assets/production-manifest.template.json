@@ -1,0 +1,69 @@
+{
+  "skill": {
+    "name": "make-alobase-philosophy-videos",
+    "packageVersion": "1.0.0",
+    "skillMdSha256": "628568c621747abdc5d610322d57c071cfad498d0af12698b59bff12c4b9d01a",
+    "scriptSha256": {
+      "captions_from_words.py": "fbb267515b8cc699b5b9d2a7489f8f1a6603d620b1aab862cd7f4fd344b3aea2",
+      "generate_piano_score.py": "298baa21e246467ad63beb315599fad638c5c5a9473739f4c947309140e9b18b",
+      "make_mobile.sh": "71c973139e07687b01371a9fb9a1f8196147d20fbe7cb8a372892208f6b6e30e",
+      "master_video.sh": "2808d6e20cc27a9dd182875ecf207460eee0fe33bf2b374059eb78f1793c67e5",
+      "verify_video.py": "69927a3bb81e0f2ea687c4ab20358678992478b7c4a52deb29d2f91a69c1f2de"
+    }
+  },
+  "project": {
+    "title": "",
+    "durationSeconds": 81,
+    "width": 1080,
+    "height": 1920,
+    "fps": 30
+  },
+  "voice": {
+    "provider": "HeyGen",
+    "voiceId": null,
+    "engine": "starfish",
+    "speed": 0.96,
+    "selectionDate": null,
+    "approvedStemFile": "public/voiceover.wav",
+    "approvedStemSha256": null,
+    "selectionNote": "Set voiceId after the first approved audition. If voiceId is unavailable, approvedStemSha256 is mandatory."
+  },
+  "style": {
+    "tokensFile": "style-tokens.json",
+    "tokensSha256": "a1712ad96e35b7d283bf600c6db02752e243ea7ee41eac9fa7fdb425dfabeede",
+    "palette": {"charcoal": "#090A0C", "ivory": "#F1EBDD", "brass": "#B9914B"},
+    "fonts": {
+      "titleFile": "public/fonts/AlobaseSerif.ttf",
+      "titleSha256": "8f2c103bfa3fd5de71f1b92b18f21906b5a26871fb7e19a9a4c9af539c3cc7ab",
+      "bodyFile": "public/fonts/AlobaseSans.ttf",
+      "bodySha256": "ae7b7855e115a5966d8b1b3f80f254ccc117ec86f9965e202ee2940453837280"
+    },
+    "motion": {"defaultEasing": [0.16, 1, 0.3, 1], "stateEasing": [0.45, 0, 0.55, 1], "transitionFrames": [12, 18], "grainOpacity": [0.04, 0.055]},
+    "captions": {"maxLines": 2, "maxCharactersPerLine": 42, "maxDurationMs": 4500}
+  },
+  "piano": {
+    "generator": "scripts/generate_piano_score.py",
+    "bpm": 72,
+    "seed": 23,
+    "targetIntegratedLufs": -24,
+    "generatorSha256": "298baa21e246467ad63beb315599fad638c5c5a9473739f4c947309140e9b18b",
+    "stemSha256": null
+  },
+  "audio": {
+    "voiceIntegratedLufs": -16,
+    "masterIntegratedLufs": -15.5,
+    "truePeakDbtp": -1,
+    "voiceOffsetMs": 2000,
+    "ducking": {"ratio": 1.8, "attackMs": 24, "releaseMs": 320, "gainReductionDb": [2, 3]},
+    "masterScriptSha256": "2808d6e20cc27a9dd182875ecf207460eee0fe33bf2b374059eb78f1793c67e5"
+  },
+  "render": {
+    "masterCrf": 17,
+    "mobileCrf": 25,
+    "mobileMaxrateKbps": 2800,
+    "remotionVersion": "4.0.506",
+    "ffmpegVersion": "6.1.1-3ubuntu5",
+    "videoEncoder": "libx264",
+    "libx264Version": "0.164.3108+git31e19f9-1"
+  }
+}
