@@ -1,0 +1,18 @@
+flowchart LR
+  A1["AI Agent<br/>sinh schema + chia 6-9 scene<br/>+ storyboard ảnh<br/>(input: kịch bản B6 hoặc nhập tay)"] --> H1{"Người duyệt ảnh<br/>APPROVED / NEEDS_REVIEW?"}
+  H1 -->|"NEEDS_REVIEW"| F1["Sửa prompt / sinh lại ảnh"]
+  F1 --> A1
+  H1 -->|"APPROVED"| G1{"Canary 2 scene PASS?"}
+  G1 -->|"FAIL"| F2["Dừng batch<br/>báo rõ hỏng ở đâu"]
+  F2 --> A1
+  G1 -->|"PASS"| A2["Video Generator tổng<br/>chạy tuần tự, per-clip state<br/>+ native audio"]
+  A2 --> H2{"Người kiểm clip<br/>hình / thoại / âm nền?"}
+  H2 -->|"NEEDS_REVIEW → dựng lại đúng clip đó"| A2
+  H2 -->|"APPROVED"| OUT[("Bộ clip Approved<br/>+ media-run-log + sổ chi phí")]
+
+  classDef aiNode fill:#FFE0B2,stroke:#FB8C00,stroke-width:2px;
+  classDef hitlNode fill:#FFCDD2,stroke:#E53935,stroke-width:2px;
+  classDef fallbackNode fill:#ECEFF1,stroke:#607D8B,stroke-width:2px;
+  class A1,A2 aiNode;
+  class H1,H2 hitlNode;
+  class F1,F2 fallbackNode;
