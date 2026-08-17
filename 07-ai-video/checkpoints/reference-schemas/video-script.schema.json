@@ -30,17 +30,5 @@
         }
       }
     }
-  },
-  "allOf": [
-    {
-      "if": {"properties": {"source_mode": {"const": "B6_APPROVED"}}, "required": ["source_mode"]},
-      "then": {
-        "properties": {
-          "brief_id": {"type": "string", "minLength": 1},
-          "source_angle_id": {"type": "string", "pattern": "^A-[0-9]{2}$"}
-        },
-        "description": "B6_APPROVED phải truy vết được về đúng content-draft.json nguồn — brief_id/source_angle_id không được null."
-      }
-    }
-  ]
+  }
 }

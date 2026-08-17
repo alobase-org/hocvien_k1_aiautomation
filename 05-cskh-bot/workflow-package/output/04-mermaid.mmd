@@ -1,0 +1,17 @@
+flowchart LR
+    %% Workflow CSKH Bot Bán Lẻ (Guardrail + Cache + Judge + HITL)
+    classDef startNode fill:#E3F2FD,stroke:#1E88E5,stroke-width:2px,color:#0D47A1
+    classDef aiNode fill:#FFE0B2,stroke:#FB8C00,stroke-width:2px,color:#E65100
+    classDef cacheNode fill:#E8F5E9,stroke:#43A047,stroke-width:2px,color:#1B5E20
+    classDef hitlNode fill:#FFCDD2,stroke:#E53935,stroke-width:2px,color:#B71C1C
+    classDef endNode fill:#F3E5F5,stroke:#8E24AA,stroke-width:2px,color:#4A148C
+
+    A["1. Khách Hàng (Chatbot UI)"]:::startNode --> B["2. Lọc An Toàn (Guardrail)"]:::aiNode
+    B --> C{"3. Intent Router"}:::aiNode
+    C -- "Ngoại Scope / Toxic" --> G["7. Chuyển Người CSKH (HITL Ticket)"]:::hitlNode
+    C -- "Nội Scope Bán Lẻ" --> D{"4. FAQ Cache Match"}:::cacheNode
+    D -- "Hit score >= 0.86" --> F["5. Fast Reply từ FAQ"]:::endNode
+    D -- "Cache Miss" --> E["5. LLM Fallback (Gắn Nguồn)"]:::aiNode
+    E --> H{"6. LLM-as-Judge Gate"}:::aiNode
+    H -- "Confidence >= 0.7" --> F
+    H -- "Confidence < 0.7" --> G

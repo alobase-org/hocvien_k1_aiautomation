@@ -1,0 +1,47 @@
+{
+  "brief_id": "SUNRISE-KIDS-2026-08",
+  "brief_title": "Khóa Tiếng Anh giao tiếp nền tảng — Trung tâm Anh ngữ Sunrise Kids",
+  "personas_covered": ["PH1", "PH2", "PH3"],
+  "angles": [
+    {
+      "angle_id": "A-01",
+      "nhom": "Nỗi lo",
+      "y_tuong": "Học bốn năm vẫn không dám mở miệng — vấn đề không nằm ở số giờ học mà ở số lượt được nói trong mỗi buổi",
+      "chan_dung": "PH1",
+      "muc_tieu": "AWARENESS",
+      "kenh_phu_hop": ["Fanpage", "TikTok"]
+    },
+    {
+      "angle_id": "A-02",
+      "nhom": "Cơ chế",
+      "y_tuong": "Lớp tối đa 15 bé và một trợ giảng người Việt theo cả buổi — khác gì lớp ba mươi mấy bé",
+      "chan_dung": "PH3",
+      "muc_tieu": "TRUST",
+      "kenh_phu_hop": ["Fanpage"]
+    },
+    {
+      "angle_id": "A-03",
+      "nhom": "Đo lường",
+      "y_tuong": "Báo cáo tiến độ hàng tháng — ba mẹ không biết tiếng Anh vẫn biết con đang ở đâu",
+      "chan_dung": "PH2",
+      "muc_tieu": "TRUST",
+      "kenh_phu_hop": ["Fanpage", "TikTok"]
+    },
+    {
+      "angle_id": "A-04",
+      "nhom": "Phản đối",
+      "y_tuong": "Cho học sớm quá con có chán không — trả lời bằng cách mô tả buổi học diễn ra thế nào thay vì hứa hẹn",
+      "chan_dung": "PH1",
+      "muc_tieu": "OBJECTION",
+      "kenh_phu_hop": ["TikTok"]
+    },
+    {
+      "angle_id": "A-05",
+      "nhom": "Trải nghiệm",
+      "y_tuong": "Một buổi 75 phút diễn ra như thế nào, từ lúc bé vào lớp đến lúc ba mẹ nhận ghi chú trong nhóm Zalo",
+      "chan_dung": "PH1",
+      "muc_tieu": "CONVERSION",
+      "kenh_phu_hop": ["Fanpage"]
+    }
+  ]
+}

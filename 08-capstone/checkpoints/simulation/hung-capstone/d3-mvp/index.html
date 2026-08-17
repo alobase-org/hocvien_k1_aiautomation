@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="vi"><head><meta charset="UTF-8"><title>Legal Review — MVP Hùng (B8)</title>
+<style>
+:root{--navy:#1F3864;--red:#C00000;--ok:#1a7f37;--warn:#9a6700;--bg:#F7F5F0;}
+*{box-sizing:border-box;font-family:"Calibri","Segoe UI",sans-serif;}
+body{background:var(--bg);max-width:860px;margin:0 auto;padding:2rem;}
+h1{color:var(--navy);font-size:1.4rem;}
+textarea{width:100%;min-height:120px;padding:.7rem;border:1px solid #bbb;border-radius:6px;}
+button{background:var(--navy);color:#fff;border:none;padding:.65rem 1.2rem;border-radius:6px;cursor:pointer;margin-top:.5rem;}
+table{border-collapse:collapse;width:100%;margin-top:1rem;}
+th,td{border:1px solid #ccc;padding:.45rem .6rem;font-size:.9rem;text-align:left;}
+th{background:var(--navy);color:#fff;}
+.muc{font-weight:700;padding:.1rem .5rem;border-radius:8px;display:inline-block;font-size:.8rem;}
+.CAO{background:#fde8e8;color:var(--red);} .TB{background:#fff4e5;color:var(--warn);} .THAP{background:#e8f0fe;color:var(--navy);} .KHONG_RO{background:#eee;color:#666;}
+.duyet{background:#e6f4ea !important;}
+.pending{outline:2px dashed var(--warn);}
+</style></head>
+<body>
+<h1>Legal Review <small style="font-size:.78rem;color:#888">(MVP Hùng — rule cứng local theo KB, HITL trưởng phòng duyệt)</small></h1>
+<p>Dán văn bản — mỗi điều khoản 1 dòng (hoặc phân tách bằng dấu "."):</p>
+<textarea id="doc" placeholder="Bên B thanh toán 100% trong 7 ngày không điều kiện.&#10;Phạt vi phạm 12% giá trị hợp đồng."></textarea>
+<button onclick="review()">Review điều khoản</button>
+<table id="bang" class="hide"><tr><th>Điều khoản</th><th>Mức</th><th>Rule</th><th>Đề xuất</th><th>HITL</th></tr></table>
+<script>
+const RULES=[
+ {id:"A1",muc:"CAO",test:/thanh toán 100%|không điều kiện/i,de:"Sửa: gắn thanh toán với mốc nghiệm thu."},
+ {id:"A2",muc:"CAO",test:/phạt vi phạm\s*(1[0-9]|[2-9]\d)%|phạt vi phạm\s*(10|12|15|20)%/i,de:"Sửa: hạ phạt ≤8% giá trị."},
+ {id:"A3",muc:"CAO",test:/đơn phương chấm dứt.*không cần lý do/i,de:"Sửa: chỉ chấm dứt theo điều kiện liệt kê."},
+ {id:"B1",muc:"TB",test:/bảo hành\s*(2[5-9]|3\d|4\d)\s*tháng/i,de:"Đàm phán hạ về 24 tháng."},
+ {id:"B2",muc:"TB",test:/bồi thường gián tiếp(?!.*giới hạn)/i,de:"Thêm trần bồi thường."},
+ {id:"C1",muc:"THẤP",test:/thanh toán cuối.*?(6[1-9]|[7-9]\d|1\d{2})\s*ngày/i,de:"Ghi chú theo dõi."}];
+function tach(text){return text.split(/[\n.]+/).map(s=>s.trim()).filter(s=>s.length>8);}
+function review(){
+  const clauses=tach(document.getElementById("doc").value);
+  const bang=document.getElementById("bang"); bang.classList.remove("hide");
+  bang.innerHTML="<tr><th>Điều khoản</th><th>Mức</th><th>Rule</th><th>Đề xuất</th><th>HITL</th></tr>";
+  clauses.forEach((cl,i)=>{
+    const hit=RULES.find(r=>r.test.test(cl));
+    const muc=hit?hit.muc:"KHONG_RO";
+    const tr=document.createElement("tr"); tr.id="row"+i; if(hit&&hit.muc==="CAO")tr.classList.add("pending");
+    tr.innerHTML=`<td>${cl}</td><td><span class="muc ${muc}">${muc}</span></td>
+      <td>${hit?hit.id:"[cần TP xem]"}</td><td>${hit?hit.de:"Chuyển trưởng phòng xác định"}</td>
+      <td><button onclick="duyet(${i})" style="padding:.3rem .7rem;font-size:.8rem;">Duyệt</button></td>`;
+    bang.appendChild(tr);});
+}
+function duyet(i){const r=document.getElementById("row"+i);r.classList.remove("pending");r.classList.add("duyet");
+  const b=r.querySelector("button");b.textContent="ĐÃ DUYỆT";b.disabled=true;}
+</script></body></html>

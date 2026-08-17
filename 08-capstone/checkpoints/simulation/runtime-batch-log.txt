@@ -1,0 +1,73 @@
+
+═══════════ EXEMPLAR-GV ═══════════
+  [PASS] ≥2 vòng + FAIL + evidence — 3 vòng, có FAIL, có evidence (lưu ý: evidence vẫn cần GV verify bằng mắt ở bước [6])
+
+[5] Pitch HTML
+  [PASS] 6 slide, sạch placeholder — mở bằng trình duyệt để kiểm tra hiển thị + số liệu
+
+[6] RUNTIME — import workflow + chạy 1 input (bước GV phải làm)
+        (patched tại runtime: key, model→gemini-flash-latest — file gốc không đổi)
+        imported: workflow id 4fHqt1joWx0tFRNi — 'B8 Exemplar - Leave Request Reviewer (mượn khung B4) - v0'
+        response lỗi nghiệp vụ (200 nhưng có error): {"error":"Lỗi kết nối AI Gemini API","message":"Hệ thống đã tự động thử lại 3 lần nhưng không thể kết nối tới AI Gemini. Vui lòng kiểm tra lại Gemini API Key hoặc hạn ngạch (Quota). (Lỗi: Try spacing your requests out using the batching settings unde
+  [PASS] chạy input qua webhook — /webhook/b8-leave-review trả 200 — NHƯNG response chứa error: đọc output, kiểm tra key/quota/model
+        (đã dọn workflow test)
+
+──────────────────────────────
+Kết quả: 5 PASS · 1 FAIL · 0 SKIP
+→ Có FAIL: fix theo gợi ý ở trên rồi chạy lại.
+[nghỉ 20s chống rate-limit]
+
+═══════════ HV-Ha ═══════════
+  [PASS] ≥2 vòng + FAIL + evidence — 3 vòng, có FAIL, có evidence (lưu ý: evidence vẫn cần GV verify bằng mắt ở bước [6])
+
+[5] Pitch HTML
+  [PASS] 6 slide, sạch placeholder — mở bằng trình duyệt để kiểm tra hiển thị + số liệu
+
+[6] RUNTIME — import workflow + chạy 1 input (bước GV phải làm)
+        (patched tại runtime: key, model→gemini-flash-latest — file gốc không đổi)
+        imported: workflow id 2tRPdnPGzfYEkYPM — 'Ha K1 - Warranty Request Reviewer (mượn khung B4) - v2'
+        response lỗi nghiệp vụ (200 nhưng có error): {"error":"Lỗi kết nối AI Gemini API","message":"Hệ thống đã tự động thử lại 3 lần nhưng không thể kết nối tới AI Gemini. Vui lòng kiểm tra lại Gemini API Key hoặc hạn ngạch (Quota). (Lỗi: Try spacing your requests out using the batching settings unde
+  [PASS] chạy input qua webhook — /webhook/ha-warranty-review trả 200 — NHƯNG response chứa error: đọc output, kiểm tra key/quota/model
+        (đã dọn workflow test)
+
+──────────────────────────────
+Kết quả: 6 PASS · 0 FAIL · 0 SKIP
+→ PASS toàn bộ (kể cả runtime). Lưu ý: phần phân loại lỗi nghiệp vụ vẫn cần GV/đồng nghiệp đọc output.
+[nghỉ 20s chống rate-limit]
+
+═══════════ HV-Linh ═══════════
+  [PASS] ≥2 vòng + FAIL + evidence — 3 vòng, có FAIL, có evidence (lưu ý: evidence vẫn cần GV verify bằng mắt ở bước [6])
+
+[5] Pitch HTML
+  [PASS] 6 slide, sạch placeholder — mở bằng trình duyệt để kiểm tra hiển thị + số liệu
+
+[6] RUNTIME — import workflow + chạy 1 input (bước GV phải làm)
+        (patched tại runtime: key, model→gemini-flash-latest — file gốc không đổi)
+        imported: workflow id D9SKC680l1PfULMl — 'Linh K1 - Recon Discrepancy Analyzer (mượn khung B4) - v3'
+        response lỗi nghiệp vụ (200 nhưng có error): {"error":"Lỗi kết nối AI Gemini API","message":"Hệ thống đã tự động thử lại 3 lần nhưng không thể kết nối tới AI Gemini. Vui lòng kiểm tra lại Gemini API Key hoặc hạn ngạch (Quota). (Lỗi: Try spacing your requests out using the batching settings unde
+  [PASS] chạy input qua webhook — /webhook/linh-recon trả 200 — NHƯNG response chứa error: đọc output, kiểm tra key/quota/model
+        (đã dọn workflow test)
+
+──────────────────────────────
+Kết quả: 6 PASS · 0 FAIL · 0 SKIP
+→ PASS toàn bộ (kể cả runtime). Lưu ý: phần phân loại lỗi nghiệp vụ vẫn cần GV/đồng nghiệp đọc output.
+[nghỉ 20s chống rate-limit]
+
+═══════════ HV-Nam ═══════════
+  [PASS] ≥2 vòng + FAIL + evidence — 3 vòng, có FAIL, có evidence (lưu ý: evidence vẫn cần GV verify bằng mắt ở bước [6])
+
+[5] Pitch HTML
+  [PASS] 6 slide, sạch placeholder — mở bằng trình duyệt để kiểm tra hiển thị + số liệu
+
+[6] RUNTIME — import workflow + chạy 1 input (bước GV phải làm)
+        (patched tại runtime: key, model→gemini-flash-latest — file gốc không đổi)
+        imported: workflow id uzqbxzhOGXuhk0pT — 'Nam K1 - Room Booking Reviewer (mượn khung B4) - v3'
+        (lần 1: model AI đang high-demand 503 — nghỉ 20s thử lại)
+        response lỗi nghiệp vụ (200 nhưng có error): {"error":"Lỗi kết nối AI Gemini API","message":"Hệ thống đã tự động thử lại 3 lần nhưng không thể kết nối tới AI Gemini. Vui lòng kiểm tra lại Gemini API Key hoặc hạn ngạch (Quota). (Lỗi: Try spacing your requests out using the batching settings unde
+  [PASS] chạy input qua webhook — /webhook/nam-booking trả 200 — NHƯNG response chứa error: đọc output, kiểm tra key/quota/model
+        (đã dọn workflow test)
+
+──────────────────────────────
+Kết quả: 6 PASS · 0 FAIL · 0 SKIP
+→ PASS toàn bộ (kể cả runtime). Lưu ý: phần phân loại lỗi nghiệp vụ vẫn cần GV/đồng nghiệp đọc output.
+[nghỉ 20s chống rate-limit]

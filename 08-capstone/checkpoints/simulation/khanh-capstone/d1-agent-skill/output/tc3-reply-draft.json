@@ -1,0 +1,12 @@
+{
+  "loai": "KHIEU_NAI",
+  "san_pham": "Củ sạc không dây MagSnap",
+  "id": "P04",
+  "can_chuyen_nguoi": true,
+  "reply_draft": "Dạ em rất tiếc về sự cố anh/chị gặp ạ 🙏. Em đã chuyển thông tin tới bộ phận kỹ thuật, anh/chị giữ nguyên máy và hóa đơn giúp em nhé — bộ phận sẽ liên hệ trong giờ hành chính.",
+  "ticket": {
+    "ly_do": "khiếu nại sản phẩm",
+    "muc": "CAO"
+  },
+  "nguon": "products.json#P04"
+}

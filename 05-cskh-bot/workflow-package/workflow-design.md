@@ -24,7 +24,9 @@ Kết quả đo: câu hỏi lặp lại được trả lời nhanh bằng FAQ ca
 - Webhook lỗi/timeout → fallback "CSKH sẽ phản hồi sớm".
 
 ### Inputs
-- `templates/faq-khoa-hoc.json` (15 FAQ bán lẻ, 5 nhóm — knowledge DB).
+- `templates/faq-cskh.md` (15 FAQ bán lẻ, 5 nhóm — knowledge DB).
+- `templates/chinh-sach-ho-tro.md` (Chính sách giao nhận, thanh toán, đổi trả, bảo hành).
+- `templates/thong_tin_san_pham.md` (Danh mục & chi tiết sản phẩm P01-P04).
 - `checkpoints/test-cases.json` (5 test case: TC2 hoàn tiền = chuyển người, TC4 ngoài scope = chuyển người — **2 chuyển người, 1 ngoài scope**).
 - Embedding API key (Google AI Studio / OpenAI) — credential từ B2.
 

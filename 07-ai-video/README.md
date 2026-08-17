@@ -28,8 +28,8 @@ Giữ cùng một phiên chat và workspace. Output bước trước là input b
 ## Nguyên tắc
 
 - Không chạy video trước khi ảnh Approved.
-- Không coi API sinh video trả file là đã duyệt: clip phải qua Clip Review trước khi ghép.
 - Test 2 scene trước khi batch.
 - Không dùng hình/giọng thiếu quyền.
 - Không bịa dữ kiện thiếu từ B6.
 - Không nói “đã chạy” nếu mới tạo UI hoặc validate JSON.
+

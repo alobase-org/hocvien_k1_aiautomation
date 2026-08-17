@@ -114,7 +114,7 @@
             "type": "string",
             "minLength": 1
           },
-          "description": "Mục bắt buộc — điều thật sự không muốn thấy trong ảnh (không bắt buộc phải về trẻ em; ảnh AI sinh được phép có người/trẻ em)."
+          "description": "Mục bắt buộc. Với sản phẩm liên quan trẻ em phải có ràng buộc về mặt trẻ em."
         }
       }
     },

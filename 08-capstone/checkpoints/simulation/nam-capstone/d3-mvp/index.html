@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Booking Helper — MVP Nam (B8)</title>
+<style>
+  :root{--navy:#1F3864;--red:#C00000;--ok:#1a7f37;--warn:#9a6700;--bg:#F7F5F0;}
+  *{box-sizing:border-box;font-family:"Calibri","Segoe UI",sans-serif;}
+  body{background:var(--bg);color:#222;max-width:880px;margin:0 auto;padding:2rem;}
+  h1{color:var(--navy);font-size:1.5rem;}
+  textarea{width:100%;min-height:100px;padding:.7rem;border:1px solid #bbb;border-radius:6px;font-size:1rem;}
+  button{background:var(--navy);color:#fff;border:none;padding:.7rem 1.4rem;border-radius:6px;font-size:1rem;cursor:pointer;margin-top:.5rem;}
+  button:disabled{background:#999;}
+  table{border-collapse:collapse;width:100%;margin-top:1rem;}
+  th,td{border:1px solid #ccc;padding:.4rem .6rem;font-size:.9rem;text-align:left;}
+  th{background:var(--navy);color:#fff;}
+  .verdict{font-size:1.2rem;font-weight:700;margin-top:1rem;padding:.5rem 1rem;border-radius:6px;display:inline-block;}
+  .ok{background:#e6f4ea;color:var(--ok);}.no{background:#fde8e8;color:var(--red);}.de{background:#fff4e5;color:var(--warn);}
+  #reply{background:#fff;border-left:4px solid var(--navy);padding:.8rem 1rem;margin-top:1rem;}
+  .hide{display:none;}
+</style>
+</head>
+<body>
+<h1>Booking Helper <small style="font-size:.8rem;color:#888">(MVP Nam — rule cứng local, lịch tuần pre-fill)</small></h1>
+<p>Dán 1 tin yêu cầu đặt phòng (ghi rõ phòng, ngày, khung giờ, số người).</p>
+<textarea id="tin" placeholder='Ví dụ: "Đặt P301 19/08 9:00-10:30 họp giao ban 10 người. — Hoa"'></textarea>
+<br><button id="btn" onclick="kiemTra()">Kiểm tra</button>
+<div id="kq" class="hide">
+  <div id="verdict" class="verdict"></div>
+  <table id="bang"></table>
+  <div id="reply"></div>
+  <button onclick="copyReply()" style="background:var(--red)">Copy câu trả lời</button>
+</div>
+<script>
+const SCHED=[["P301","19/08","9:00-10:30","Mỹ Linh"],["P301","19/08","14:00-15:00","Kế toán"],["P302","20/08","8:30-11:30","Đào tạo"],["P105","21/08","9:00-10:00","Tổ chức"]];
+const CAP={P301:12,P302:20,P105:6};
+function t2m(s){const[h,m]=s.split(":");return +h*60+ +m;}
+function giao(a1,a2,b1,b2){return t2m(a1)<t2m(b2)&&t2m(b1)<t2m(a2);}
+function trich(t){
+  const phong=(t.match(/\b(P\d{3})\b/)||[])[1]||"";
+  const ngay=(t.match(/(\d{1,2})\/(\d{1,2})/)||[])[0]||"";
+  const kh=(t.match(/(\d{1,2}):(\d{2})\s*-\s*(\d{1,2}):(\d{2})/)||[]);
+  const khung=(kh&&kh[0])?kh[0].replace(/\s+/g,""):"";  // mảng rỗng vẫn truthy trong JS — phải check kh[0]
+  const so=+(t.match(/(\d+)\s*người/i)||[])[1]||0;
+  const ten=(t.match(/—\s*([A-ZĐÀ-Ỹ][a-zà-ỹ]+)/)||t.match(/-\s*([A-ZĐÀ-Ỹ][a-zà-ỹ]+)/)||[])[1]||"";
+  return {phong,ngay,khung,so,ten};
+}
+function khungTrang(phong,ngay){
+  const out=[];const co=SCHED.filter(s=>s[0]===phong&&s[1]===ngay).map(s=>s[2]);
+  for(const [a,b] of [["8:00","9:30"],["9:30","11:00"],["13:30","15:00"],["15:00","16:30"]]){
+    if(!co.some(k=>{const[x,y]=k.split("-");return giao(a,b,x,y);})) out.push(a+"-"+b);
+  }
+  return out;
+}
+function kiemTra(){
+  const t=document.getElementById("tin").value.trim();
+  if(!t){alert("Dán tin vào trước đã.");return;}
+  const btn=document.getElementById("btn");btn.disabled=true;btn.textContent="Đang kiểm tra...";
+  setTimeout(()=>{chay(t);btn.disabled=false;btn.textContent="Kiểm tra";},350);
+}
+function chay(t){
+  const d=trich(t);
+  document.getElementById("kq").classList.remove("hide");
+  const v=document.getElementById("verdict"); const bang=[]; let verdict,reply;
+  if(!d.phong||!d.ngay||!d.khung||!d.so){
+    verdict="THIEU_DU_LIEU";v.className="verdict de";
+    reply="Chào anh/chị, em cần đủ: phòng, ngày, khung giờ (vd 9:00-10:30), số người ạ.";bang.push(["Dữ liệu",d.phong+" | "+d.ngay+" | "+(d.khung||"(không có)")+" | "+d.so+" người","THIẾU"]);
+  } else {
+    const [s,e]=d.khung.split("-");
+    const trung=SCHED.find(([p,n,k])=>p===d.phong&&n===d.ngay&&{const[x,y]=k.split("-");return giao(s,e,x,y);});
+    const trongNhom = d.so<= (CAP[d.phong]||0);
+    if(trung){verdict="TU_CHOI";v.className="verdict no";
+      bang.push(["Trùng lịch",trung[0]+" "+trung[1]+" "+trung[2]+" ("+trung[3]+")","TRÙNG"]);
+      reply="Chào anh/chị, "+d.phong+" ngày "+d.ngay+" khung "+d.khung+" đã có lịch ("+trung[3]+"). Em đề xuất khung khác giúp mình nhé ạ.";
+    } else if(!trongNhom){verdict="TU_CHOI";v.className="verdict no";
+      bang.push(["Sức chứa","nhóm "+d.so+" người > "+(CAP[d.phong]||"?")+" chỗ","VƯỢT"]);
+      reply="Chào anh/chị, "+d.phong+" chỉ "+(CAP[d.phong]||"?")+" chỗ — em xin phép xếp phòng lớn hơn ạ.";
+    } else {verdict="XAC_NHAN";v.className="verdict ok";
+      bang.push(["Trùng lịch","không trùng","OK"],["Sức chứa",d.so+" ≤ "+CAP[d.phong],"OK"]);
+      reply="Xác nhận "+d.phong+" ngày "+d.ngay+" khung "+d.khung+" cho nhóm "+d.so+" người ạ.";
+    }
+    if(/sáng|buổi sáng/i.test(t)&&!d.khung){/* handled ở THIEU */}
+  }
+  if(verdict!=="THIEU_DU_LIEU"&&/sáng/i.test(t)&&!d.khung){}
+  v.textContent=verdict;
+  document.getElementById("bang").innerHTML="<tr><th>Check</th><th>Chi tiết</th><th>Kết quả</th></tr>"+bang.map(r=>"<tr><td>"+r[0]+"</td><td>"+r[1]+"</td><td>"+r[2]+"</td></tr>").join("");
+  document.getElementById("reply").textContent="Trả lời (chờ Nam duyệt): "+reply;
+  window._reply=reply;
+  document.getElementById("kq").scrollIntoView({behavior:"smooth"});
+}
+function copyReply(){if(navigator.clipboard&&window._reply){navigator.clipboard.writeText(window._reply);alert("Đã copy câu trả lời.");}}
+</script>
+</body>
+</html>

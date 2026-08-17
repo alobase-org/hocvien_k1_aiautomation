@@ -1,50 +1,31 @@
-# Lab Handout — Buổi 08 (capstone)
+# Lab Buổi 08 — Kickoff Đồ án Capstone (trong lớp, 90' thực hành)
 
-> 🚧 **PLACEHOLDER** — `/vibe-teach-orchestrator` **Route 11** (SYNTHETIC_DATA / lab).
-> File dành cho HỌC VIÊN (sẽ sync sang `studentkit/`). Đáp án/expected output để ở `checkpoints/`.
+> Làm trong lớp hôm nay. Đồ án đầy đủ làm ở nhà theo lộ trình trong `README.md`.
 
-## Workflow
-Capstone Project Workflow
+## TH1 — Usecase Brief + Resource Map (25')
 
-## KPI / Sản phẩm đầu ra
-Pitch dự án hoàn chỉnh: Project Brief + demo/prototype + checklist nghiệm thu + risk log + pitch deck + kế hoạch tiếp theo.
+**Bước 1:** Mở `00-usecase-brief/input/usecase-brief.template.md`, điền sơ bộ use case của bạn (10').
 
-## Điều kiện tiên quyết
-Đã học xong B1–B7. Có bài toán thật + workflow đã làm. Có Canva cho pitch deck.
+**Bước 2:** Chạy `00-usecase-brief/prompt/01-refine-usecase.prompt.md` với AI để đánh bóng brief — nhất là phần tiêu chí thành công đo được (5').
 
-## Công cụ
-Google Workspace · n8n · AI Studio / app nội bộ · Agent Coding/CLI · NotebookLM/Obsidian · Canva/CapCut/API video
+**Bước 3:** Duyệt StudentKit B1–B7, lập `resource-map.md` theo template trong `00-usecase-brief/input/resource-map.template.md` — ghi tối thiểu 3 tài nguyên sẽ mượn, kèm đường dẫn thật (10').
 
-## Các phân đoạn thực hành (TH1 → TH4 = pipeline)
-> Output TH_N = Input TH_{N+1}.
-### TH1 — Phân đoạn 1 — Chọn workflow + Project Brief
-- **Mô tả kỹ thuật (Input → Action → Output):** JIT: dự án không bắt đầu từ tool + chọn theo giá trị×khả thi. HV chọn 1 workflow (từ B1–B7 hoặc kết hợp) + viết Project Brief: bài toán/người dùng/mục tiêu/workflow/input/process/output/tiêu chí/công cụ/rủi ro/demo/kế hoạch.
-- **Công cụ:** Docs
-- **Đầu ra:** ★ Project Brief
+Nghiệm thu TH1:
+- Brief đủ các trường bắt buộc, có ≥2 tiêu chí thành công đo được
+- Resource map có ≥3 dòng trỏ path tồn tại thật trong studentkit
 
-> TODO (Route 11): prompt copy-paste vào `prompts/`, file starter vào `templates/`, expected output/rescue vào `checkpoints/` (instructor-only).
-### TH2 — Phân đoạn 2 — Demo/prototype
-- **Mô tả kỹ thuật (Input → Action → Output):** JIT: demo không cần hoàn hảo nhưng phải chứng minh được luồng (input → process → output thấy được). HV làm demo tối thiểu: chạy workflow trên data mẫu → ra output nghiệm thu.
-- **Công cụ:** AI chat / n8n / Agent Coding
-- **Đầu ra:** ★ Demo chạy được luồng
+## TH2 — Khởi động deliverable đầu tiên (20')
 
-> TODO (Route 11): prompt copy-paste vào `prompts/`, file starter vào `templates/`, expected output/rescue vào `checkpoints/` (instructor-only).
-### TH3 — Phân đoạn 3 — Checklist nghiệm thu + risk log
-- **Mô tả kỹ thuật (Input → Action → Output):** JIT: có thể kết hợp nhiều workflow + phải nêu rủi ro & cách kiểm soát. HV viết checklist nghiệm thu dự án (output đạt/tiêu chí trạng thái/log) + risk-log (rủi ro|mức|cách giảm).
-- **Công cụ:** Docs / Sheets
-- **Đầu ra:** ★ Checklist + risk-log
+Chọn **D1 (agent skill)** hoặc **D2 (n8n e2e)** — đường bạn tự tin nhất. Mở folder tương ứng (`01-agent-skill/` hoặc `02-n8n-e2e-loop/`), làm đúng README của folder đó tới khi có **artifact đầu tiên**:
+- D1: draft `SKILL.md` với frontmatter + input/output contract (prompt 02, 03)
+- D2: file e2e test draft định nghĩa PASS/FAIL cho use case của bạn (prompt 05)
 
-> TODO (Route 11): prompt copy-paste vào `prompts/`, file starter vào `templates/`, expected output/rescue vào `checkpoints/` (instructor-only).
-### TH4 — Phân đoạn 4 — Pitch + phản biện
-- **Mô tả kỹ thuật (Input → Action → Output):** JIT: project pitch tốt cần 7 phần (bài toán/người dùng/mục tiêu/workflow/input-output/tiêu chí/công cụ/rủi ro/demo/kế hoạch). HV trình bày pitch 5-7 phút + nhận góp ý từ GV/nhóm + ghi kế hoạch cải tiến.
-- **Công cụ:** Canva + pitch
-- **Đầu ra:** ★ Pitch + kế hoạch cải tiến
+Nghiệm thu TH2: có artifact đầu, GV xem qua 1 lượt.
 
-> TODO (Route 11): prompt copy-paste vào `prompts/`, file starter vào `templates/`, expected output/rescue vào `checkpoints/` (instructor-only).
+## TH3 — Checklist nghiệm thu + Risk log (15')
 
+Điền `acceptance-checklist.md` (template: `04-package-pitch/input/acceptance-checklist.template.md`) cho đủ 4 deliverable — tick những gì đã làm, đánh dấu ⏳ những gì còn. Viết `risk-log.md` tối thiểu 3 rủi ro (mẫu: `00-usecase-brief/input/risk-log.template.md`).
 
-## Bài tập về nhà — TODO
-- _TODO_
+## TH4 — Pitch kế hoạch 3' + phản biện (15')
 
-## Checklist nghiệm thu — TODO
-- [ ] _TODO (SLI/SLO đo được)_
+Nhóm 4–5 người. Mỗi người pitch 3 phút theo khung: use case → tài nguyên mượn → deliverable sẽ làm gì → rủi ro lớn nhất → kế hoạch tuần. Người nghe phản biện bằng 3 câu hỏi từ acceptance-checklist của người pitch. Ghi lại ý phản biện vào kế hoạch tuần.

@@ -1,0 +1,81 @@
+{
+  "candidate_id": "team-alpha",
+  "candidate_name": "Đội Alpha",
+  "rubric_id": "RUBRIC-DEMO-001",
+  "scores": [
+    {
+      "criterion_id": "C1",
+      "criterion_name": "Chất lượng kỹ thuật",
+      "subcriterion_id": "C1-S1",
+      "name": "Hiệu năng",
+      "level": 4,
+      "level_label": "Tốt/Khá",
+      "weight": 0.5,
+      "normalized_score": 80.0,
+      "rationale": "p95=120ms, có số liệu → khớp descriptor mức 4 (<300ms p95 + có số liệu), thiếu benchmark đầy đủ nên không đạt mức 5.",
+      "confidence_score": 0.9,
+      "need_review": false,
+      "evidence": [
+        {
+          "claim": "Độ trễ p95 = 120ms",
+          "verbatim_quote": "Thời gian phản hồi trung bình 120ms ở p95.",
+          "source": "synthetic-data/source-alpha.txt",
+          "location": "mục Kỹ thuật"
+        }
+      ]
+    },
+    {
+      "criterion_id": "C1",
+      "criterion_name": "Chất lượng kỹ thuật",
+      "subcriterion_id": "C1-S2",
+      "name": "Kiểm thử",
+      "level": 4,
+      "level_label": "Tốt/Khá",
+      "weight": 0.5,
+      "normalized_score": 80.0,
+      "rationale": "Độ phủ 78% + unit test → mức 4 (≥70% + unit test), chưa có e2e nên không mức 5.",
+      "confidence_score": 0.9,
+      "need_review": false,
+      "evidence": [
+        {
+          "claim": "Độ phủ test 78%",
+          "verbatim_quote": "Có viết unit test, độ phủ 78%.",
+          "source": "synthetic-data/source-alpha.txt",
+          "location": "mục Kỹ thuật"
+        }
+      ]
+    },
+    {
+      "criterion_id": "C2",
+      "criterion_name": "Bảo mật",
+      "subcriterion_id": "C2-S1",
+      "name": "Quản lý lỗ hổng",
+      "level": 2,
+      "level_label": "Yếu",
+      "weight": 1.0,
+      "used_research": true,
+      "research_source": "synthetic-data/source-alpha.txt",
+      "normalized_score": 40.0,
+      "rationale": "Theo research, mức 3 yêu cầu 'nhắc tới bảo mật nhưng không phân tích'; candidate ghi rõ KHÔNG có tài liệu/phân tích → rơi vào mức 2 ('không đề cập' về mặt thực chất).",
+      "confidence_score": 0.8,
+      "need_review": false,
+      "evidence": [
+        {
+          "claim": "Không có phân tích bảo mật",
+          "verbatim_quote": "Không có tài liệu bảo mật hoặc phân tích lỗ hổng.",
+          "source": "synthetic-data/source-alpha.txt",
+          "location": "mục Kỹ thuật"
+        }
+      ]
+    }
+  ],
+  "aggregate": {
+    "total_score": 60.0,
+    "band": "Đạt",
+    "total_weight": 2.0
+  },
+  "strengths": ["Có số liệu hiệu năng rõ ràng", "Có unit test với độ phủ khá"],
+  "weaknesses": ["Bỏ ngõ bảo mật hoàn toàn", "Thiếu benchmark đầy đủ"],
+  "confidence_score": 0.8,
+  "need_review": false
+}

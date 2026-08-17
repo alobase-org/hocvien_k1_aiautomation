@@ -11,6 +11,7 @@ Tạo lớp production đầu vào cho chatbot: chống prompt injection, route 
 
 | Input | Mô tả |
 |---|---|
+| `templates/thong_tin_san_pham.md` | Dữ liệu catalog và thông tin sản phẩm (P01-P04) |
 | `vector-store.json` | Output từ Thực hành 1 |
 | Webhook question | `{ question, source_q_id, channel? }` |
 | Test cases | `checkpoints/test-cases.json` |

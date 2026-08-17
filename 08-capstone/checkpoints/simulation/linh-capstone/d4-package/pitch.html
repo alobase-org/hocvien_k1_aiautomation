@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Capstone Pitch — Đối chiếu công nợ đầu tháng</title>
+<style>
+  :root { --navy:#1F3864; --red:#C00000; --ink:#222; --paper:#F7F5F0; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:"Calibri","Segoe UI",sans-serif; background:var(--ink); color:var(--ink); }
+  .slide { display:none; min-height:100vh; padding:6vh 8vw; background:var(--paper); }
+  .slide.active { display:block; }
+  h1 { color:var(--navy); font-size:3rem; margin-bottom:1rem; }
+  h2 { color:var(--navy); border-bottom:4px solid var(--red); display:inline-block; padding-bottom:.3rem; margin-bottom:1.5rem; }
+  .kicker { color:var(--red); font-weight:700; letter-spacing:.12em; text-transform:uppercase; font-size:.85rem; }
+  ul { line-height:1.9; font-size:1.15rem; }
+  table { border-collapse:collapse; width:100%; font-size:1rem; }
+  th, td { border:1px solid #ccc; padding:.5rem .7rem; text-align:left; }
+  th { background:var(--navy); color:#fff; }
+  .footer { position:fixed; bottom:1.2rem; right:2rem; color:#999; font-size:.8rem; }
+  .hint { position:fixed; bottom:1.2rem; left:2rem; color:#bbb; font-size:.8rem; }
+  img { max-width:80%; border:1px solid #ccc; border-radius:6px; }
+</style>
+</head>
+<body>
+
+<section class="slide active" id="s1">
+  <p class="kicker">Capstone AI Automation K1</p>
+  <h1>Đối chiếu công nợ đầu tháng</h1>
+  <p>Trần Ngọc Linh · 24/08/2026</p>
+  <p>1 quy trình làm tay → 1 giải pháp tự động: skill · workflow n8n · MVP · package</p>
+</section>
+
+<section class="slide" id="s2">
+  <h2>1 · Bài toán</h2>
+  <ul>
+    <li>12 đại lý × ~40 dòng đối chiếu tay mỗi tháng = 1,5 ngày của kế toán công nợ</li>
+    <li>Lệch chiết khấu hay ghi thiếu — phải soi từng dòng, email đại lý hỏi lại 2-3 lần</li>
+    <li>Linh xử lý, kế toán trưởng duyệt email, đại lý nhận mục lệch</li>
+  </ul>
+</section>
+
+<section class="slide" id="s3">
+  <h2>2 · Giải pháp & tài nguyên tái sử dụng</h2>
+  <ul>
+    <li>2 bảng CSV → chuẩn hóa → ghép so_dh → rule chênh lệch → phân loại nguyên nhân → email draft chờ duyệt</li>
+  </ul>
+  <table>
+    <tr><th>Mượn từ</th><th>Tài nguyên</th><th>Dùng làm</th></tr>
+    <tr><td>B4</td><td>checkpoints/n8n-contract-review-solution.json</td><td>Khung workflow</td></tr>
+    <tr><td>B4</td><td>templates/clause.schema.json</td><td>Mẫu schema dòng công nợ</td></tr>
+    <tr><td>B4</td><td>test/interactive_e2e_runner.py</td><td>Pattern test qua API</td></tr>
+    <tr><td>B4</td><td>app/</td><td>Exemplar app so khớp</td></tr>
+  </table>
+</section>
+
+<section class="slide" id="s4">
+  <h2>3 · Demo thực tế</h2>
+  <img src="../anh-demo/linh-run3.png" alt="Workflow chạy trong n8n">
+  <p>Vòng 3 (22/08): 5/5 assert PASS — execution #203, chênh 333,777 đúng bị từ chối phân loại vội</p>
+</section>
+
+<section class="slide" id="s5">
+  <h2>4 · Nghiệm thu & rủi ro</h2>
+  <ul>
+    <li>E2e: 5/5 assert sau 3 vòng (vòng 1 FAIL: AI bỏ điều kiện bội 50k — sửa rule thành if đánh số)</li>
+    <li>Skill: 4/4 phân loại PASS (chiết khấu / sai ngày / trùng đơn / thiếu đơn)</li>
+    <li>MVP: 6/6 test PASS (kể cả dữ liệu lạ 12.500.000đ), 3 vòng cải tiến</li>
+    <li>Rủi ro lớn nhất: dữ liệu đại lý nhạy cảm — cách giảm: toàn bộ test dùng dữ liệu mô phỏng fallback-inputs B6, khai rõ trong run-log phần chưa test</li>
+  </ul>
+</section>
+
+<section class="slide" id="s6">
+  <h2>5 · Kế hoạch tiếp theo</h2>
+  <ul>
+    <li>Tuần tới: đọc file excel thật thay dán CSV, chạy full 12 đại lý, nối schema recon vào node validation</li>
+    <li>Vận hành khi: 2 tháng đầu đối chiếu song song với tay, 0 dòng lệch bị bỏ sót</li>
+  </ul>
+  <p style="margin-top:3rem; font-size:1.4rem; color:var(--red); font-weight:700;">Cảm ơn lớp và giảng viên.</p>
+</section>
+
+<div class="hint">← → hoặc bấm để chuyển slide</div>
+<div class="footer">Trần Ngọc Linh · Capstone K1</div>
+
+<script>
+  const slides=[...document.querySelectorAll('.slide')];let i=0;
+  function show(n){i=Math.max(0,Math.min(slides.length-1,n));slides.forEach((s,k)=>s.classList.toggle('active',k===i));}
+  document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' ')show(i+1);if(e.key==='ArrowLeft')show(i-1);});
+  document.addEventListener('click',()=>show(i+1));
+</script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+{
+  "loai": "HOI_BAO_HANH",
+  "san_pham": "Ốp lưng ArmorFlex iPhone 15",
+  "id": "P03",
+  "can_chuyen_nguoi": false,
+  "du_lieu_tra": {
+    "price": 150000,
+    "stock": 42,
+    "warranty_months": 0
+  },
+  "nguon": "products.json#P03",
+  "reply_draft": "Dạ Ốp lưng ArmorFlex iPhone 15 là phụ kiện không có bảo hành ạ."
+}

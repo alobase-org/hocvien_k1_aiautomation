@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CSKH Chat — MVP Khánh (B8)</title>
+<style>
+  :root{--navy:#1F3864;--red:#C00000;--ok:#1a7f37;--warn:#9a6700;--bg:#F7F5F0;}
+  *{box-sizing:border-box;font-family:"Calibri","Segoe UI",sans-serif;}
+  body{background:var(--bg);color:#222;max-width:760px;margin:0 auto;padding:1.5rem;}
+  h1{color:var(--navy);font-size:1.4rem;}
+  #chat{background:#fff;border:1px solid #ccc;border-radius:10px;height:380px;overflow-y:auto;padding:1rem;margin-top:.7rem;}
+  .msg{max-width:75%;padding:.55rem .8rem;border-radius:12px;margin:.35rem 0;font-size:.95rem;white-space:pre-wrap;}
+  .bot{background:#E8F0FE;margin-right:auto;}
+  .khach{background:#D8F5DC;margin-left:auto;}
+  .sent{background:#D8F5DC;border:2px solid var(--ok);}
+  .badge{display:inline-block;font-size:.72rem;padding:.1rem .5rem;border-radius:8px;margin-left:.4rem;}
+  .canhan{background:#fde8e8;color:var(--red);font-weight:700;}
+  .loai{background:#e8f0fe;color:var(--navy);}
+  #inputbar{display:flex;gap:.5rem;margin-top:.7rem;}
+  #tin{flex:1;padding:.6rem;border:1px solid #bbb;border-radius:8px;}
+  button{background:var(--navy);color:#fff;border:none;padding:.6rem 1.1rem;border-radius:8px;cursor:pointer;font-size:.95rem;}
+  button.sec{background:var(--red);} button.ok{background:var(--ok);}
+  #stats{margin-top:.8rem;font-size:.85rem;color:#555;}
+  .pending{outline:2px dashed var(--warn);}
+</style>
+</head>
+<body>
+<h1>CSKH Chat <small style="font-size:.78rem;color:#888">(MVP Khánh — rule cứng local, HITL: nhân viên duyệt gửi)</small></h1>
+<div id="chat"><div class="msg bot">Dạ em là trợ lý cửa hàng ạ, anh/chị cần hỏi gì ạ? (giá · còn hàng · bảo hành)</div></div>
+<div id="inputbar">
+  <input id="tin" placeholder='Gõ tin nhắn khách... (vd: "airbeat lite còn không")'>
+  <button onclick="gui()">Gửi</button>
+  <button class="ok" onclick="duyetGui()">Nhân viên duyệt gửi</button>
+  <button class="sec" onclick="taiLog()">Tải log CSV</button>
+</div>
+<div id="stats"></div>
+<script>
+const PRODUCTS=[
+ {id:"P01",name:"Tai nghe Bluetooth AirBeat Lite",aliases:["airbeat","tai nghe","bluetooth"],price:690000,stock:18,warranty_months:12},
+ {id:"P02",name:"Sạc nhanh 65W PowerDash",aliases:["sac","65w","powerdash","charger"],price:320000,stock:0,warranty_months:6},
+ {id:"P03",name:"Ốp lưng ArmorFlex iPhone 15",aliases:["op lung","iphone 15","armorflex"],price:150000,stock:42,warranty_months:0},
+ {id:"P04",name:"Củ sạc không dây MagSnap",aliases:["magsnap","khong day","sac khong day"],price:450000,stock:7,warranty_months:12}];
+const LOG=[]; let pendingBot=null;
+function classify(t){const tl=t.toLowerCase();
+ if(/hỏng|đổi|khiếu nại|trả hàng|hoàn tiền/.test(tl))return "KHIEU_NAI";
+ const k=[];if(/giá|bao nhiêu/.test(tl))k.push("HOI_GIA");if(/còn|hàng|stock|có không/.test(tl))k.push("HOI_TON_KHO");if(/bảo hành|warranty/.test(tl))k.push("HOI_BAO_HANH");
+ return k.length?k.join("+"):"KHAC";}
+function findProduct(t){const tl=t.toLowerCase();
+ const pairs=PRODUCTS.flatMap(p=>p.aliases.map(a=>[a,p])).sort((x,y)=>y[0].length-x[0].length);
+ for(const [a,p] of pairs){
+   if(a.length>=5){if(tl.includes(a))return p;}
+   else{if(new RegExp("(^|[\\s,.;!?])"+a+"([\\s,.;!?]|$)").test(tl))return p;}}
+ return null;}
+function reply(t){
+ const loai=classify(t),p=findProduct(t);
+ const r={loai,id:p?p.id:null,can_chuyen_nguoi:false};
+ if(loai==="KHIEU_NAI"){r.can_chuyen_nguoi=true;
+  r.text="Dạ em rất tiếc về sự cố ạ 🙏. Em đã chuyển tới bộ phận kỹ thuật — anh/chị giữ nguyên máy và hóa đơn giúp em, bộ phận sẽ liên hệ trong giờ hành chính ạ.";return r;}
+ if(!p){r.text="Dạ shop chuyên phụ kiện điện thoại ạ. Anh/chị cần em tư vấn: (1) tai nghe Bluetooth, (2) sạc nhanh, (3) ốp lưng — món nào ạ?";return r;}
+ if(loai.includes("HOI_TON_KHO")&&p.stock===0){r.text=`Dạ ${p.name} hiện hết hàng ạ. Em đặt trước giúp anh/chị không, 2 ngày là có ạ?`;return r;}
+ if(loai.includes("HOI_TON_KHO")&&loai.includes("HOI_GIA")){r.text=`Dạ ${p.name} còn ${p.stock} chiếc, giá ${p.price.toLocaleString("vi-VN")}đ ạ. Anh/chị cần em giữ một chiếc không ạ?`;return r;}
+ if(loai.includes("HOI_GIA")){r.text=`Dạ ${p.name} giá ${p.price.toLocaleString("vi-VN")}đ ạ.`;return r;}
+ if(loai.includes("HOI_BAO_HANH")){r.text=p.warranty_months>0?`Dạ ${p.name} bảo hành ${p.warranty_months} tháng ạ.`:`Dạ ${p.name} là phụ kiện không có bảo hành ạ.`;return r;}
+ r.text=`Dạ anh/chị hỏi về ${p.name} phải không ạ?`;return r;}
+function bubble(text,who,badges){
+ const d=document.createElement("div");d.className="msg "+who.cls;
+ d.textContent=text;
+ (badges||[]).forEach(b=>{const s=document.createElement("span");s.className="badge "+b.cls;s.textContent=b.txt;d.appendChild(s);});
+ document.getElementById("chat").appendChild(d);
+ document.getElementById("chat").scrollTop=99999;return d;}
+function gui(){
+ const t=document.getElementById("tin").value.trim();if(!t)return;
+ bubble(t,{cls:"khach"});
+ const r=reply(t);
+ const badges=[{cls:"loai",txt:r.loai}];if(r.can_chuyen_nguoi)badges.push({cls:"canhan",txt:"CẦN NHÂN VIÊN"});
+ const el=bubble(r.text,{cls:"bot"},badges);
+ if(r.can_chuyen_nguoi){el.classList.add("pending");pendingBot=el;}
+ LOG.push({gio:new Date().toLocaleTimeString("vi-VN"),loai:r.loai,id:r.id,chuyen:r.can_chuyen_nguoi});
+ document.getElementById("tin").value="";updateStats();}
+function duyetGui(){
+ if(!pendingBot){bubble("Nhân viên: chưa có reply nào cần duyệt — chỉ khiếu nại mới cần",{cls:"bot"});return;}
+ pendingBot.classList.remove("pending");pendingBot.classList.add("sent");
+ const s=document.createElement("span");s.className="badge";s.style.cssText="background:#e6f4ea;color:#1a7f37";
+ s.textContent="NHÂN VIÊN ĐÃ DUYỆT GỬI";pendingBot.appendChild(s);pendingBot=null;}
+function updateStats(){
+ const kn=LOG.filter(x=>x.chuyen).length;
+ document.getElementById("stats").textContent=`Tổng ${LOG.length} tin · chuyển nhân viên: ${kn} · thường: ${LOG.length-kn}`;}
+function taiLog(){
+ const csv="gio,loai,id,chuyen_nguoi\n"+LOG.map(x=>`${x.gio},${x.loai},${x.id||""},${x.chuyen}`).join("\n");
+ const a=document.createElement("a");a.href="data:text/csv;charset=utf-8,"+encodeURIComponent(csv);a.download="cskh-log.csv";a.click();}
+</script>
+</body>
+</html>

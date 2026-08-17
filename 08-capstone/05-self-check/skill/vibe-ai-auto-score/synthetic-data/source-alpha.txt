@@ -1,0 +1,14 @@
+# Báo cáo dự án — Đội Alpha
+
+## Tóm tắt
+Đội Alpha xây dựng chatbot hỗ trợ tuyển sinh cho trường đại học. Hệ thống được thiết kế theo kiến trúc microservices với 5 service độc lập.
+
+## Kỹ thuật
+- Tech stack: Python, FastAPI, PostgreSQL, Redis.
+- Thời gian phản hồi trung bình 120ms ở p95.
+- Có viết unit test, độ phủ 78%.
+- Không có tài liệu bảo mật hoặc phân tích lỗ hổng.
+
+## Kết quả
+- Giảm 60% câu hỏi trùng lặp tới phòng tuyển sinh.
+- Demo chạy ổn định trong buổi bảo vệ.

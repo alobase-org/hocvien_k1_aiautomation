@@ -1,0 +1,66 @@
+[
+  {
+    "id": "P01",
+    "name": "Tai nghe Bluetooth AirBeat Lite",
+    "aliases": [
+      "tai nghe",
+      "airbeat",
+      "bluetooth",
+      "airbeat lite",
+      "headphone"
+    ],
+    "category": "Phụ kiện",
+    "price": 690000,
+    "stock": 18,
+    "warranty_months": 12,
+    "summary": "Tai nghe TWS pin 24h"
+  },
+  {
+    "id": "P02",
+    "name": "Sạc nhanh 65W PowerDash",
+    "aliases": [
+      "sac",
+      "sạc",
+      "charger",
+      "65w",
+      "powerdash"
+    ],
+    "category": "Phụ kiện",
+    "price": 320000,
+    "stock": 0,
+    "warranty_months": 6,
+    "summary": "Sạc PD 65W 2 cổng"
+  },
+  {
+    "id": "P03",
+    "name": "Ốp lưng ArmorFlex iPhone 15",
+    "aliases": [
+      "op lung",
+      "ốp",
+      "op",
+      "armorflex",
+      "iphone 15"
+    ],
+    "category": "Phụ kiện",
+    "price": 150000,
+    "stock": 42,
+    "warranty_months": 0,
+    "summary": "Ốp chống sốc (không bảo hành)"
+  },
+  {
+    "id": "P04",
+    "name": "Củ sạc không dây MagSnap",
+    "aliases": [
+      "magsnap",
+      "khong day",
+      "sạc không dây",
+      "sac khong day",
+      "wireless"
+    ],
+    "category": "Phụ kiện",
+    "price": 450000,
+    "stock": 7,
+    "warranty_months": 12,
+    "summary": "Sạc QB 15W"
+  }
+]

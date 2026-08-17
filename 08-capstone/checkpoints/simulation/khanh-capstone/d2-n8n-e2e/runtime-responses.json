@@ -1,0 +1,14 @@
+{
+  "input1": {
+    "content_type": "application/json; charset=utf-8",
+    "body": "{\"error\":\"Loi AI\",\"message\":\" thu lai sau 1 phut\"}"
+  },
+  "input2": {
+    "content_type": "application/json; charset=utf-8",
+    "body": "{\"candidates\":[{\"content\":{\"parts\":[{\"text\":\"{\\n  \\\"loai\\\": \\\"KHAC\\\",\\n  \\\"san_pham\\\": null,\\n  \\\"id\\\": null,\\n  \\\"du_lieu_tra\\\": null,\\n  \\\"reply_draft\\\": \\\"Dạ em chào anh/chị, hiện cửa hàng em đang cung cấp 3 nhóm sản phẩm chính gồm tai nghe không dây, củ sạc nhanh và ốp lưng/phụ kiện điện thoại. Anh/chị đang quan tâm đến nhóm sản phẩm nào để em hỗ trợ tư vấn chi tiết ạ?\\\",\\n  \\\"can_chuyen_nguoi\\\": false,\\n  \\\"nguon\\\": null\\n}\",\"thoughtSignature\":\"EuwMCukMARFNMg9XlztZRu0NPZFhBmbG1/FZ4yhpkiOp2Q19k8ku5Le1zrTzOWAtncab59WMDIzbO9/yKOp6YMMjdOaWUBoz6pNqZKG6T6YFcALwFiGkFmFlPEiHgZby2EYWwQRKwfIEbdqT1kqIDEEiV6Q27FLJRkHZgiX3bW/31W11s4WfdsqspjFXRX4nTMy0UWy6K2iETE5ipYYwNcPB+Gmh/fg1jM275gBZySh42uyFDnqzv0jMCMorGMOTrQUJ/u/9hv5cE00HqyGzOO/ZN7stzIXoqvOlcMhGXPY2IL13j2bvSNV4oX9hMGn1D4RFevgryDzXP4Z4NS+MbYsGNoi3qvrr/xzkeuLKwvDJ09Z2lpJuaZfucF7zeozcPBmQLKG3VU+CRyL1g+Y8xbPtWDBI0E7G7Bk275CA7np73f4y2A9t+OEbxjSkoK4VRS+ZTIAzdk9LiNNqi1GXLssGd90hhuRas2eI58OLm8i6xJY+FzPzYC2z18prv703JopGf22hyrBhrsFRzGz61ADqreBdLljKRMCiIngkyr+bHy7/Ps6Vf9P/GcGrxHpR7eH7kmgsuTZS8Vb1Aibqs/dQ6I7fmjcb7sdbK9RY069LMwJjfgJO/89prZK0EbrZeekzQAXUQcwN+G6Z0wqZKXYVpVZBxB0lY9j9m3BGlqGTwWMZbJmswQT/Eio4+06gdsF3rLGO/lZOVjAjUx6Q0jnUWHq+aeJ1nGiXg+L4zq5yd/HGdsx7kFYTIZe3uNRdlP3Gl4fQmdHpHVOM979gB+rjx4zOFKVmgRv4EeJhIqrcegpc+0ADI8BOHg3i0NoEm5J2yckCmnQ5cxshpc7/EODGcPue5J2MAOJkT7PP8gR7ozNbIuau/mtPG6JazxO0Wa5bKo+Dsf+L31wyPBDrok8k0k5yj9v+vcSGh/nSsVLLNUw4j36S/cvAiIoBN1UvCaew7vkU+nNf+ZCQWhaVcAxiCq90faxm4opLbCZZuyCnTj733BFLXvYGX4Eu26oGnfbsJKa5efMmLBF7LGYdebEgHa3RZGorkZQrUsCEGEXuyFmE8sUZs6MgbRCawgN9L/7Goaj7x7gmXcWSfhdFGkP1WsX19waDUM+3qApd+KsejPz1O61qqeh/IMmv8Rdsn0dJBBjY7nWZVrIra3X5pP3XcvrqYUpl+aUO3UUYM5MToMcGhrsXM7AmnqAF1eQHKtiiwgXFkAFrP98+NDqLNn2qoU388jvpzs6vwt0I7Cr9NKgOKvxZweuGR7Otx8d3rXK5GxPWDOyQJlDjg/fkenWKTrvYftTlt8/ZFyGwfQgHr3VAJCFX0wptS/go99ar9QklXvA4dOFlSTovT8QsqnWOaIU652Losif+LML2YEGAE6BoN6TabJ9GKzqlQmTcqj6B0oJk6z/xdeWLW2iUcxDfnYcJfHKMxVGl7q57BugZW6HqsRjUqpBDcC26UwG3EQkL+tYG5N3KV64vrzL60YR1LELWd/0Ua1K2TDnRmpb4SfuElNMfrNeHMir7Ay2gwFPDpH2ISn"
+  },
+  "input3": {
+    "content_type": "application/json; charset=utf-8",
+    "body": "{\"error\":\"Loi AI\",\"message\":\" thu lai sau 1 phut\"}"
+  }
+}

@@ -1,0 +1,485 @@
+{
+  "name": "Linh K1 - Recon Discrepancy Analyzer (mượn khung B4) - v3",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "linh-recon",
+        "responseMode": "responseNode",
+        "options": {
+          "allowedOrigins": "*"
+        }
+      },
+      "id": "webhook-node",
+      "name": "Webhook Nhan bang lech cong no",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -1400,
+        300
+      ],
+      "webhookId": "contract-review"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "for (const item of $input.all()) {\n  const body = item.json.body || {};\n  let text = item.json.contract_text || body.contract_text || item.json.text || item.json.data || '';\n  item.json.contract_text = text;\n}\nreturn $input.all();"
+      },
+      "id": "extract-docx",
+      "name": "Extract .docx / Normalize Input",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1150,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "language": "javaScript",
+        "jsCode": "// === REDACTION 4 CAP (JS) ===\n// stripDiacritics: chuyen tieeng Viet co dau -> khong dau de regex de match\nfunction stripDiacritics(s) {\n  return s.normalize('NFD').replace(/[\\u0300-\\u036f]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D');\n}\n\nfunction redact(text) {\n  // Cap 1 - PII Email\n  text = text.replace(/[\\w.+-]+@[\\w-]+\\.\\w+/g, '[email redact]');\n  // Cap 2 - Ma so thue (MST): match \"Ma so thue:\" ca co dau va khong dau\n  const noAccent = stripDiacritics(text);\n  const mstRegex = /(Ma\\s*so\\s*thue:\\s*)(\\d{10})/gi;\n  let m;\n  while ((m = mstRegex.exec(noAccent)) !== null) {\n    text = text.substring(0, m.index) + m[1] + '[MST redact]' + text.substring(m.index + m[0].length);\n    break;\n  }\n  // Cap 1 - PII SDT\n  text = text.replace(/\\b0\\d{9,10}\\b/g, '0xxx');\n  // Cap 2 - Gia tri tai chinh\n  text = text.replace(/\\b\\d{1,3}(?:[.,]\\d{3})+(?:\\s*(?:VND|VNĐ|dong|đong))?\\b/gi, '[gia tri redact]');\n  // Cap 3 - Nhay cam nghiep vu: ten nguoi dai dien (Họ + Văn/Thị + Tên)\n  text = text.replace(/([A-ZÀ-Ỹ][a-zà-ỹ]+)\\s+V[aă]n\\s+[A-ZÀ-Ỹ][a-zà-ỹ]+/g, 'Dai dien Ben A');\n  text = text.replace(/([A-ZÀ-Ỹ][a-zà-ỹ]+)\\s+Th[iị]\\s+[A-ZÀ-Ỹ][a-zà-ỹ]+/g, 'Dai dien Ben B');\n  // Cap 4 - Gate To mat: DUNG workflow\n  const lower = stripDiacritics(text).toLowerCase();\n  for (const kw of ['toi mat', 'tuyet mat', 'bi mat nha nuoc']) {\n    if (lower.includes(kw)) {\n      throw new Error('SECURITY GATE CAP 4: ' + kw + ' -> STOP, yeu cau AI Local/on-prem');\n    }\n  }\n  return text;\n}\n\nfor (const item of $input.all()) {\n  const raw = item.json.data || item.json.text || item.json.contract_text || '';\n  item.json.contract_id = 'HD-' + new Date().getFullYear() + '-UPLOAD';\n  item.json.contract_text = raw;\n  item.json.contract_redacted = redact(raw);\n  item.json.contract_original = raw;\n}\nreturn $input.all();"
+      },
+      "id": "th1-redaction",
+      "name": "TH1 - Redaction 4 Cap",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -900,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "key",
+              "value": "REPLACE_WITH_YOUR_GEMINI_API_KEY"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ contents: [{ role: \"user\", parts: [{ text: \"Ban la tro ly ke toan cong no. Phan tich bang dong lech cong nho duoi day (da ghep so_dh giua noi bo va sao ke dai ly).\\n\\nYEU CAU:\\n1. Voi moi dong: tinh chenh = tien_noi_bo - tien_sao_ke; so ngay thanh toan 2 phia.\\n2. Phan loai nguyen nhan theo tung rule KB (dieu kien chinh xac, khong doan):\\n   CHIET_KHAU_CHUA_GHI: noi bo > sao ke VA chenh la boi so cua 50.000.\\n   SAI_NGAY: tien bang nhau, lech ngay <=3 ngay va vut qua cuoi thang.\\n   TRUNG_DON: cung so_dh xuat hien >=2 lan mot phia.\\n   THIEU_DON: mot phia trong so_tien.\\n   KHONG_RO: con lai — bat buu 1 cau ly do.\\n3. Moi phan loai kem do_tin_cay (cao/trung/thap) + dan chung (gia tri chenh/ngay trich tu dong).\\n4. Soan email draft cho tung dai ly co lech: neu dong lech + nguyen nhan de xuat + nho xac nhan — khong do loi.\\n\\nKB RULES phan loai nhu tren. Bang dong lech:\\n\" + $json.data }]}]}) }}",
+        "options": {}
+      },
+      "id": "th2-gemini",
+      "name": "AI Phan loai nguyen nhan lech (Gemini)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -600,
+        300
+      ],
+      "onError": "continueErrorOutput",
+      "maxTries": 3,
+      "waitBetweenTries": 1000
+    },
+    {
+      "parameters": {
+        "language": "javaScript",
+        "jsCode": "// === SCHEMA VALIDATION theo clause.schema.json ===\nconst REQUIRED_TOP = ['contract_id', 'metadata', 'clauses', 'confidence_score', 'need_review'];\nconst REQUIRED_META = ['ben_a', 'ben_b', 'ngay_ky', 'loai_hop_dong'];\nconst REQUIRED_CLAUSE = ['id', 'tieu_de', 'noi_dung', 'evidence', 'confidence_score', 'need_review'];\nconst REQUIRED_EVIDENCE = ['verbatim_quote'];\n\nfor (const item of $input.all()) {\n  const errors = [];\n  let textContent = '';\n  try {\n    const cands = item.json.candidates || [];\n    if (cands.length > 0) {\n      const parts = (cands[0].content && cands[0].content.parts) || [];\n      textContent = (parts[0] && parts[0].text) || '';\n    }\n  } catch (e) { errors.push('Loi doc response AI: ' + e.message); }\n\n  let parsed = {};\n  if (textContent) {\n    try { parsed = (typeof textContent === 'string') ? JSON.parse(textContent) : textContent; }\n    catch (e) { errors.push('Loi parse JSON AI: ' + e.message); }\n  }\n\n  if (parsed && typeof parsed === 'object' && !Array.isArray(parsed) && Object.keys(parsed).length > 0) {\n    for (const f of REQUIRED_TOP) if (!(f in parsed)) errors.push('Thieu top-level field: ' + f);\n    const meta = parsed.metadata || {};\n    for (const f of REQUIRED_META) if (!(f in meta)) errors.push('Thieu metadata field: ' + f);\n    const clauses = Array.isArray(parsed.clauses) ? parsed.clauses : [];\n    if (clauses.length < 3) errors.push('clauses minItems 3 (hien ' + clauses.length + ')');\n    for (const c of clauses) {\n      for (const f of REQUIRED_CLAUSE) if (!(f in c)) errors.push('Thieu clause field: ' + f);\n      const ev = c.evidence || {};\n      for (const f of REQUIRED_EVIDENCE) if (!(f in ev)) errors.push('Clause ' + (c.id||'?') + ' thieu evidence.' + f);\n      if (typeof c.confidence_score !== 'number' || c.confidence_score < 0 || c.confidence_score > 1)\n        errors.push('Clause ' + (c.id||'?') + ' confidence_score phai 0-1');\n      if (typeof c.need_review !== 'boolean') errors.push('Clause ' + (c.id||'?') + ' need_review phai boolean');\n    }\n    if (typeof parsed.confidence_score !== 'number' || parsed.confidence_score < 0 || parsed.confidence_score > 1)\n      errors.push('top-level confidence_score phai 0-1');\n    if (typeof parsed.need_review !== 'boolean') errors.push('top-level need_review phai boolean');\n    item.json.clauses = clauses;\n    item.json.metadata = meta;\n    item.json.extracted_data = parsed;\n  } else {\n    errors.push('Output AI khong phai Object JSON hop le');\n  }\n\n  item.json._schema_ok = (errors.length === 0);\n  item.json._schema_errors = errors;\n  item.json._retry_count = (item.json._retry_count || 0);\n}\nreturn $input.all();"
+      },
+      "id": "th2-schema",
+      "name": "TH2 - Schema Validation (clause.schema.json)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -420,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "language": "javaScript",
+        "jsCode": "for (const item of $input.all()) {\n  item.json._retry_count = (item.json._retry_count || 0) + 1;\n}\nreturn $input.all();"
+      },
+      "id": "th2-retry-count",
+      "name": "TH2 - Tang retry counter",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -180,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json._schema_ok }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "th2-if-gate",
+      "name": "TH2 - IF Schema Gate",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        60,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json._retry_count }}",
+              "rightValue": 2,
+              "operator": {
+                "type": "number",
+                "operation": "smaller"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "th2-if-retry",
+      "name": "TH2 - IF retry < 2",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        60,
+        560
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "nr1",
+              "name": "need_review",
+              "value": true,
+              "type": "boolean"
+            },
+            {
+              "id": "nr2",
+              "name": "clauses",
+              "value": [],
+              "type": "array"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "th2-need-review",
+      "name": "TH2 - Set need_review (schema fail dai dang)",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        360,
+        560
+      ]
+    },
+    {
+      "parameters": {
+        "language": "javaScript",
+        "jsCode": "// === EVIDENCE verbatim + OMISSION (semantics) ===\n// stripDiacritics: bo dau tieng Viet de regex de match chinh xac\nfunction stripDiacritics(s) {\n  return s.normalize('NFD').replace(/[\\u0300-\\u036f]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D');\n}\n// Moi group: testFn nhan clause title + summary + evidence da strip dau va lower-case.\n// Omission check chi danh dau thieu coverage; red flag check nam o node Policy Review.\nconst REQUIRED_GROUPS = [\n  { group: 'TC01 - Đối tượng & Phạm vi', test: t => /\\bdoi tuong\\b/i.test(t) || /\\bpham vi\\b/i.test(t) || /\\bban giao\\b/i.test(t) },\n  { group: 'TC02 - Giá trị & Thanh toán', test: t => /\\bgia tri\\b/i.test(t) || /\\bthanh toan\\b/i.test(t) || /\\bhoa don\\b/i.test(t) },\n  { group: 'TC03 - Nghĩa vụ các Bên', test: t => /\\bnghia vu\\b/i.test(t) || /\\bcam ket\\b/i.test(t) || /\\bphoi hop\\b/i.test(t) },\n  { group: 'TC04 - Thời hạn & Tiến độ', test: t => /\\bthoi han\\b/i.test(t) || /\\btien do\\b/i.test(t) || /\\bmoc ban giao\\b/i.test(t) },\n  { group: 'TC05 - Chấm dứt & Hậu quả chấm dứt', test: t => /\\bcham dut\\b/i.test(t) || /\\bdon phuong\\b/i.test(t) || /\\bhau qua cham dut\\b/i.test(t) },\n  { group: 'TC06 - Bảo mật thông tin', test: t => /\\bbao mat\\b/i.test(t) || /\\btiet lo\\b/i.test(t) || /\\bthong tin bao mat\\b/i.test(t) },\n  { group: 'TC07 - Sở hữu trí tuệ', test: t => /\\bso huu tri tue\\b/i.test(t) || /\\bban quyen\\b/i.test(t) || /\\bsource code\\b/i.test(t) },\n  { group: 'TC08 - Bảo hành & Giới hạn trách nhiệm', test: t => /\\bbao hanh\\b/i.test(t) || /\\bgioi han trach nhiem\\b/i.test(t) || /\\bboi thuong\\b/i.test(t) },\n  { group: 'TC10 - Bất khả kháng', test: t => /\\bbat kha khang\\b/i.test(t) || /\\bdich benh\\b/i.test(t) || /\\bthien tai\\b/i.test(t) },\n  { group: 'TC11 - Phạt vi phạm', test: t => /\\bphat vi pham\\b/i.test(t) || /\\bmuc phat\\b/i.test(t) },\n  { group: 'TC12 - Tranh chấp & Luật áp dụng', test: t => /\\btranh chap\\b/i.test(t) || /\\bluat ap dung\\b/i.test(t) || /\\btoa an\\b/i.test(t) || /\\btrong tai\\b/i.test(t) }\n];\n\nfor (const item of $input.all()) {\n  const clauses = item.json.clauses || [];\n  const contract = item.json.contract_original || item.json.contract_text || '';\n  const hallucinations = [];\n  for (const c of clauses) {\n    const quote = (c.evidence && c.evidence.verbatim_quote) || '';\n    if (quote && !contract.includes(quote)) {\n      hallucinations.push({ id: c.id, flag: 'hallucination', reason: 'verbatim_quote KHÔNG có nguyên văn trong hợp đồng gốc' });\n    }\n  }\n\n  // Strip dau moi clause title & noi dung de match chinh xac\n  const clauseTexts = clauses.map(c => stripDiacritics((c.id || '') + ' ' + (c.tieu_de || '') + ' ' + (c.noi_dung || '') + ' ' + ((c.evidence && c.evidence.verbatim_quote) || '')).toLowerCase());\n  const presentGroups = [];\n  const omissions = [];\n  for (const g of REQUIRED_GROUPS) {\n    const hit = clauseTexts.some(t => g.test(t));\n    if (hit) presentGroups.push(g.group); else omissions.push(g.group);\n  }\n\n  item.json.evidence_checked = {\n    hallucinations, omissions, present_groups: presentGroups, n_clauses: clauses.length\n  };\n}\nreturn $input.all();"
+      },
+      "id": "th3-evidence",
+      "name": "TH3 - Evidence + Omission (semantics)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        340,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "language": "javaScript",
+        "jsCode": "// === POLICY REVIEW vs checklist-rui-ro.md (Knowledge Base) ===\n// Rule-based second pass: review ca dieu khoan da co, gan red flag, va tao de xuat sua.\nfunction stripDiacritics(s) {\n  return s.normalize('NFD').replace(/[\\u0300-\\u036f]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D');\n}\nfunction any(reList, text) { return reList.some(re => re.test(text)); }\nconst KB_RULES = [\n  { id: 'TC01', label: 'Scope creep / phát sinh không kiểm soát', kw: [/cong viec khac theo yeu cau/i, /khong tinh them chi phi/i, /phat sinh.*khong.*phi/i, /theo yeu cau cua ben a/i], sev: 'HIGH', redline: 'Mọi công việc phát sinh ngoài phụ lục/phạm vi đã chốt phải được hai bên thống nhất bằng phụ lục bổ sung và được tính phí riêng.' },\n  { id: 'TC02', label: 'Thanh toán cảm tính hoặc mốc thanh toán mơ hồ', kw: [/hai long/i, /hoan toan hai long/i, /thoi han hop ly/i, /sau khi.*chap nhan.*don phuong/i], sev: 'HIGH', redline: 'Quy định mốc thanh toán định lượng, thời hạn phản hồi nghiệm thu 05 ngày làm việc, cơ chế deemed acceptance và lãi phạt chậm trả.' },\n  { id: 'TC03', label: 'Đổ toàn bộ nghĩa vụ/trách nhiệm sang một bên', kw: [/chiu toan bo trach nhiem/i, /bat ke loi cua ben a/i, /khong duoc thay doi nhan su/i, /phat.*moi lan thay doi nhan su/i], sev: 'HIGH', redline: 'Mỗi bên chịu trách nhiệm trong phạm vi lỗi và nghĩa vụ của mình; thay đổi nhân sự được phép nếu thông báo trước và nhân sự thay thế tương đương.' },\n  { id: 'TC04', label: 'Tiến độ đóng đinh không trừ lỗi bên kia', kw: [/bat ke thoi gian ben a/i, /khong duoc gia han/i, /ngay hoan tat co dinh/i, /dung tien do bat ke/i], sev: 'MED', redline: 'Tiến độ phải được gia hạn tương ứng khi Bên A chậm cung cấp thông tin, mặt bằng, phê duyệt hoặc khi có bất khả kháng.' },\n  { id: 'TC05', label: 'Đơn phương chấm dứt/gia hạn bất bình đẳng', kw: [/don phuong cham dut.*khong phai boi thuong/i, /ben a co quyen don phuong/i, /ben b.*phat 100/i, /don phuong gia han/i, /khong can.*dong y/i], sev: 'HIGH', redline: 'Hai bên chỉ được đơn phương chấm dứt khi bên kia vi phạm nghiêm trọng và không khắc phục trong 15 ngày; gia hạn phải bằng văn bản có đồng ý của cả hai bên.' },\n  { id: 'TC06', label: 'Bảo mật vô thời hạn hoặc phạt siêu ngạch', kw: [/vo thoi han/i, /vinh vien/i, /moi thong tin.*bao mat/i, /phat.*5\\.?000\\.?000\\.?000/i], sev: 'HIGH', redline: 'Giới hạn nghĩa vụ bảo mật trong thời hạn hợp đồng và 02-03 năm sau chấm dứt; loại trừ thông tin công khai/hợp pháp/tự phát triển.' },\n  { id: 'TC07', label: 'Chuyển giao IP trước khi thanh toán đủ', kw: [/thuoc ve ben a ngay tu thoi diem tao ra/i, /chuyen giao.*ngay khi tao ra/i, /source code.*thuoc ve ben a/i, /quyen so huu tri tue.*truoc.*thanh toan/i], sev: 'HIGH', redline: 'IP/kết quả công việc chỉ chuyển giao sau khi Bên A thanh toán đủ; Bên B giữ quyền với Background IP/công cụ có trước.' },\n  { id: 'TC08', label: 'Bồi thường không giới hạn hoặc thiệt hại gián tiếp', kw: [/khong gioi han/i, /khong co muc tran/i, /vo han/i, /thiet hai gian tiep/i, /mat doanh thu/i, /mat co hoi kinh doanh/i, /suy giam uy tin/i], sev: 'HIGH', redline: 'Tổng trách nhiệm bồi thường không vượt quá 100% giá trị hợp đồng/giá trị đã nhận và loại trừ thiệt hại gián tiếp, hệ quả, lợi nhuận bị mất.' },\n  { id: 'TC09', label: 'Tự động gia hạn với cửa sổ hủy bất lợi', kw: [/tu dong gia han/i, /auto-renew/i, /thong bao khong gia han.*60 ngay/i, /tru khi.*bao huy/i], sev: 'MED', redline: 'Không áp dụng tự động gia hạn mặc định; chỉ gia hạn bằng phụ lục/văn bản trước khi hết hạn.' },\n  { id: 'TC10', label: 'Bất khả kháng quá hẹp hoặc thủ tục mất quyền', kw: [/bat kha khang.*chi gom/i, /loai tru.*dich benh/i, /loai tru.*thay doi.*luat/i, /24 gio.*mat quyen/i], sev: 'MED', redline: 'Mở rộng bất khả kháng gồm dịch bệnh, thay đổi luật/chính sách, sự cố hạ tầng; thời hạn thông báo hợp lý 07 ngày làm việc.' },\n  { id: 'TC11', label: 'Phạt vi phạm vượt trần hoặc phạt trùng', kw: [/phat vi pham.*(20|30|50)%/i, /(20|30|50)%.*gia tri hop dong/i, /phat trung lap/i, /phat theo ngay.*khong gioi han/i], sev: 'HIGH', redline: 'Mức phạt vi phạm không vượt quá 8% giá trị phần nghĩa vụ bị vi phạm theo Điều 301 Luật Thương mại và không phạt trùng lắp.' },\n  { id: 'TC12', label: 'Cơ quan giải quyết tranh chấp bất lợi', kw: [/toa an nhan dan tinh ca mau/i, /toa an.*tinh xa/i, /trong tai quoc te/i, /siac/i, /hkiac/i], sev: 'HIGH', redline: 'Ưu tiên thương lượng/hòa giải; nếu không thành, giải quyết tại Tòa án có thẩm quyền tại nơi doanh nghiệp đặt trụ sở hoặc cơ quan phù hợp tại Việt Nam.' }\n];\n\nfor (const item of $input.all()) {\n  const clauses = item.json.clauses || [];\n  const reviewed = clauses.map(c => {\n    // Strip dau truoc khi match\n    const text = stripDiacritics((c.id||'') + ' ' + (c.tieu_de||'') + ' ' + (c.noi_dung||'') + ' ' + ((c.evidence && c.evidence.verbatim_quote)||'')).toLowerCase();\n    const matched = [];\n    for (const r of KB_RULES) if (any(r.kw, text)) matched.push(r);\n    const isHigh = matched.some(m => m.sev === 'HIGH') || c.severity === 'HIGH';\n    const hasMed = matched.some(m => m.sev === 'MED') || c.severity === 'MED';\n    const newSev = isHigh ? 'HIGH' : (hasMed ? 'MED' : (c.severity || 'LOW'));\n    const existingDeXuat = c.de_xuat && c.de_xuat.trim() && !c.de_xuat.includes('Cần điều chỉnh') ? c.de_xuat : '';\n    const kbDeXuat = matched.length ? matched.map(m => '[' + m.id + ' - ' + m.label + '] ' + m.redline).join(' | ') : '';\n    return Object.assign({}, c, {\n      kb_matches: matched.map(m => m.id),\n      red_flags: matched.map(m => ({ id: m.id, label: m.label, severity: m.sev, redline: m.redline })),\n      severity: newSev,\n      de_xuat: kbDeXuat || existingDeXuat || 'Điều khoản đã có nhưng cần rà lại câu chữ, mốc thời gian, trách nhiệm và chế tài để tránh diễn giải mập mờ.'\n    });\n  });\n  item.json.clauses_reviewed = reviewed;\n  item.json.red_flags = reviewed.flatMap(c => (c.red_flags || []).map(r => Object.assign({ clause_id: c.id, tieu_de: c.tieu_de, evidence: (c.evidence && c.evidence.verbatim_quote) || '' }, r)));\n}\nreturn $input.all();"
+      },
+      "id": "th4-policy",
+      "name": "TH4 - Policy Review vs KB Red Flags",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        600,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "language": "javaScript",
+        "jsCode": "// === REPORT & SCORING + BUILD report.docx (OOXML ZIP) ===\nconst SEV = { HIGH: '\\uD83D\\uDD34', MED: '\\uD83D\\uDFE1', LOW: '\\uD83D\\uDCA1' };\nconst AMP = String.fromCharCode(38) + 'amp;';\nconst LT  = String.fromCharCode(38) + 'lt;';\nconst GT  = String.fromCharCode(38) + 'gt;';\nconst QUOT = String.fromCharCode(38) + 'quot;';\nconst APOS = String.fromCharCode(38) + 'apos;';\n\nfunction esc(s) {\n  return String(s == null ? '' : s)\n    .replace(/&/g, AMP).replace(/</g, LT).replace(/>/g, GT)\n    .replace(/\"/g, QUOT).replace(/'/g, APOS);\n}\nfunction run(text, opts = {}) {\n  const rPr = [\n    '<w:rFonts w:ascii=\"Times New Roman\" w:hAnsi=\"Times New Roman\" w:cs=\"Times New Roman\"/>',\n    opts.bold ? '<w:b/>' : '',\n    opts.italic ? '<w:i/>' : '',\n    opts.underline ? '<w:u w:val=\"single\"/>' : '',\n    opts.color ? '<w:color w:val=\"' + opts.color + '\"/>' : '',\n    '<w:sz w:val=\"' + (opts.size || 28) + '\"/>',\n    '<w:szCs w:val=\"' + (opts.size || 28) + '\"/>'\n  ].join('');\n  const pieces = String(text == null ? '' : text).split('\\n');\n  return '<w:r><w:rPr>' + rPr + '</w:rPr>' + pieces.map((piece, idx) =>\n    (idx ? '<w:br/>' : '') + '<w:t xml:space=\"preserve\">' + esc(piece) + '</w:t>'\n  ).join('') + '</w:r>';\n}\nfunction para(text, opts = {}) {\n  const jc = opts.align ? '<w:jc w:val=\"' + opts.align + '\"/>' : '';\n  const spacing = '<w:spacing w:before=\"' + (opts.before || 0) + '\" w:after=\"' + (opts.after == null ? 120 : opts.after) + '\" w:line=\"276\" w:lineRule=\"auto\"/>';\n  const ind = opts.firstLine ? '<w:ind w:firstLine=\"' + opts.firstLine + '\"/>' : '';\n  const keepNext = opts.keepNext ? '<w:keepNext/>' : '';\n  const style = opts.style ? '<w:pStyle w:val=\"' + opts.style + '\"/>' : '';\n  return '<w:p><w:pPr>' + style + jc + spacing + ind + keepNext + '</w:pPr>' + run(text, opts) + '</w:p>';\n}\nfunction multiPara(parts, opts = {}) {\n  const jc = opts.align ? '<w:jc w:val=\"' + opts.align + '\"/>' : '';\n  const spacing = '<w:spacing w:before=\"' + (opts.before || 0) + '\" w:after=\"' + (opts.after == null ? 120 : opts.after) + '\" w:line=\"276\" w:lineRule=\"auto\"/>';\n  return '<w:p><w:pPr>' + jc + spacing + '</w:pPr>' + parts.map(p => run(p.text, p)).join('') + '</w:p>';\n}\nfunction cell(text, width, opts = {}) {\n  const fill = opts.fill ? '<w:shd w:fill=\"' + opts.fill + '\"/>' : '';\n  const vAlign = '<w:vAlign w:val=\"' + (opts.valign || 'center') + '\"/>';\n  const margins = '<w:tcMar><w:top w:w=\"90\" w:type=\"dxa\"/><w:left w:w=\"110\" w:type=\"dxa\"/><w:bottom w:w=\"90\" w:type=\"dxa\"/><w:right w:w=\"110\" w:type=\"dxa\"/></w:tcMar>';\n  return '<w:tc><w:tcPr><w:tcW w:w=\"' + width + '\" w:type=\"dxa\"/>' + fill + vAlign + margins + '</w:tcPr>' +\n    para(text, { align: opts.align || 'left', bold: opts.bold, size: opts.size || 24, after: 0 }) + '</w:tc>';\n}\nfunction table(rows, widths) {\n  const borders = '<w:tblBorders><w:top w:val=\"single\" w:sz=\"6\" w:color=\"9CA3AF\"/><w:left w:val=\"single\" w:sz=\"6\" w:color=\"9CA3AF\"/><w:bottom w:val=\"single\" w:sz=\"6\" w:color=\"9CA3AF\"/><w:right w:val=\"single\" w:sz=\"6\" w:color=\"9CA3AF\"/><w:insideH w:val=\"single\" w:sz=\"4\" w:color=\"D1D5DB\"/><w:insideV w:val=\"single\" w:sz=\"4\" w:color=\"D1D5DB\"/></w:tblBorders>';\n  const grid = '<w:tblGrid>' + widths.map(w => '<w:gridCol w:w=\"' + w + '\"/>').join('') + '</w:tblGrid>';\n  return '<w:tbl><w:tblPr><w:tblW w:w=\"9360\" w:type=\"dxa\"/><w:tblLayout w:type=\"fixed\"/>' + borders + '</w:tblPr>' + grid +\n    rows.map(row => '<w:tr>' + row.map((c, i) => cell(c.text, widths[i], c)).join('') + '</w:tr>').join('') + '</w:tbl>' +\n    para('', { after: 120 });\n}\n\n// === OOXML ZIP BUILDER (STORE method) ===\nconst crcTable = [];\nfor (let n = 0; n < 256; n++) {\n  let c = n;\n  for (let k = 0; k < 8; k++) c = ((c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1));\n  crcTable[n] = c;\n}\nfunction crc32(buf) {\n  let crc = 0xFFFFFFFF;\n  for (let i = 0; i < buf.length; i++) crc = crcTable[(crc ^ buf[i]) & 0xFF] ^ (crc >>> 8);\n  return (crc ^ 0xFFFFFFFF) >>> 0;\n}\nfunction buildZip(files) {\n  const localParts = [], centralParts = [];\n  let offset = 0;\n  for (const f of files) {\n    const nameBuf = Buffer.from(f.name, 'utf8');\n    const crc = crc32(f.data);\n    const size = f.data.length;\n    const local = Buffer.alloc(30 + nameBuf.length);\n    local.writeUInt32LE(0x04034b50, 0);\n    local.writeUInt16LE(20, 4); local.writeUInt16LE(0, 6); local.writeUInt16LE(0, 8);\n    local.writeUInt16LE(0, 10); local.writeUInt16LE(0, 12);\n    local.writeUInt32LE(crc, 14); local.writeUInt32LE(size, 18); local.writeUInt32LE(size, 22);\n    local.writeUInt16LE(nameBuf.length, 26); local.writeUInt16LE(0, 28);\n    nameBuf.copy(local, 30);\n    const central = Buffer.alloc(46 + nameBuf.length);\n    central.writeUInt32LE(0x02014b50, 0);\n    central.writeUInt16LE(20, 4); central.writeUInt16LE(20, 6); central.writeUInt16LE(0, 8);\n    central.writeUInt16LE(0, 10); central.writeUInt16LE(0, 12); central.writeUInt16LE(0, 14);\n    central.writeUInt32LE(crc, 16); central.writeUInt32LE(size, 20); central.writeUInt32LE(size, 24);\n    central.writeUInt16LE(nameBuf.length, 28); central.writeUInt16LE(0, 30); central.writeUInt16LE(0, 32);\n    central.writeUInt16LE(0, 34); central.writeUInt16LE(0, 36); central.writeUInt32LE(0, 38);\n    central.writeUInt32LE(offset, 42);\n    nameBuf.copy(central, 46);\n    localParts.push(local, f.data);\n    centralParts.push(central);\n    offset += local.length + f.data.length;\n  }\n  const localBuf = Buffer.concat(localParts);\n  const centralBuf = Buffer.concat(centralParts);\n  const eocd = Buffer.alloc(22);\n  eocd.writeUInt32LE(0x06054b50, 0);\n  eocd.writeUInt16LE(0, 4); eocd.writeUInt16LE(0, 6);\n  eocd.writeUInt16LE(files.length, 8); eocd.writeUInt16LE(files.length, 10);\n  eocd.writeUInt32LE(centralBuf.length, 12);\n  eocd.writeUInt32LE(localBuf.length, 16);\n  eocd.writeUInt16LE(0, 20);\n  return Buffer.concat([localBuf, centralBuf, eocd]);\n}\n\nfor (const item of $input.all()) {\n  const ec = item.json.evidence_checked || {};\n  const clauses = item.json.clauses_reviewed || item.json.clauses || [];\n  const redFlags = item.json.red_flags || [];\n  const rows = [];\n  let nHigh = 0, nMed = 0;\n  for (const c of clauses) {\n    const isHallu = (ec.hallucinations || []).some(h => h.id === c.id);\n    const flag = isHallu ? 'hallucination' : '';\n    const sev = c.severity || 'MED';\n    if (sev === 'HIGH') nHigh++; else if (sev === 'MED') nMed++;\n    rows.push({\n      clause_id: c.id, tieu_de: c.tieu_de,\n      severity: (SEV[sev] || '\\uD83D\\uDFE1') + ' ' + sev,\n      blocking: sev === 'HIGH',\n      evidence: (c.evidence && c.evidence.verbatim_quote) || '',\n      flag: flag,\n      red_flags: c.red_flags || [],\n      suggestion: c.de_xuat || 'Can dieu chinh ro rang hon',\n      confidence: c.confidence_score || 0.95\n    });\n  }\n  const nHallu = (ec.hallucinations || []).length;\n  const nOmit = (ec.omissions || []).length;\n  const nRedFlagHigh = redFlags.filter(r => r.severity === 'HIGH').length;\n  const score = Math.max(0, 100 - nHigh * 12 - nMed * 4 - nRedFlagHigh * 8 - nHallu * 20 - nOmit * 10);\n  const approved = (score >= 70 && nHallu === 0 && nRedFlagHigh === 0);\n\n  item.json.report = {\n    tong_hop: { contract_score: score, approved_recommendation: approved,\n      n_clauses: ec.n_clauses || clauses.length, n_high: nHigh, n_med: nMed, n_hallucination: nHallu,\n      n_red_flags: redFlags.length, n_red_flag_high: nRedFlagHigh, omissions: ec.omissions || [] },\n    chi_tiet: rows,\n    red_flags: redFlags,\n    hitl: { nguoi_duyet: '', ngay: '', quyet_dinh: 'CHO PHAP CHE DUYET (HITL)' }\n  };\n\n  // === Build OOXML document.xml theo phong cách văn bản hành chính (Nghị định 30) ===\n  const bodyParas = [];\n  bodyParas.push(\n    table([\n      [\n        { text: 'CÔNG TY/ĐƠN VỊ THẨM ĐỊNH\\nPHÒNG PHÁP CHẾ', bold: true, align: 'center', size: 24 },\n        { text: 'CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM\\nĐộc lập - Tự do - Hạnh phúc', bold: true, align: 'center', size: 24 }\n      ],\n      [\n        { text: 'Số:      /BC-PC', align: 'center', size: 24 },\n        { text: 'TP. Hồ Chí Minh, ngày      tháng      năm 2026', italic: true, align: 'center', size: 24 }\n      ]\n    ], [4200, 5160]).replace(/<w:tblBorders>.*?<\\/w:tblBorders>/, '<w:tblBorders><w:top w:val=\"nil\"/><w:left w:val=\"nil\"/><w:bottom w:val=\"nil\"/><w:right w:val=\"nil\"/><w:insideH w:val=\"nil\"/><w:insideV w:val=\"nil\"/></w:tblBorders>')\n  );\n  bodyParas.push(para('BÁO CÁO', { align: 'center', bold: true, size: 32, before: 220, after: 20, keepNext: true }));\n  bodyParas.push(para('Thẩm định rủi ro pháp lý hợp đồng', { align: 'center', bold: true, size: 28, after: 180 }));\n  bodyParas.push(para('Kính gửi: Ban Giám đốc / Bộ phận Pháp chế', { align: 'center', bold: true, size: 28, after: 180 }));\n  bodyParas.push(para('Căn cứ checklist rủi ro hợp đồng của doanh nghiệp; căn cứ nội dung hợp đồng đã được hệ thống trích xuất và kiểm tra evidence, Phòng Pháp chế báo cáo kết quả thẩm định như sau:', { firstLine: 720, after: 160 }));\n\n  bodyParas.push(para('I. TÓM TẮT KẾT QUẢ THẨM ĐỊNH', { bold: true, keepNext: true, before: 120, after: 80 }));\n  bodyParas.push(\n    table([\n      [\n        { text: 'Chỉ tiêu', bold: true, fill: 'E5E7EB', align: 'center' },\n        { text: 'Kết quả', bold: true, fill: 'E5E7EB', align: 'center' },\n        { text: 'Ghi chú xử lý', bold: true, fill: 'E5E7EB', align: 'center' }\n      ],\n      [\n        { text: 'Contract Risk Score' },\n        { text: score + '/100', bold: true, align: 'center' },\n        { text: approved ? 'Có thể xem xét duyệt có điều kiện sau khi người duyệt xác nhận.' : 'Cần pháp chế rà soát trước khi ký/duyệt.' }\n      ],\n      [\n        { text: 'Điều khoản đã rà soát' },\n        { text: String(ec.n_clauses || clauses.length), align: 'center' },\n        { text: 'Bao gồm rà soát điều khoản đã có và kiểm tra bằng chứng trích dẫn nguyên văn.' }\n      ],\n      [\n        { text: 'Rủi ro cao / trung bình' },\n        { text: nHigh + ' HIGH / ' + nMed + ' MED', align: 'center' },\n        { text: 'Các mục mức CAO được xem là vấn đề cần tạm dừng để phê duyệt thủ công.' }\n      ],\n      [\n        { text: 'Red flags / Omission / Hallucination' },\n        { text: redFlags.length + ' / ' + nOmit + ' / ' + nHallu, align: 'center' },\n        { text: 'Thiếu điều khoản là không có điều khoản bắt buộc; Sai lệch trích dẫn là trích dẫn không có trong hợp đồng.' }\n      ]\n    ], [2500, 1800, 5060])\n  );\n\n  bodyParas.push(para('II. ĐIỀU KHOẢN BỊ THIẾU', { bold: true, keepNext: true, before: 80, after: 80 }));\n  if ((ec.omissions||[]).length) {\n    bodyParas.push(table(\n      [[\n        { text: 'STT', bold: true, fill: 'E5E7EB', align: 'center' },\n        { text: 'Nhóm điều khoản thiếu', bold: true, fill: 'E5E7EB', align: 'center' },\n        { text: 'Kiến nghị bổ sung', bold: true, fill: 'E5E7EB', align: 'center' }\n      ]].concat((ec.omissions||[]).map((o, idx) => [\n        { text: String(idx + 1), align: 'center' },\n        { text: o },\n        { text: 'Bổ sung điều khoản theo checklist rủi ro trước khi ký; yêu cầu người phụ trách hợp đồng xác nhận phạm vi áp dụng.' }\n      ])),\n      [650, 3400, 5310]\n    ));\n  } else {\n    bodyParas.push(para('Không phát hiện điều khoản bắt buộc bị thiếu theo checklist.', { firstLine: 720 }));\n  }\n\n  bodyParas.push(para('III. BẪY RỦI RO PHÁP LÝ VÀ VẤN ĐỀ CẦN XỬ LÝ NGAY', { bold: true, keepNext: true, before: 80, after: 80 }));\n  if (redFlags.length) {\n    bodyParas.push(table(\n      [[\n        { text: 'Mức', bold: true, fill: 'FEE2E2', align: 'center' },\n        { text: 'Điều khoản', bold: true, fill: 'FEE2E2', align: 'center' },\n        { text: 'Red flag & evidence', bold: true, fill: 'FEE2E2', align: 'center' },\n        { text: 'Đề xuất sửa', bold: true, fill: 'FEE2E2', align: 'center' }\n      ]].concat(redFlags.map(rf => [\n        { text: rf.severity || 'HIGH', bold: true, align: 'center' },\n        { text: (rf.clause_id || '') + ' - ' + (rf.tieu_de || '') },\n        { text: '[' + (rf.id || '') + '] ' + (rf.label || '') + '\\nEvidence: ' + (rf.evidence || '') },\n        { text: rf.redline || '' }\n      ])),\n      [900, 1900, 3160, 3400]\n    ));\n  } else {\n    bodyParas.push(para('Không phát hiện red flag theo rule-base hiện tại.', { firstLine: 720 }));\n  }\n\n  bodyParas.push(para('IV. RÀ SOÁT ĐIỀU KHOẢN ĐÃ CÓ VÀ ĐỀ XUẤT SỬA ĐỔI', { bold: true, keepNext: true, before: 80, after: 80 }));\n  bodyParas.push(table(\n    [[\n      { text: 'ID', bold: true, fill: 'E5E7EB', align: 'center' },\n      { text: 'Điều khoản / mức rủi ro', bold: true, fill: 'E5E7EB', align: 'center' },\n      { text: 'Trích dẫn evidence', bold: true, fill: 'E5E7EB', align: 'center' },\n      { text: 'Gợi ý chỉnh sửa', bold: true, fill: 'E5E7EB', align: 'center' }\n    ]].concat(rows.map(r => [\n      { text: r.clause_id || '', align: 'center', bold: true },\n      { text: (r.tieu_de || '') + '\\nMức: ' + r.severity + '\\nBlocking: ' + (r.blocking ? 'YES' : 'NO') + (r.flag ? '\\nFlag: ' + r.flag : '') },\n      { text: r.evidence || '' },\n      { text: r.suggestion || '' }\n    ])),\n    [700, 2300, 3060, 3300]\n  ));\n\n  bodyParas.push(para('V. KIẾN NGHỊ VÀ QUYẾT ĐỊNH CỦA NGƯỜI THẨM ĐỊNH', { bold: true, keepNext: true, before: 80, after: 80 }));\n  bodyParas.push(para('Kiến nghị: ' + (approved ? 'Chỉ trình ký sau khi người duyệt xác nhận các khuyến nghị đã được xử lý hoặc chấp thuận rủi ro còn lại.' : 'Tạm dừng phê duyệt tự động; chuyển Pháp chế/Người có thẩm quyền xử lý các mục rủi ro CAO, điều khoản thiếu và bẫy rủi ro trước khi ký.'), { firstLine: 720 }));\n  bodyParas.push(table([\n    [\n      { text: 'Người duyệt', bold: true, fill: 'E5E7EB', align: 'center' },\n      { text: 'Ngày duyệt', bold: true, fill: 'E5E7EB', align: 'center' },\n      { text: 'Quyết định', bold: true, fill: 'E5E7EB', align: 'center' },\n      { text: 'Ý kiến', bold: true, fill: 'E5E7EB', align: 'center' }\n    ],\n    [\n      { text: '\\n\\n' },\n      { text: '\\n\\n' },\n      { text: '[ ] Duyệt\\n[ ] Yêu cầu sửa\\n[ ] Từ chối' },\n      { text: '\\n\\n' }\n    ]\n  ], [1800, 1600, 2400, 3560]));\n  bodyParas.push(\n    table([\n      [\n        { text: 'Nơi nhận:\\n- Như kính gửi;\\n- Lưu: Pháp chế.', size: 24 },\n        { text: 'NGƯỜI THẨM ĐỊNH\\n(Ký, ghi rõ họ tên)\\n\\n\\n\\n', bold: true, align: 'center', size: 24 }\n      ]\n    ], [4200, 5160]).replace(/<w:tblBorders>.*?<\\/w:tblBorders>/, '<w:tblBorders><w:top w:val=\"nil\"/><w:left w:val=\"nil\"/><w:bottom w:val=\"nil\"/><w:right w:val=\"nil\"/><w:insideH w:val=\"nil\"/><w:insideV w:val=\"nil\"/></w:tblBorders>')\n  );\n\n  const documentXml = '<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>' +\n    '<w:document xmlns:w=\"http://schemas.openxmlformats.org/wordprocessingml/2006/main\">' +\n    '<w:body>' + bodyParas.join('') +\n    '<w:sectPr><w:pgSz w:w=\"11906\" w:h=\"16838\"/><w:pgMar w:top=\"1134\" w:right=\"850\" w:bottom=\"1134\" w:left=\"1701\" w:header=\"720\" w:footer=\"720\" w:gutter=\"0\"/></w:sectPr>' +\n    '</w:body></w:document>';\n\n  const stylesXml = '<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>' +\n    '<w:styles xmlns:w=\"http://schemas.openxmlformats.org/wordprocessingml/2006/main\">' +\n    '<w:docDefaults><w:rPrDefault><w:rPr><w:rFonts w:ascii=\"Times New Roman\" w:hAnsi=\"Times New Roman\" w:cs=\"Times New Roman\"/><w:sz w:val=\"28\"/><w:szCs w:val=\"28\"/></w:rPr></w:rPrDefault><w:pPrDefault><w:pPr><w:spacing w:after=\"120\" w:line=\"276\" w:lineRule=\"auto\"/></w:pPr></w:pPrDefault></w:docDefaults>' +\n    '</w:styles>';\n\n  const contentTypesXml = '<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>' +\n    '<Types xmlns=\"http://schemas.openxmlformats.org/package/2006/content-types\">' +\n    '<Default Extension=\"rels\" ContentType=\"application/vnd.openxmlformats-package.relationships+xml\"/>' +\n    '<Default Extension=\"xml\" ContentType=\"application/xml\"/>' +\n    '<Override PartName=\"/word/document.xml\" ContentType=\"application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml\"/>' +\n    '<Override PartName=\"/word/styles.xml\" ContentType=\"application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml\"/>' +\n    '</Types>';\n\n  const relsXml = '<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>' +\n    '<Relationships xmlns=\"http://schemas.openxmlformats.org/package/2006/relationships\">' +\n    '<Relationship Id=\"rId1\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument\" Target=\"word/document.xml\"/>' +\n    '</Relationships>';\n\n  const wordRelsXml = '<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>' +\n    '<Relationships xmlns=\"http://schemas.openxmlformats.org/package/2006/relationships\">' +\n    '<Relationship Id=\"rId1\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles\" Target=\"styles.xml\"/>' +\n    '</Relationships>';\n\n  const zipFiles = [\n    { name: '[Content_Types].xml', data: Buffer.from(contentTypesXml, 'utf8') },\n    { name: '_rels/.rels', data: Buffer.from(relsXml, 'utf8') },\n    { name: 'word/document.xml', data: Buffer.from(documentXml, 'utf8') },\n    { name: 'word/styles.xml', data: Buffer.from(stylesXml, 'utf8') },\n    { name: 'word/_rels/document.xml.rels', data: Buffer.from(wordRelsXml, 'utf8') }\n  ];\n\n  const zipBuf = buildZip(zipFiles);\n  item.binary = item.binary || {};\n  item.binary.data = {\n    data: zipBuf.toString('base64'),\n    mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',\n    fileName: 'report.docx'\n  };\n  item.binary.report_docx = item.binary.data;\n}\nreturn $input.all();"
+      },
+      "id": "th5-report",
+      "name": "TH5 - Report Engine + Build report.docx",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        860,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "binary",
+        "responseDataSource": "firstEntryBinary",
+        "binaryPropertyName": "data",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+              },
+              {
+                "name": "Content-Disposition",
+                "value": "attachment; filename=\"report.docx\""
+              }
+            ]
+          }
+        }
+      },
+      "id": "respond-report",
+      "name": "Respond report.docx",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        1120,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseCode": 500,
+        "responseBody": "={{ JSON.stringify({\n  error: \"Lỗi kết nối AI Gemini API\",\n  message: \"Hệ thống đã tự động thử lại 3 lần nhưng không thể kết nối tới AI Gemini. Vui lòng kiểm tra lại Gemini API Key hoặc hạn ngạch (Quota). (Lỗi: \" + ($json.error ? ($json.error.message || JSON.stringify($json.error)) : \"HTTP Request Failed\") + \")\",\n  status: 500\n}) }}",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          }
+        }
+      },
+      "id": "respond-ai-error",
+      "name": "Respond AI Error to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        -350,
+        560
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Linh — recon-analyzer v3\nKhung mượn B4. Đã chuyển: webhook, prompt AI node (phân loại lệch công nợ).\nNode Schema Validation + Report còn của B4 — chưa chuyển (khai rõ trong run-log).",
+        "height": 300,
+        "width": 400,
+        "color": 4
+      },
+      "name": "StickyNote - Trang thai",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -420,
+        140
+      ],
+      "id": "sticky-linh"
+    }
+  ],
+  "connections": {
+    "Extract .docx / Normalize Input": {
+      "main": [
+        [
+          {
+            "node": "TH1 - Redaction 4 Cap",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "TH1 - Redaction 4 Cap": {
+      "main": [
+        [
+          {
+            "node": "AI Phan loai nguyen nhan lech (Gemini)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "TH2 - Schema Validation (clause.schema.json)": {
+      "main": [
+        [
+          {
+            "node": "TH2 - Tang retry counter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "TH2 - Tang retry counter": {
+      "main": [
+        [
+          {
+            "node": "TH2 - IF Schema Gate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "TH2 - IF Schema Gate": {
+      "main": [
+        [
+          {
+            "node": "TH3 - Evidence + Omission (semantics)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "TH2 - IF retry < 2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "TH2 - IF retry < 2": {
+      "main": [
+        [
+          {
+            "node": "AI Phan loai nguyen nhan lech (Gemini)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "TH2 - Set need_review (schema fail dai dang)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "TH2 - Set need_review (schema fail dai dang)": {
+      "main": [
+        [
+          {
+            "node": "TH3 - Evidence + Omission (semantics)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "TH3 - Evidence + Omission (semantics)": {
+      "main": [
+        [
+          {
+            "node": "TH4 - Policy Review vs KB Red Flags",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "TH4 - Policy Review vs KB Red Flags": {
+      "main": [
+        [
+          {
+            "node": "TH5 - Report Engine + Build report.docx",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "TH5 - Report Engine + Build report.docx": {
+      "main": [
+        [
+          {
+            "node": "Respond report.docx",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook Nhan bang lech cong no": {
+      "main": [
+        [
+          {
+            "node": "Extract .docx / Normalize Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Phan loai nguyen nhan lech (Gemini)": {
+      "main": [
+        [
+          {
+            "node": "TH2 - Schema Validation (clause.schema.json)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond AI Error to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "active": false,
+  "tags": [
+    {
+      "name": "b4-contract-review"
+    }
+  ],
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": false
+  }
+}

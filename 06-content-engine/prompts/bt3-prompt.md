@@ -25,24 +25,12 @@ CHỈ DẪN:
    - seed_id đánh SEED-01 đến SEED-05.
    - vai_tro chỉ nhận: ASK (hỏi thật), RELATE (đồng cảnh), EXPERIENCE (kể trải nghiệm),
      CONDITION (hỏi điều kiện), CTA_NUDGE (đẩy nhẹ về CTA).
-3. Viết image_brief đủ 9 mục. Mục khong_duoc_xuat_hien là bắt buộc và không được rỗng —
-   CHỈ liệt kê điều NHÌN THẤY RÕ RÀNG, khách quan trong ảnh tĩnh (vd logo đối thủ, số điện
-   thoại giả, bảng điểm). TUYỆT ĐỐI không liệt kê ước lượng tuổi trẻ em (vd "trẻ dưới 6
-   tuổi") — không thể xác định chính xác tuổi qua ảnh tĩnh, việc này để người duyệt tự
-   quyết ở app, không phải điều kiện chặn ảnh tự động.
-   Ảnh có thể có người/trẻ em xuất hiện — đây là ảnh AI sinh hoàn toàn, không tham chiếu
-   người thật nên không phát sinh vấn đề quyền riêng tư; khuyến khích có ít nhất 1 người
-   (giáo viên hoặc học sinh) để tăng độ thu hút, biểu cảm tự nhiên/ấm áp. Nếu có học sinh,
-   mô tả rõ là trẻ em người Việt Nam — đúng đối tượng thật của trung tâm. Nếu có giáo viên,
-   được phép mô tả là giáo viên nước ngoài — đúng mô hình "giáo viên bản ngữ" trong brief;
-   trợ giảng (nếu có) mô tả là người Việt Nam.
+3. Viết image_brief đủ 9 mục. Mục khong_duoc_xuat_hien là bắt buộc và không được rỗng;
+   với sản phẩm liên quan trẻ em phải có ràng buộc về mặt trẻ em.
    ty_le chỉ nhận: 1:1, 4:5, 9:16, 16:9.
 4. Viết image_prompt bằng TIẾNG ANH, mô tả cảnh cần sinh:
-   - ĐƯỢC PHÉP có tối đa MỘT dòng tiêu đề/CTA ngắn (≤8 từ tiếng Việt có dấu) hiển thị trực
-     tiếp trong ảnh — model hiện đại render tiếng Việt có dấu tốt (đã test thật, xem
-     `checkpoint-bt3.md`). Ghi rõ nguyên văn dòng chữ đó trong prompt, viết ĐÚNG chính tả có
-     dấu đầy đủ, và khớp với mục chu_tren_anh. KHÔNG đưa đoạn văn dài/danh sách vào ảnh —
-     nội dung dài để trống, chèn sau bằng Canva.
+   - KHÔNG đưa chữ cần hiển thị vào prompt. Model sinh ảnh viết sai chính tả tiếng Việt;
+     chữ sẽ chèn sau bằng Canva.
    - Nêu rõ bố cục, ánh sáng, tông màu, tỷ lệ.
    - Nêu rõ điều không được xuất hiện, khớp với mục khong_duoc_xuat_hien.
 5. Viết review_note: một câu cho người duyệt biết cần soi kỹ chỗ nào trước khi bấm Approved.

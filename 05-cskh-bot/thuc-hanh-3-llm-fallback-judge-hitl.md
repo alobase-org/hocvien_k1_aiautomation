@@ -13,6 +13,7 @@ Chỉ dùng LLM khi FAQ cache không hit, sau đó dùng LLM thứ hai làm cổ
 |---|---|
 | Output TH2 | `route`, `cache_hit`, `need_llm`, `need_human`, `intent`, `top3_faq_ids` |
 | `templates/chinh-sach-ho-tro.md` | Chính sách bán lẻ để LLM bám nguồn |
+| `templates/thong_tin_san_pham.md` | Thông tin catalog và sản phẩm bán lẻ |
 | Test cases | `checkpoints/test-cases.json` |
 | Prompt hỗ trợ | [`prompts/bt3-prompt.md`](./prompts/bt3-prompt.md) |
 
@@ -21,7 +22,7 @@ Chỉ dùng LLM khi FAQ cache không hit, sau đó dùng LLM thứ hai làm cổ
 1. Nhận các case `cache_hit=false` hoặc `need_human=true` từ TH2.
 2. Thêm IF Node `Need LLM?`.
 3. AI Node answer chỉ chạy khi `need_llm=true` và `cache_hit=false`.
-4. LLM answer dùng top-3 FAQ + `chinh-sach-ho-tro.md`, trả lời ngắn, bắt buộc gắn nguồn.
+4. LLM answer dùng top-3 FAQ + `chinh-sach-ho-tro.md` + `thong_tin_san_pham.md`, trả lời ngắn, bắt buộc gắn nguồn.
 5. Thêm AI Node judge, dùng LLM thứ hai khác node answer.
 6. Judge nhận `question`, `answer`, `intent`, `nguon`, `cache_hit`, `route`.
 7. Judge trả JSON `{ confidence: 0-1, reason: "...", need_human: true/false }`.

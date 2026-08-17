@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Capstone Pitch — Báo cáo tổng hợp tuần tự động</title>
+<style>
+  :root { --navy:#1F3864; --red:#C00000; --ink:#222; --paper:#F7F5F0; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:"Calibri","Segoe UI",sans-serif; background:var(--ink); color:var(--ink); }
+  .slide { display:none; min-height:100vh; padding:6vh 8vw; background:var(--paper); }
+  .slide.active { display:block; }
+  h1 { color:var(--navy); font-size:3rem; margin-bottom:1rem; }
+  h2 { color:var(--navy); border-bottom:4px solid var(--red); display:inline-block; padding-bottom:.3rem; margin-bottom:1.5rem; }
+  .kicker { color:var(--red); font-weight:700; letter-spacing:.12em; text-transform:uppercase; font-size:.85rem; }
+  ul { line-height:1.9; font-size:1.15rem; }
+  table { border-collapse:collapse; width:100%; font-size:1rem; }
+  th, td { border:1px solid #ccc; padding:.5rem .7rem; text-align:left; }
+  th { background:var(--navy); color:#fff; }
+  .footer { position:fixed; bottom:1.2rem; right:2rem; color:#999; font-size:.8rem; }
+  .hint { position:fixed; bottom:1.2rem; left:2rem; color:#bbb; font-size:.8rem; }
+  img { max-width:80%; border:1px solid #ccc; border-radius:6px; }
+</style>
+</head>
+<body>
+
+<section class="slide active" id="s1">
+  <p class="kicker">Capstone AI Automation K1</p>
+  <h1>Báo cáo tổng hợp tuần tự động</h1>
+  <p>Vũ Minh Thảo · 24/08/2026</p>
+  <p>1 quy trình làm tay → 1 giải pháp tự động: skill · workflow n8n · MVP · package</p>
+</section>
+
+<section class="slide" id="s2">
+  <h2>1 · Bài toán</h2>
+  <ul>
+    <li>10 file CSV từ 10 điểm bán hợp nhật tay mỗi sáng thứ 2, 3 giờ/tuần</li>
+    <li>Số lệch do định dạng mỗi điểm khác nhau; báo cáo trễ làm giám đốc chờ</li>
+    <li>Thảo tổng hợp, giám đốc đọc email tóm tắt</li>
+  </ul>
+</section>
+
+<section class="slide" id="s3">
+  <h2>2 · Giải pháp & tài nguyên tái sử dụng</h2>
+  <ul>
+    <li>10 CSV → chuẩn hóa → hợp nhất vòng cứng → AI viết tóm tắt → Thảo duyệt email (HITL)</li>
+  </ul>
+  <table>
+    <tr><th>Mượn từ</th><th>Tài nguyên</th><th>Dùng làm</th></tr>
+    <tr><td>B4</td><td>checkpoints/n8n-contract-review-solution.json</td><td>Khung webhook→AI→respond</td></tr>
+    <tr><td>B4</td><td>templates/checklist-rui-ro.md</td><td>Mẫu rule ngưỡng cảnh báo</td></tr>
+    <tr><td>B6</td><td>luong-nghiep-vu.md + fallback-inputs/</td><td>Mô tả luồng + dữ liệu mô phỏng</td></tr>
+  </table>
+</section>
+
+<section class="slide" id="s4">
+  <h2>3 · Demo thực tế</h2>
+  <img src="../anh-demo/report-ui.png" alt="Report UI MVP">
+  <p>Report UI: TC2 giảm -14.3% → badge CẢNH BAO (GV có thể mở RUN.md chạy lại)</p>
+</section>
+
+<section class="slide" id="s5">
+  <h2>4 · Nghiệm thu & rủi ro</h2>
+  <ul>
+    <li>D2: cấu trúc PASS — áp F16/F17 (bài học cohort) ngay từ thiết kế, không dính lỗi các bạn trước gặp</li>
+    <li>Skill: 3/3 PASS (tăng trưởng, cảnh báo -14.3%, THIEU_DU_LIEU)</li>
+    <li>MVP: 5/5 PASS (kể cả dấu phẩy nghìn — bug thật bắt được), 1 vòng cải tiến</li>
+    <li>Rủi ro lớn nhất: AI bịa số — cách giảm: mọi con số vòng cứng bảng local, AI chỉ viết câu; HITL duyệt email</li>
+  </ul>
+</section>
+
+<section class="slide" id="s6">
+  <h2>5 · Kế hoạch tiếp theo</h2>
+  <ul>
+    <li>Tuần tới: đọc file thật thay dán, chạy thử 4 tuần liên tiếp, nối email gửi</li>
+    <li>Vận hành khi: 2 tuần chạy song song, số khớp 100% với tính tay</li>
+  </ul>
+  <p style="margin-top:3rem; font-size:1.4rem; color:var(--red); font-weight:700;">Cảm ơn lớp và giảng viên.</p>
+</section>
+
+<div class="hint">← → hoặc bấm để chuyển slide</div>
+<div class="footer">Vũ Minh Thảo · Capstone K1</div>
+
+<script>
+  const slides=[...document.querySelectorAll('.slide')];let i=0;
+  function show(n){i=Math.max(0,Math.min(slides.length-1,n));slides.forEach((s,k)=>s.classList.toggle('active',k===i));}
+  document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' ')show(i+1);if(e.key==='ArrowLeft')show(i-1);});
+  document.addEventListener('click',()=>show(i+1));
+</script>
+</body>
+</html>

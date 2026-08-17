@@ -1,0 +1,70 @@
+{
+  "rubric_id": "RUBRIC-DEMO-001",
+  "title": "Rubric demo chấm dự án AI",
+  "description": "Rubric mẫu dùng cho smoke test — dự án chatbot AI.",
+  "context": "Dự án AI ứng dụng (demo)",
+  "scale": { "5": "Xuất sắc", "4": "Tốt/Khá", "3": "Đạt", "2": "Yếu", "1": "Kém" },
+  "criteria": [
+    {
+      "id": "C1",
+      "name": "Chất lượng kỹ thuật",
+      "weight": 1.0,
+      "subcriteria": [
+        {
+          "id": "C1-S1",
+          "name": "Hiệu năng",
+          "weight": 0.5,
+          "level_descriptors": {
+            "5": "<100ms p99 + benchmark đầy đủ",
+            "4": "<300ms p95 + có số liệu",
+            "3": "<1s + số liệu ít",
+            "2": ">1s thường xuyên",
+            "1": "không đo lường"
+          }
+        },
+        {
+          "id": "C1-S2",
+          "name": "Kiểm thử",
+          "weight": 0.5,
+          "level_descriptors": {
+            "5": "độ phủ test ≥90% + e2e",
+            "4": "độ phủ ≥70% + unit test",
+            "3": "độ phủ ≥50%",
+            "2": "ít test",
+            "1": "không test"
+          }
+        }
+      ]
+    },
+    {
+      "id": "C2",
+      "name": "Bảo mật",
+      "weight": 1.0,
+      "subcriteria": [
+        {
+          "id": "C2-S1",
+          "name": "Quản lý lỗ hổng",
+          "weight": 1.0,
+          "needs_research": true,
+          "research_query": "Tiêu chuẩn tối thiểu quản lý lỗ hổng cho ứng dụng web 2026?",
+          "level_descriptors": {
+            "5": "có phân tích lỗ hổng + remediation + tuân thủ OWASP",
+            "4": "có phân tích lỗ hổng cơ bản",
+            "3": "nhắc tới bảo mật nhưng không phân tích",
+            "2": "không đề cập",
+            "1": "bỏ ngỏ hoàn toàn"
+          }
+        }
+      ]
+    }
+  ],
+  "evidence": [
+    {
+      "claim": "Demo chấm dự án chatbot AI",
+      "verbatim_quote": "Đội Alpha xây dựng chatbot hỗ trợ tuyển sinh cho trường đại học.",
+      "source": "synthetic-data/source-alpha.txt"
+    }
+  ],
+  "confidence_score": 0.9,
+  "need_review": false
+}

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Capstone Pitch — Đặt phòng họp tự động</title>
+<style>
+  :root { --navy:#1F3864; --red:#C00000; --ink:#222; --paper:#F7F5F0; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:"Calibri","Segoe UI",sans-serif; background:var(--ink); color:var(--ink); }
+  .slide { display:none; min-height:100vh; padding:6vh 8vw; background:var(--paper); }
+  .slide.active { display:block; }
+  h1 { color:var(--navy); font-size:3rem; margin-bottom:1rem; }
+  h2 { color:var(--navy); border-bottom:4px solid var(--red); display:inline-block; padding-bottom:.3rem; margin-bottom:1.5rem; }
+  .kicker { color:var(--red); font-weight:700; letter-spacing:.12em; text-transform:uppercase; font-size:.85rem; }
+  ul { line-height:1.9; font-size:1.15rem; }
+  table { border-collapse:collapse; width:100%; font-size:1rem; }
+  th, td { border:1px solid #ccc; padding:.5rem .7rem; text-align:left; }
+  th { background:var(--navy); color:#fff; }
+  .footer { position:fixed; bottom:1.2rem; right:2rem; color:#999; font-size:.8rem; }
+  .hint { position:fixed; bottom:1.2rem; left:2rem; color:#bbb; font-size:.8rem; }
+  img { max-width:80%; border:1px solid #ccc; border-radius:6px; }
+</style>
+</head>
+<body>
+
+<section class="slide active" id="s1">
+  <p class="kicker">Capstone AI Automation K1</p>
+  <h1>Đặt phòng họp tự động</h1>
+  <p>Nguyễn Văn Nam · 24/08/2026</p>
+  <p>1 quy trình làm tay → 1 giải pháp tự động: skill · workflow n8n · MVP · package</p>
+</section>
+
+<section class="slide" id="s2">
+  <h2>1 · Bài toán</h2>
+  <ul>
+    <li>15 yêu cầu đặt phòng/tuần qua Zalo + sổ giấy, đối lịch tay ~3 giờ/tuần</li>
+    <li>Trùng lịch ~2 lần/tháng vì đối tay, trả lời trễ cuối ngày</li>
+    <li>Nam xử lý, người đặt nhận xác nhận/đề xuất khung</li>
+  </ul>
+</section>
+
+<section class="slide" id="s3">
+  <h2>2 · Giải pháp & tài nguyên tái sử dụng</h2>
+  <ul>
+    <li>Tin Zalo → trích phòng/ngày/khung → đối giao-khung với lịch tuần → xác nhận/từ chối (trích dòng trùng)/đề xuất 2 khung → reply chờ Nam duyệt</li>
+  </ul>
+  <table>
+    <tr><th>Mượn từ</th><th>Tài nguyên</th><th>Dùng làm</th></tr>
+    <tr><td>B4</td><td>checkpoints/n8n-contract-review-solution.json</td><td>Khung workflow check-theo-rule</td></tr>
+    <tr><td>B5</td><td>templates/faq.json</td><td>Mẫu tổ chức KB quy tắc phòng</td></tr>
+    <tr><td>B4</td><td>templates/checklist-rui-ro.md</td><td>Mẫu rule xung đột đếm được</td></tr>
+  </table>
+</section>
+
+<section class="slide" id="s4">
+  <h2>3 · Demo thực tế</h2>
+  <img src="../anh-demo/app-tc2.png" alt="App bắt trùng lịch">
+  <p>App MVP: TC2 trùng lịch → TU_CHOI trích đúng dòng lịch Mỹ Linh (ảnh chụp màn hình khi GV runtime-check)</p>
+</section>
+
+<section class="slide" id="s5">
+  <h2>4 · Nghiệm thu & rủi ro</h2>
+  <ul>
+    <li>D2: 5/5 assert cấu trúc PASS sau 3 vòng (vòng 1 FAIL đồ thị đứt do đổi tên node; vòng 2 rule văn xuôi bị AI bỏ qua). Runtime n8n chưa chạy được trên máy tôi (node 18 < 20) — khai rõ, chờ GV runtime-check</li>
+    <li>Skill: 3/3 PASS (xác nhận / trùng có trích dòng / mơ hồ đề xuất 2 khung)</li>
+    <li>MVP: 4/4 PASS (kể cả giao-khung 30'), 2 vòng cải tiến thật (crash mảng rỗng, so giao-khung)</li>
+    <li>Rủi ro lớn nhất: lịch tuần pre-fill cứng — cách giảm: khai rõ ngoài phạm vi MVP, tuần tới nối lịch thật</li>
+  </ul>
+</section>
+
+<section class="slide" id="s6">
+  <h2>5 · Kế hoạch tiếp theo</h2>
+  <ul>
+    <li>Tuần tới: nâng node ≥20 chạy n8n runtime-test, nối lịch thật thay pre-fill, webhook Zalo</li>
+    <li>Vận hành khi: 2 tuần chạy song song với sổ giấy, 0 trùng lịch bị lọt</li>
+  </ul>
+  <p style="margin-top:3rem; font-size:1.4rem; color:var(--red); font-weight:700;">Cảm ơn lớp và giảng viên.</p>
+</section>
+
+<div class="hint">← → hoặc bấm để chuyển slide</div>
+<div class="footer">Nguyễn Văn Nam · Capstone K1</div>
+
+<script>
+  const slides=[...document.querySelectorAll('.slide')];let i=0;
+  function show(n){i=Math.max(0,Math.min(slides.length-1,n));slides.forEach((s,k)=>s.classList.toggle('active',k===i));}
+  document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' ')show(i+1);if(e.key==='ArrowLeft')show(i-1);});
+  document.addEventListener('click',()=>show(i+1));
+</script>
+</body>
+</html>

@@ -1,0 +1,168 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Kết quả chấm từng candidate theo rubric",
+  "description": "Chấm từng tiêu chí con với level 1-5 + confidence + need_review + evidence (grounded vào candidate unified + research). Tổng hợp: base = weighted-average(levels). (Tuỳ chọn) adjustments cộng/trừ minh bạch trên base — final = clamp(base + Σbonus − Σpenalty, 0, 100). Confidence gate 3 tầng PASS/NEED_REVIEW/REJECT. Học từ capstone-rubric-v2 (extra_effort/slop + recompute honest).",
+  "type": "object",
+  "required": ["candidate_id", "candidate_name", "rubric_id", "scores", "aggregate", "confidence_score", "need_review"],
+  "properties": {
+    "candidate_id": { "type": "string" },
+    "candidate_name": { "type": "string" },
+    "rubric_id": { "type": "string" },
+    "graded_at": { "type": "string" },
+    "scores": {
+      "type": "array",
+      "description": "Một entry cho mỗi tiêu chí con trong rubric",
+      "items": {
+        "type": "object",
+        "required": ["criterion_id", "subcriterion_id", "name", "level", "weight", "confidence_score", "need_review", "evidence"],
+        "properties": {
+          "criterion_id": { "type": "string" },
+          "criterion_name": { "type": "string" },
+          "subcriterion_id": { "type": "string" },
+          "name": { "type": "string" },
+          "level": { "type": "integer", "minimum": 1, "maximum": 5 },
+          "level_label": { "type": "string" },
+          "weight": { "type": "number", "minimum": 0 },
+          "normalized_score": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100,
+            "description": "level/5 × 100"
+          },
+          "used_research": {
+            "type": "boolean",
+            "description": "true nếu tiêu chí này dùng fact từ deep-research"
+          },
+          "research_source": { "type": "string" },
+          "rationale": { "type": "string", "description": "Lý do chấm mức này (dựa evidence)" },
+          "confidence_score": { "type": "number", "minimum": 0, "maximum": 1 },
+          "need_review": { "type": "boolean" },
+          "evidence": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "required": ["claim", "verbatim_quote", "source"],
+              "properties": {
+                "claim": { "type": "string" },
+                "verbatim_quote": { "type": "string", "minLength": 1 },
+                "source": { "type": "string" },
+                "location": { "type": "string" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "adjustments": {
+      "type": "object",
+      "description": "(Tuỳ chọn) Lớp điều chỉnh cộng/trừ minh bạch trên base score. Mỗi MỤC BẮT BUỘC có ≥1 evidence grounded (BR-06). Penalty chỉ được tính khi trigger_met=true — chống trừ bừa. Tổng bonus/penalty do validator recompute (không tin số do LLM ghi). Thiếu adjustments → final_score == base_score (backward-compat).",
+      "properties": {
+        "bonus": {
+          "type": "array",
+          "description": "Các award cộng điểm: nỗ lực vượt yêu cầu (diagram đẹp, tri thức chuyên môn sâu, demo...). Mỗi mục {code, points, rationale, evidence[]}. Tổng ≤ giới hạn rubric (thường 10).",
+          "items": { "$ref": "#/definitions/adjustment_item" }
+        },
+        "penalty": {
+          "type": "array",
+          "description": "Các deduction trừ điểm: hành vi lười/ảo (AI-slop, placeholder chưa điền, copy mẫu...). Mỗi mục PHẢI có trigger_condition + trigger_met=true mới được trừ. Tổng ≤ giới hạn rubric.",
+          "items": { "$ref": "#/definitions/adjustment_item" }
+        }
+      }
+    },
+    "aggregate": {
+      "type": "object",
+      "required": ["total_score", "band", "total_weight"],
+      "properties": {
+        "base_score": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Weighted-average của scores[]: Σ(level_i/5 × 100 × weight_i) / Σ(weight_i). Đây là điểm cốt lõi, chưa tính adjustments."
+        },
+        "bonus_total": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Σ points của adjustments.bonus (validator recompute). 0 nếu không có bonus."
+        },
+        "penalty_total": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Σ points của adjustments.penalty CHỈ gồm mục trigger_met=true (validator recompute)."
+        },
+        "total_score": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Điểm công bố = clamp(base_score + bonus_total − penalty_total, 0, 100). Bằng base_score khi không có adjustments."
+        },
+        "band": { "type": "string", "description": "Xếp loại theo total_score: Xuất sắc / Tốt / Đạt / Yếu / Kém" },
+        "rank_note": { "type": "string" },
+        "total_weight": { "type": "number" },
+        "confidence_gate": {
+          "type": "object",
+          "description": "Cổng chất lượng tự động từ overall confidence_score. verdict quyết định flow: PASS→chấm tự động; NEED_REVIEW→đẩy human; REJECT→exit, không xếp hạng (BR-08).",
+          "required": ["verdict"],
+          "properties": {
+            "verdict": { "type": "string", "enum": ["PASS", "NEED_REVIEW", "REJECT"] },
+            "overall_confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+            "rule": {
+              "type": "string",
+              "description": "Quy tắc áp: PASS≥0.85 · NEED_REVIEW 0.60–0.85 · REJECT<0.60"
+            }
+          }
+        }
+      }
+    },
+    "strengths": { "type": "array", "items": { "type": "string" } },
+    "weaknesses": { "type": "array", "items": { "type": "string" } },
+    "confidence_score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Confidence tổng hợp của bài chấm (min của các tiêu chí)"
+    },
+    "need_review": { "type": "boolean" },
+    "evidence": {
+      "type": "array",
+      "description": "Evidence cấp bài (tổng quan), phần lớn evidence nằm trong từng tiêu chí",
+      "items": {
+        "type": "object",
+        "required": ["claim", "verbatim_quote", "source"],
+        "properties": {
+          "claim": { "type": "string" },
+          "verbatim_quote": { "type": "string", "minLength": 1 },
+          "source": { "type": "string" }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "adjustment_item": {
+      "type": "object",
+      "description": "Một mục điều chỉnh: cộng (nằm trong adjustments.bonus) hoặc trừ (nằm trong adjustments.penalty). BẮT BUỘC có evidence grounded.",
+      "required": ["code", "points", "rationale", "evidence"],
+      "properties": {
+        "code": { "type": "string", "description": "Mã hạng mục (vd E1..E6 bonus, S1..S5 penalty) hoặc id tự do do rubric định nghĩa." },
+        "points": { "type": "number", "minimum": 0, "description": "Số điểm (dương). Cộng nếu trong bonus, trừ nếu trong penalty." },
+        "rationale": { "type": "string", "description": "Lý do cộng/trừ (dẫn descriptor/rule, 1-2 câu)." },
+        "trigger_condition": { "type": "string", "description": "(Penalty, KHUYẾN NGHỊ) Điều kiện khách quan phải thoả mới được trừ — vd 'bài thiếu ≥2 dấu hiệu tri thức chuyên môn'. Chống giám khảo trừ bừa." },
+        "trigger_met": { "type": "boolean", "description": "true nếu trigger_condition đã thoả (hoặc penalty không cần trigger). Validator CHỈ tính penalty khi=true. Bonus bỏ qua field này." },
+        "evidence": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["claim", "verbatim_quote", "source"],
+            "properties": {
+              "claim": { "type": "string" },
+              "verbatim_quote": { "type": "string", "minLength": 1 },
+              "source": { "type": "string" },
+              "location": { "type": "string" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

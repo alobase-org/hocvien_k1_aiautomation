@@ -1,0 +1,89 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Rubric thiết kế chấm điểm",
+  "description": "Định nghĩa rubric: tiêu chí chính → tiêu chí con → trọng số + mô tả 5 mức định tính. Mỗi tiêu chí con có thể đánh dấu needs_research để yêu cầu deep-research trước khi chấm.",
+  "type": "object",
+  "required": ["rubric_id", "title", "scale", "criteria", "confidence_score", "need_review"],
+  "properties": {
+    "rubric_id": { "type": "string", "minLength": 1 },
+    "title": { "type": "string", "minLength": 1 },
+    "description": { "type": "string" },
+    "context": {
+      "type": "string",
+      "description": "Loại artifact / domain rubric áp dụng (generic đa năng)"
+    },
+    "scale": {
+      "type": "object",
+      "description": "Bản đồ mức định tính 1-5 → nhãn",
+      "required": ["5", "4", "3", "2", "1"],
+      "properties": {
+        "5": { "type": "string" },
+        "4": { "type": "string" },
+        "3": { "type": "string" },
+        "2": { "type": "string" },
+        "1": { "type": "string" }
+      }
+    },
+    "criteria": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "weight", "subcriteria"],
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "weight": { "type": "number", "minimum": 0 },
+          "description": { "type": "string" },
+          "subcriteria": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "required": ["id", "name", "weight", "level_descriptors"],
+              "properties": {
+                "id": { "type": "string" },
+                "name": { "type": "string" },
+                "weight": { "type": "number", "minimum": 0 },
+                "needs_research": {
+                  "type": "boolean",
+                  "description": "true = tiêu chí khó cần deep-research fact trước khi chấm"
+                },
+                "research_query": {
+                  "type": "string",
+                  "description": "Câu hỏi nghiên cứu nếu needs_research=true"
+                },
+                "level_descriptors": {
+                  "type": "object",
+                  "required": ["5", "4", "3", "2", "1"],
+                  "description": "Mô tả cụ thể cho mỗi mức (tiêu chí chấm khách quan)",
+                  "properties": {
+                    "5": { "type": "string" },
+                    "4": { "type": "string" },
+                    "3": { "type": "string" },
+                    "2": { "type": "string" },
+                    "1": { "type": "string" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["claim", "verbatim_quote", "source"],
+        "properties": {
+          "claim": { "type": "string" },
+          "verbatim_quote": { "type": "string", "minLength": 1 },
+          "source": { "type": "string" }
+        }
+      }
+    },
+    "confidence_score": { "type": "number", "minimum": 0, "maximum": 1 },
+    "need_review": { "type": "boolean" }
+  }
+}

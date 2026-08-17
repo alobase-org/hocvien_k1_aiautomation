@@ -1,0 +1,134 @@
+{
+  "_comment": "Grading mẫu CÓ adjustments (bonus + penalty có/ko trigger) — verify aggregator mới. Source verbatim phải khớp synthetic-data/source-alpha.txt. base=60, +bonus8(trigger), -penalty6(trigger_met=true), -penalty4(trigger_met=false→SKIP) → final=60+8-6=62.",
+  "candidate_id": "team-beta",
+  "candidate_name": "Đội Beta (có adjustments)",
+  "rubric_id": "RUBRIC-DEMO-001",
+  "scores": [
+    {
+      "criterion_id": "C1",
+      "criterion_name": "Chất lượng kỹ thuật",
+      "subcriterion_id": "C1-S1",
+      "name": "Hiệu năng",
+      "level": 4,
+      "level_label": "Tốt/Khá",
+      "weight": 0.5,
+      "normalized_score": 80.0,
+      "rationale": "p95=120ms, có số liệu → mức 4. Thiếu benchmark nên áp ceiling: không đạt 5.",
+      "confidence_score": 0.9,
+      "need_review": false,
+      "evidence": [
+        {
+          "claim": "Độ trễ p95 = 120ms",
+          "verbatim_quote": "Thời gian phản hồi trung bình 120ms ở p95.",
+          "source": "synthetic-data/source-alpha.txt",
+          "location": "mục Kỹ thuật"
+        }
+      ]
+    },
+    {
+      "criterion_id": "C1",
+      "criterion_name": "Chất lượng kỹ thuật",
+      "subcriterion_id": "C1-S2",
+      "name": "Kiểm thử",
+      "level": 4,
+      "level_label": "Tốt/Khá",
+      "weight": 0.5,
+      "normalized_score": 80.0,
+      "rationale": "Độ phủ 78% + unit test → mức 4. Chưa có e2e → ceiling chặn ở 4.",
+      "confidence_score": 0.9,
+      "need_review": false,
+      "evidence": [
+        {
+          "claim": "Độ phủ test 78%",
+          "verbatim_quote": "Có viết unit test, độ phủ 78%.",
+          "source": "synthetic-data/source-alpha.txt",
+          "location": "mục Kỹ thuật"
+        }
+      ]
+    },
+    {
+      "criterion_id": "C2",
+      "criterion_name": "Bảo mật",
+      "subcriterion_id": "C2-S1",
+      "name": "Quản lý lỗ hổng",
+      "level": 2,
+      "level_label": "Yếu",
+      "weight": 1.0,
+      "used_research": true,
+      "research_source": "synthetic-data/source-alpha.txt",
+      "normalized_score": 40.0,
+      "rationale": "Không có phân tích bảo mật → mức 2. Evidence chung chung nên ceiling tối đa 3, đã chốt 2.",
+      "confidence_score": 0.9,
+      "need_review": false,
+      "evidence": [
+        {
+          "claim": "Không có phân tích bảo mật",
+          "verbatim_quote": "Không có tài liệu bảo mật hoặc phân tích lỗ hổng.",
+          "source": "synthetic-data/source-alpha.txt",
+          "location": "mục Kỹ thuật"
+        }
+      ]
+    }
+  ],
+  "adjustments": {
+    "bonus": [
+      {
+        "code": "E1",
+        "points": 8,
+        "rationale": "Diagram workflow Mermaid chất lượng cao + có chú thích → thưởng vượt yêu cầu.",
+        "evidence": [
+          {
+            "claim": "Có diagram Mermaid",
+            "verbatim_quote": "Có viết unit test, độ phủ 78%.",
+            "source": "synthetic-data/source-alpha.txt",
+            "location": "mục Kỹ thuật"
+          }
+        ]
+      }
+    ],
+    "penalty": [
+      {
+        "code": "S1",
+        "points": 6,
+        "rationale": "Placeholder chưa điền trong file nộp.",
+        "trigger_condition": "còn ≥1 placeholder [Điền...]/[TODO] chưa điền",
+        "trigger_met": true,
+        "evidence": [
+          {
+            "claim": "Placeholder tồn tại",
+            "verbatim_quote": "Không có tài liệu bảo mật hoặc phân tích lỗ hổng.",
+            "source": "synthetic-data/source-alpha.txt",
+            "location": "mục Kỹ thuật"
+          }
+        ]
+      },
+      {
+        "code": "S2",
+        "points": 4,
+        "rationale": "Copy-paste giữa các file.",
+        "trigger_condition": "≥2 file gần identical (chưa phát hiện đủ dấu hiệu)",
+        "trigger_met": false,
+        "evidence": [
+          {
+            "claim": "Copy-paste",
+            "verbatim_quote": "Thời gian phản hồi trung bình 120ms ở p95.",
+            "source": "synthetic-data/source-alpha.txt",
+            "location": "mục Kỹ thuật"
+          }
+        ]
+      }
+    ]
+  },
+  "aggregate": {
+    "base_score": 60.0,
+    "bonus_total": 8.0,
+    "penalty_total": 6.0,
+    "total_score": 62.0,
+    "band": "Đạt",
+    "total_weight": 2.0
+  },
+  "strengths": ["Diagram chất lượng cao (bonus E1)"],
+  "weaknesses": ["Placeholder chưa điền (penalty S1)"],
+  "confidence_score": 0.9,
+  "need_review": false
+}

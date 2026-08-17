@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leave Request Helper — MVP exemplar B8</title>
+<style>
+  :root { --navy:#1F3864; --red:#C00000; --ok:#1a7f37; --bg:#F7F5F0; }
+  * { box-sizing:border-box; font-family:"Calibri","Segoe UI",sans-serif; }
+  body { background:var(--bg); color:#222; max-width:860px; margin:0 auto; padding:2rem; }
+  h1 { color:var(--navy); font-size:1.6rem; }
+  textarea { width:100%; min-height:120px; padding:.8rem; border:1px solid #bbb; border-radius:6px; font-size:1rem; }
+  button { background:var(--navy); color:#fff; border:none; padding:.7rem 1.4rem; border-radius:6px; font-size:1rem; cursor:pointer; margin-top:.6rem; }
+  button:disabled { background:#999; cursor:wait; }
+  .chips span { display:inline-block; background:#fde8e8; color:var(--red); border-radius:12px; padding:.15rem .7rem; margin:.15rem .25rem 0 0; font-size:.9rem; }
+  table { border-collapse:collapse; width:100%; margin-top:1rem; }
+  th,td { border:1px solid #ccc; padding:.45rem .6rem; text-align:left; font-size:.95rem; }
+  th { background:var(--navy); color:#fff; }
+  .verdict { font-size:1.25rem; font-weight:700; margin-top:1rem; padding:.6rem 1rem; border-radius:6px; display:inline-block; }
+  .duyet { background:#e6f4ea; color:var(--ok); } .tuchoi { background:#fde8e8; color:var(--red); } .bosung { background:#fff4e5; color:#9a6700; }
+  #logline { font-family:monospace; background:#fff; border:1px dashed #bbb; padding:.5rem; margin-top:.8rem; font-size:.85rem; word-break:break-all; }
+  .hide { display:none; }
+</style>
+</head>
+<body>
+<h1>Leave Request Helper <small style="font-size:.8rem;color:#888">(MVP exemplar B8 — quy tắc cứng chạy local, không gọi AI)</small></h1>
+<p>Dán 1 đơn xin nghỉ phép vào đây. App trích thông tin, đối chiếu chính sách, đề xuất duyệt/từ chối kèm lý do. Quyết định cuối vẫn thuộc trưởng nhóm.</p>
+<textarea id="don" placeholder='Ví dụ: "Chào sếp, em Minh xin nghỉ phép annual 2 ngày 21-22/08, việc em đã bàn giao cho Lan."'></textarea>
+<button id="btn" onclick="xuLy()">Xử lý</button>
+<div id="kq" class="hide">
+  <div class="chips" id="thieuchips"></div>
+  <div id="verdict" class="verdict"></div>
+  <table id="bang"></table>
+  <div id="logline"></div>
+  <button onclick="copyLog()" style="background:var(--red)">Copy dòng log</button>
+</div>
+<script>
+const POLICY = {
+  annual: {bao_truoc_ngay: 3, max_lien: 5},
+  sick:   {bao_truoc_gio: 8, max_lien: 3},
+  unpaid: {duyet_rieng: true}
+};
+const BAY = ["hai","ba","tư","năm","sáu","bảy","cn"];
+function parseDate(s, homNay){ const p=s.trim().split(/[-\/]/).map(Number); if(p.length<2||!p[0]||!p[1]) return null;
+  let [d,m,y]=p.length===3?(p[2]<100?[p[0],p[1],p[2]+2000]:p):[p[0],p[1],homNay?homNay.getFullYear():new Date().getFullYear()];
+  return new Date(y,m-1,d); }
+function fmt(d){ return d.toISOString().slice(0,10); }
+function lamViecGiua(a,b){ let n=0,cur=new Date(a);
+  while(cur<=b){ const w=cur.getDay(); if(w>=1&&w<=5) n++; cur.setDate(cur.getDate()+1);} return n; }
+
+function trich(text, homNay){
+  const loai = /nghỉ ốm|ốm|sick/i.test(text) ? "sick"
+             : /không lương|unpaid/i.test(text) ? "unpaid" : "annual";
+  const ten = (text.match(/(?:em|Em|tôi là)\s+([A-ZĐ][a-zà-ỹ]+)/)||[])[1]||"";
+  // tách khoảng ngày "21-22/08" thành "21/08 - 22/08" trước khi bóc tách
+  const chuan = text.replace(/(\d{1,2})\s*[-–]\s*(\d{1,2})\s*\/\s*(\d{1,2}(?:\/\d{2,4})?)/g, "$1/$3 - $2/$3");
+  const dates=[...chuan.matchAll(/(\d{1,2}\/\d{1,2}(?:\/\d{2,4})?)/g)].map(m=>m[1]);
+  let tu = parseDate(dates[0]||"", homNay), den = dates[1]?parseDate(dates[1], homNay):tu;
+  const mai = /\bmai\b|\bhôm sau\b/i.test(text);
+  const soYeuCau = (text.match(/(\d+)\s*ngày/i)||[])[1];
+  if(!tu && mai){ // "nghỉ N ngày từ mai"
+    tu=new Date(homNay); tu.setDate(tu.getDate()+1);
+    den=new Date(tu); if(soYeuCau) den.setDate(den.getDate()+Number(soYeuCau)-1); else den=tu;
+  }
+  const banGiao = (text.match(/bàn giao(?: cho| cho)?\s+([A-ZĐ][a-zà-ỹ]+)/i)||[])[1]||"";
+  return {ten, loai, tu, den, banGiao, mai, soYeuCau, text};
+}
+
+function doiChieu(d, homNay){
+  const rows=[], viPham=[];
+  const ngayDiem = homNay;
+  // 1. báo trước
+  if(d.loai==="annual"){
+    const bt=lamViecGiua(ngayDiem,d.tu);
+    rows.push(["Báo trước ≥3 ngày làm việc (annual)", bt+" ngày làm việc", bt>=3?"ĐẠT":"VI PHẠM"]);
+    if(bt<3) viPham.push("annual chỉ báo trước "+bt+" ngày làm việc (yêu cầu ≥3)");
+  }
+  if(d.loai==="sick"){
+    const ok = d.mai || (d.tu && lamViecGiua(ngayDiem,d.tu)===0);
+    rows.push(["Báo trước 8h sáng ngày nghỉ (sick)", d.mai?"báo ngày hôm trước/luôn":"đã báo trước", ok?"ĐẠT":"CẦN XEM"]);
+  }
+  if(d.loai==="unpaid"){ rows.push(["Không lương cần duyệt riêng","—","CẦN DUYỆT RIÊNG"]); }
+  // 2. độ dài
+  const soNgay = d.tu&&d.den? lamViecGiua(d.tu,d.den) : null;
+  const max = POLICY[d.loai].max_lien;
+  if(soNgay!=null && max){ rows.push(["Tối đa "+max+" ngày liền ("+d.loai+")", soNgay+" ngày", soNgay<=max?"ĐẠT":"VI PHẠM"]);
+    if(soNgay>max) viPham.push(d.loai+" tối đa "+max+" ngày liền, đơn yêu cầu "+soNgay); }
+  // 3. bàn giao
+  rows.push(["Nêu người bàn giao", d.banGiao?("người nhận: "+d.banGiao):"(không nêu)", d.banGiao?"ĐẠT":"THIẾU"]);
+  if(!d.banGiao) viPham.push("đơn không nêu người bàn giao công việc đang dở");
+  return {rows, viPham, soNgay};
+}
+
+function xuLy(){
+  const text=document.getElementById("don").value.trim();
+  if(!text){ alert("Dán đơn vào trước đã."); return; }
+  const btn=document.getElementById("btn"); btn.disabled=true; btn.textContent="Đang xử lý...";
+  setTimeout(()=>{ chay(text); btn.disabled=false; btn.textContent="Xử lý"; },350);
+}
+function chay(text){
+  const homNay=new Date(); homNay.setHours(0,0,0,0);
+  const d=trich(text,homNay);
+  const thieu=[];
+  if(!d.ten) thieu.push("ho_ten");
+  if(!d.tu) thieu.push("tu_ngay"); if(!d.den) thieu.push("den_ngay");
+  if(thieu.length){
+    document.getElementById("kq").classList.remove("hide");
+    document.getElementById("thieuchips").innerHTML=thieu.map(t=>"<span>"+t+"</span>").join("");
+    const v=document.getElementById("verdict"); v.className="verdict bosung"; v.textContent="THIEU_DU_LIEU — không đoán bậy, bổ sung các trường trên";
+    document.getElementById("bang").innerHTML=""; document.getElementById("logline").textContent="";
+    return;
+  }
+  const {rows,viPham,soNgay}=doiChieu(d,homNay);
+  document.getElementById("kq").classList.remove("hide");
+  document.getElementById("thieuchips").innerHTML="";
+  const v=document.getElementById("verdict");
+  let deXuat;
+  if(d.loai==="unpaid"){ deXuat="CAN_BO_SUNG — unpaid luôn cần duyệt riêng bởi cấp trên trực tiếp"; v.className="verdict bosung"; }
+  else if(viPham.length){ deXuat="DE_XUAT_TU_CHOI"; v.className="verdict tuchoi"; }
+  else { deXuat="DE_XUAT_DUYET"; v.className="verdict duyet"; }
+  v.textContent=deXuat+(viPham.length?" — "+viPham.length+" lỗi":"");
+  document.getElementById("bang").innerHTML="<tr><th>Quy tắc</th><th>Tình trạng đơn</th><th>Kết quả</th></tr>"
+    +rows.map(r=>"<tr><td>"+r[0]+"</td><td>"+r[1]+"</td><td>"+r[2]+"</td></tr>").join("")
+    +(viPham.length?"<tr><td colspan=3><b>Lý do:</b><br>"+viPham.map(x=>"• "+x).join("<br>")+"</td></tr>":"");
+  const csv=[fmt(homNay),d.ten||"?",d.loai,soNgay||"?",deXuat.split(" ")[0]].join(",");
+  document.getElementById("logline").textContent=csv;
+  window._csv=csv;
+  const kq=document.getElementById("kq"); kq.scrollIntoView({behavior:"smooth"});
+}
+function copyLog(){
+  if(navigator.clipboard&&window._csv){ navigator.clipboard.writeText(window._csv); alert("Đã copy dòng log CSV."); }
+}
+</script>
+</body>
+</html>

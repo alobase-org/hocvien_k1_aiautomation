@@ -1,0 +1,13 @@
+{
+  "loai": "HOI_TON_KHO",
+  "san_pham": "Sạc nhanh 65W PowerDash",
+  "id": "P02",
+  "can_chuyen_nguoi": false,
+  "du_lieu_tra": {
+    "price": 320000,
+    "stock": 0,
+    "warranty_months": 6
+  },
+  "nguon": "products.json#P02",
+  "reply_draft": "Dạ Sạc nhanh 65W PowerDash hiện hết hàng ạ. Anh/chị muốn em đặt trước giúp không, 2 ngày là có ạ?"
+}

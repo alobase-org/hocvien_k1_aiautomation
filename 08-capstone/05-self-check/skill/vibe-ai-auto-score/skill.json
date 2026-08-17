@@ -1,0 +1,54 @@
+{
+  "name": "vibe-ai-auto-score",
+  "version": "1.0.0",
+  "description": "Sinh rubric chấm bài học viên tự động từ tài liệu một buổi dạy (folder buổi: lab.md, thuc-hanh-N, prompts/, checkpoints/) và chấm từng bài nộp theo schema thống nhất với chống hallucination (evidence + confidence_score + need_review). Chấm nương tay: học viên làm 70% bài mẫu GV đạt ~7/10. Tùy chọn deep-research cho tiêu chí khó cần fact. Xuất file chấm từng học viên (docx) và báo cáo tổng hợp lớp (docx/html-dashboard/slide) qua vibe-humanizer.",
+  "domain": "assessment",
+  "context": "course-grading",
+  "quality_tier": "TEMPLATED",
+  "build_method": "Direct prompt engineering",
+  "language": "vi",
+  "input_contract": {
+    "required": "folder buổi dạy (lab.md + thuc-hanh-N + prompts/ + checkpoints/)",
+    "optional": "thư mục bài nộp học viên, rubric có sẵn",
+    "checkpoints_role": "bài mẫu giảng viên = chuẩn 10/10 để hiệu chỉnh descriptors"
+  },
+  "phases": [
+    { "id": "parse", "title": "Parse folder buổi dạy → session-brief", "output": "session-brief.md" },
+    { "id": "design", "title": "Thiết kế rubric (nương tay, mức 3 ≈ 70% bài GV)", "output": "rubric.json" },
+    { "id": "schema", "title": "Định nghĩa unified schema", "output": "candidate-unified.schema.json" },
+    { "id": "extract", "title": "Convert bài nộp → unified schema + validate evidence/confidence", "output": "candidates/*.unified.json" },
+    { "id": "research", "title": "(Optional) Deep-research cho tiêu chí khó", "output": "research/*.md" },
+    { "id": "grade", "title": "Chấm nương tay theo rubric + validate grounding", "output": "candidates/*.grading.json" },
+    { "id": "report", "title": "Xuất file chấm từng học viên + báo cáo tổng hợp lớp", "output": "*.docx|*.html|slide" }
+  ],
+  "dependencies": {
+    "skills": ["vibe-humanizer", "deep-research"],
+    "python_packages": ["python-docx"],
+    "external_tools": []
+  },
+  "scripts": {
+    "validator": "python3 script/validator.py",
+    "aggregate": "python3 script/score_aggregator.py",
+    "dashboard": "python3 script/html_dashboard.py",
+    "anonymizer": "python3 script/anonymizer.py",
+    "log": "python3 script/log_helper.py",
+    "review": "python3 script/review_queue.py"
+  },
+  "hooks": "hooks.json",
+  "confidence_threshold": 0.7,
+  "level_scale": {
+    "5": "Xuất sắc (≈100% bài GV)",
+    "4": "Tốt (≈85%)",
+    "3": "Đạt (≈70% — mốc kỳ vọng học viên)",
+    "2": "Yếu (≈50%)",
+    "1": "Kém (<30%)"
+  },
+  "lenient_calibration": {
+    "principle": "học viên làm 70% bài mẫu GV → ~7/10",
+    "descriptor_rule": "mức 3 (Đạt) = 'làm phần lớn cốt lõi ≈ 70% bài GV', KHÔNG phải 'đúng 100%'",
+    "ceiling": "level-ceiling nới lỏng (kb/student-grading-calibration §3), KHÔNG cap cứng capstone",
+    "feedback_rule": "nêu điều làm tốt TRƯỚC, gap SAU",
+    "guide": "kb/student-grading-calibration.md"
+  },
+  "scoring_formula": "total_100 = Σ(level_i/5 × 100 × weight_i) / Σ(weight_i)"
+}

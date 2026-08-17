@@ -1,0 +1,232 @@
+{
+  "rubric_id": "capstone-k1-rubric-v1",
+  "title": "Rubric chấm đồ án Capstone K1 — use case + 4 deliverable",
+  "description": "Chấm package nộp của học viên theo b8-design-lock. Chấm bằng vibe-ai-auto-score. Mọi mức dựa artifact thật trong package, không chấm theo lời kể.",
+  "context": "Đồ án capstone AI Automation K1 — deadline 2026-08-25",
+  "scale": {
+    "5": "Xuất sắc — vượt nghiệm thu, có sáng tạo có kỷ luật",
+    "4": "Giỏi — đạt nghiệm thu, 1-2 điểm chưa polish",
+    "3": "Đạt — đủ nghiệm thu tối thiểu",
+    "2": "Thiếu thành phần chạy được",
+    "1": "Không nộp được / không chạy"
+  },
+  "criteria": [
+    {
+      "id": "B",
+      "name": "Usecase Brief + Resource Map",
+      "weight": 15,
+      "subcriteria": [
+        {
+          "id": "B1",
+          "name": "Brief là data contract",
+          "weight": 8,
+          "level_descriptors": {
+            "5": "Đủ 7 mục; tiêu chí thành công ≥2 đều đo được; input/output có ví dụ thật; đổi brief đều ghi risk-log",
+            "4": "Đủ 7 mục, ≥2 tiêu chí đo được; 1 mục ví dụ thiếu",
+            "3": "Đủ 7 mục nhưng tiêu chí còn mơ hồ",
+            "2": "Thiếu 2+ mục hoặc không có tiêu chí đo được",
+            "1": "Không có brief"
+          }
+        },
+        {
+          "id": "B2",
+          "name": "Resource map khai thác B1–B7",
+          "weight": 7,
+          "level_descriptors": {
+            "5": "≥5 tài nguyên path thật; mỗi cái ghi rõ mượn làm gì và thực sự dùng trong artifact",
+            "4": "≥3 path thật, dùng thật",
+            "3": "3 path nhưng 1 cái không dùng thật",
+            "2": "<3 path hoặc path không tồn tại",
+            "1": "Không có — làm từ đầu"
+          }
+        }
+      ]
+    },
+    {
+      "id": "D1",
+      "name": "Agent Skill",
+      "weight": 20,
+      "subcriteria": [
+        {
+          "id": "D1a",
+          "name": "Cấu trúc skill hợp lệ",
+          "weight": 7,
+          "level_descriptors": {
+            "5": "SKILL.md frontmatter chuẩn, description trigger rõ; folder đủ template/kb + test; rule có lý do",
+            "4": "Frontmatter + folder đủ; description còn chung chung",
+            "3": "SKILL.md có nhưng thiếu folder kèm",
+            "2": "SKILL.md rời rạc không chạy được",
+            "1": "Không có"
+          }
+        },
+        {
+          "id": "D1b",
+          "name": "Contract input/output",
+          "weight": 6,
+          "level_descriptors": {
+            "5": "Tên file + định dạng + schema cụ thể; thiếu dữ liệu có cờ rõ",
+            "4": "Contract có, 1chỗ thiếu định dạng",
+            "3": "Contract mô tả bằng lời",
+            "2": "Chỉ nói 'AI tự hiểu'",
+            "1": "Không có"
+          }
+        },
+        {
+          "id": "D1c",
+          "name": "Test trên use case mới",
+          "weight": 7,
+          "level_descriptors": {
+            "5": "≥2 test PASS trên input của use case mới + test-run.md có evidence",
+            "4": "1 test PASS có evidence",
+            "3": "Test có và PASS nhưng evidence mờ (không trích output)",
+            "2": "Test có nhưng FAIL hoặc không có evidence",
+            "1": "Không test"
+          }
+        }
+      ]
+    },
+    {
+      "id": "D2",
+      "name": "n8n e2e-test-first",
+      "weight": 25,
+      "subcriteria": [
+        {
+          "id": "D2a",
+          "name": "Workflow chạy use case mới",
+          "weight": 8,
+          "level_descriptors": {
+            "5": "Import sạch, chạy input mới ra artifact đúng; trường hợp xấu xử lý đúng",
+            "4": "Chạy được luồng chính; 1 trường hợp phụ chưa xử lý",
+            "3": "Chạy nhưng artifact sai tên/thiếu",
+            "2": "Chạy lỗi node hoặc chỉ chạy input mẫu cũ",
+            "1": "Không có workflow"
+          }
+        },
+        {
+          "id": "D2b",
+          "name": "E2e test ≥3 assert",
+          "weight": 7,
+          "level_descriptors": {
+            "5": "≥3 assert phủ cả trường hợp vàng + xấu; kiểm được bằng mắt/API",
+            "4": "3 assert nhưng thiếu trường hợp xấu",
+            "3": "2 assert",
+            "2": "1 assert hoặc assert không kiểm được",
+            "1": "Không có test"
+          }
+        },
+        {
+          "id": "D2c",
+          "name": "Run-log ≥2 vòng có ≥1 FAIL",
+          "weight": 10,
+          "level_descriptors": {
+            "5": "≥3 vòng ghi chi tiết lỗi→sửa; có ≥1 vòng FAIL thật kèm execution ID/ảnh execution pane; khai rõ phần chưa runtime-test",
+            "4": "2 vòng, có 1 FAIL kèm evidence (execution ID hoặc ảnh)",
+            "3": "2 vòng, có ≥1 vòng FAIL, evidence tối thiểu (mô tả lỗi cụ thể)",
+            "2": "2 vòng nhưng không có FAIL nào (nghi vấn copy) hoặc FAIL không có chi tiết — tối đa Đạt có điều kiện, GV hỏi đáp trước khi chốt",
+            "1": "1 dòng hoàn thành"
+          }
+        }
+      ]
+    },
+    {
+      "id": "D3",
+      "name": "MVP vibe coding",
+      "weight": 20,
+      "subcriteria": [
+        {
+          "id": "D3a",
+          "name": "Spec-kit SDD",
+          "weight": 7,
+          "level_descriptors": {
+            "5": "PRD phạm vi rõ + ≥3 user stories bám người dùng thật + ≥3 test scenarios kiểm tay được",
+            "4": "Đủ 3 phần, 1 phần mờ",
+            "3": "Thiếu 1 phần",
+            "2": "Chỉ 1 phần",
+            "1": "Không có"
+          }
+        },
+        {
+          "id": "D3b",
+          "name": "App chạy đầu cuối",
+          "weight": 8,
+          "level_descriptors": {
+            "5": "Mở app, input → output hoàn chỉnh; đúng nghiệp vụ brief; chạy được máy GV",
+            "4": "Chạy được 1 lần, 1 bước phụ chưa mượt",
+            "3": "Chạy nhưng lỗi ở giữa luồng",
+            "2": "Mới có giao diện chưa có xử lý",
+            "1": "Không có app"
+          }
+        },
+        {
+          "id": "D3c",
+          "name": "Vòng cải tiến",
+          "weight": 5,
+          "level_descriptors": {
+            "5": "≥2 vòng improve-log: vấn đề thật → yêu cầu 1 tính năng → kết quả",
+            "4": "1 vòng có kết quả",
+            "3": "1 vòng ghi suông",
+            "2": "Ghi chung chung",
+            "1": "Không có"
+          }
+        }
+      ]
+    },
+    {
+      "id": "D4",
+      "name": "Package + pitch HTML",
+      "weight": 20,
+      "subcriteria": [
+        {
+          "id": "D4a",
+          "name": "Package đủ cấu trúc",
+          "weight": 8,
+          "level_descriptors": {
+            "5": "100% cấu trúc chuẩn + README định hướng + ảnh demo dùng đúng chỗ",
+            "4": "Thiếu ≤1 file phụ",
+            "3": "Thiếu 1 thành phần chính",
+            "2": "Thiếu 2+ thành phần",
+            "1": "Không theo cấu trúc"
+          }
+        },
+        {
+          "id": "D4b",
+          "name": "Pitch slide HTML",
+          "weight": 7,
+          "level_descriptors": {
+            "5": "6 slide mở được; ≥4 con số thật; bàn tài nguyên mượn có path; không còn placeholder",
+            "4": "6 slide, 2-3 con số",
+            "3": "5 slide hoặc nhiều placeholder",
+            "2": "Slide rời rạc",
+            "1": "Không mở được"
+          }
+        },
+        {
+          "id": "D4c",
+          "name": "Trung thực nghiệm thu",
+          "weight": 5,
+          "level_descriptors": {
+            "5": "Checklist tick khớp runtime-check của GV 100%; phần chưa test khai rõ",
+            "4": "Khớp ≥90%, lệch nhỏ không cố ý",
+            "3": "Có 1-2 claim không khớp",
+            "2": "Nhiều claim không khớp",
+            "1": "Claim bịa có hệ thống"
+          }
+        }
+      ]
+    }
+  ],
+  "confidence_score": 0.85,
+  "need_review": false,
+  "evidence": [
+    {
+      "claim": "Nghiệm thu tối thiểu từng deliverable lấy từ design-lock B8",
+      "verbatim_quote": "D2: workflow n8n import được, chạy trên input mới, e2e test PASS, run-log ≥ 2 vòng (trong đó ≥1 vòng FAIL)",
+      "source": "giao_trinh/giang-day/00-admin/b8-design-lock.md"
+    },
+    {
+      "claim": "Cơ chế chống copy-y-nguyên là criterion chấm",
+      "verbatim_quote": "PASS ngay vòng đầu = nghi vấn copy nguyên bản",
+      "source": "giao_trinh/giang-day/00-admin/b8-design-lock.md"
+    }
+  ]
+}

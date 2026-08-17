@@ -1,0 +1,74 @@
+{
+  "candidate_id": "team-alpha",
+  "candidate_name": "Đội Alpha",
+  "source_file": "synthetic-data/source-alpha.txt",
+  "fields": [
+    {
+      "key": "architecture",
+      "value": "microservices, 5 service độc lập",
+      "value_type": "string",
+      "rubric_link": "C1-S1",
+      "confidence_score": 0.95,
+      "need_review": false,
+      "evidence": [
+        {
+          "claim": "Đội dùng kiến trúc microservices 5 service",
+          "verbatim_quote": "Hệ thống được thiết kế theo kiến trúc microservices với 5 service độc lập.",
+          "source": "synthetic-data/source-alpha.txt",
+          "location": "mục Tóm tắt"
+        }
+      ]
+    },
+    {
+      "key": "latency_p95",
+      "value": "120ms",
+      "value_type": "string",
+      "rubric_link": "C1-S1",
+      "confidence_score": 0.95,
+      "need_review": false,
+      "evidence": [
+        {
+          "claim": "Độ trễ p95 = 120ms",
+          "verbatim_quote": "Thời gian phản hồi trung bình 120ms ở p95.",
+          "source": "synthetic-data/source-alpha.txt",
+          "location": "mục Kỹ thuật"
+        }
+      ]
+    },
+    {
+      "key": "test_coverage",
+      "value": "78%",
+      "value_type": "string",
+      "rubric_link": "C1-S2",
+      "confidence_score": 0.95,
+      "need_review": false,
+      "evidence": [
+        {
+          "claim": "Độ phủ test 78%",
+          "verbatim_quote": "Có viết unit test, độ phủ 78%.",
+          "source": "synthetic-data/source-alpha.txt",
+          "location": "mục Kỹ thuật"
+        }
+      ]
+    },
+    {
+      "key": "security_analysis",
+      "value": null,
+      "value_type": "string",
+      "rubric_link": "C2-S1",
+      "confidence_score": 0.0,
+      "need_review": true,
+      "evidence": [
+        {
+          "claim": "Không có phân tích bảo mật",
+          "verbatim_quote": "Không có tài liệu bảo mật hoặc phân tích lỗ hổng.",
+          "source": "synthetic-data/source-alpha.txt",
+          "location": "mục Kỹ thuật"
+        }
+      ]
+    }
+  ],
+  "confidence_score": 0.0,
+  "need_review": true,
+  "extraction_warnings": ["Trường security_analysis không có nội dung tích cực — candidate bỏ ngỏ bảo mật"]
+}

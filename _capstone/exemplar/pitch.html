@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Capstone Pitch — Xử lý đơn xin nghỉ phép</title>
+<style>
+  :root { --navy:#1F3864; --red:#C00000; --ink:#222; --paper:#F7F5F0; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:"Calibri","Segoe UI",sans-serif; background:var(--ink); color:var(--ink); }
+  .slide { display:none; min-height:100vh; padding:6vh 8vw; background:var(--paper); }
+  .slide.active { display:block; }
+  h1 { color:var(--navy); font-size:3rem; margin-bottom:1rem; }
+  h2 { color:var(--navy); border-bottom:4px solid var(--red); display:inline-block; padding-bottom:.3rem; margin-bottom:1.5rem; }
+  .kicker { color:var(--red); font-weight:700; letter-spacing:.12em; text-transform:uppercase; font-size:.85rem; }
+  ul { line-height:1.9; font-size:1.15rem; }
+  table { border-collapse:collapse; width:100%; font-size:1rem; }
+  th, td { border:1px solid #ccc; padding:.5rem .7rem; text-align:left; }
+  th { background:var(--navy); color:#fff; }
+  .footer { position:fixed; bottom:1.2rem; right:2rem; color:#999; font-size:.8rem; }
+  .hint { position:fixed; bottom:1.2rem; left:2rem; color:#bbb; font-size:.8rem; }
+  .placeholder-box { border:2px dashed #bbb; border-radius:8px; padding:2rem; color:#888; background:#fff; }
+</style>
+</head>
+<body>
+
+<section class="slide active" id="s1">
+  <p class="kicker">Capstone AI Automation K1 — Exemplar GV</p>
+  <h1>Xử lý đơn xin nghỉ phép</h1>
+  <p>Exemplar giảng viên · 2026-08-18</p>
+  <p>1 quy trình duyệt phép làm tay 10–15 phút/đơn → đề xuất duyệt trong vài phút: skill · workflow n8n · MVP · package.</p>
+</section>
+
+<section class="slide" id="s2">
+  <h2>1 · Bài toán</h2>
+  <ul>
+    <li>~8 đơn nghỉ/tuần × 10–15 phút tay = hơn 1,5 giờ/tuần của trưởng nhóm</li>
+    <li>Đau nhất: check chính sách từng đơn + quên ghi sổ + trả lời trễ</li>
+    <li>Người dùng: trưởng nhóm duyệt; nhân viên nhận kết quả</li>
+  </ul>
+</section>
+
+<section class="slide" id="s3">
+  <h2>2 · Giải pháp & tài nguyên tái sử dụng</h2>
+  <ul>
+    <li>Dán đơn → trích JSON → đối chiếu chính sách → kiến nghị + lý do → HITL duyệt</li>
+  </ul>
+  <table>
+    <tr><th>Mượn từ</th><th>Tài nguyên</th><th>Dùng làm</th></tr>
+    <tr><td>B4</td><td>checkpoints/n8n-contract-review-solution.json</td><td>Khung workflow check-theo-chính-sách</td></tr>
+    <tr><td>B4</td><td>test/interactive_e2e_runner.py</td><td>Pattern e2e qua n8n API</td></tr>
+    <tr><td>B5</td><td>templates/faq.json + chinh-sach-ho-tro.md</td><td>Mẫu tổ chức KB chính sách</td></tr>
+    <tr><td>B4</td><td>app/ (Legal AI Guard)</td><td>Exemplar app MVP</td></tr>
+  </table>
+</section>
+
+<section class="slide" id="s4">
+  <h2>3 · Demo thực tế</h2>
+  <div class="placeholder-box">
+    [GV chèn ảnh lúc demo: n8n execution pane của workflow leave-request-reviewer + app MVP xử lý đơn #1]
+  </div>
+  <p>Đơn hợp lệ → DE_XUAT_DUYET kèm dẫn chứng · Đơn vi phạm báo trước → DE_XUAT_TU_CHOI nêu 2 lỗi.</p>
+</section>
+
+<section class="slide" id="s5">
+  <h2>4 · Nghiệm thu & rủi ro</h2>
+  <ul>
+    <li>D1 skill: 2 test case — GV chạy live trong buổi, kết quả điền tại chỗ</li>
+    <li>D2 e2e: 3/4 assert sau 3 vòng run-log, vòng 1 FAIL (workflow còn schema cũ); assert 2 là vòng demo tiếp theo</li>
+    <li>D3 MVP: 3/3 scenario chạy PASS (app kèm theo, mở index.html), 3 vòng cải tiến trong quá trình build</li>
+    <li>Rủi ro lớn nhất: dữ liệu thật nhạy cảm — giảm bằng dữ liệu mô phỏng theo fallback-inputs B6</li>
+  </ul>
+</section>
+
+<section class="slide" id="s6">
+  <h2>5 · Kế hoạch tiếp theo</h2>
+  <ul>
+    <li>Tuần tới: nhận đơn qua webhook Zalo thay dán tay; batch 8 đơn/tuần</li>
+    <li>Đưa vào vận hành thật khi: chạy 2 tuần không sai chính sách, có người duyệt bù khi trưởng nhóm vắng</li>
+  </ul>
+  <p style="margin-top:3rem; font-size:1.4rem; color:var(--red); font-weight:700;">Exemplar — học viên làm theo đúng khung này với use case của mình.</p>
+</section>
+
+<div class="hint">← → hoặc bấm để chuyển slide</div>
+<div class="footer">Exemplar GV · Capstone K1</div>
+
+<script>
+  const slides=[...document.querySelectorAll('.slide')];let i=0;
+  function show(n){i=Math.max(0,Math.min(slides.length-1,n));slides.forEach((s,k)=>s.classList.toggle('active',k===i));}
+  document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' ')show(i+1);if(e.key==='ArrowLeft')show(i-1);});
+  document.addEventListener('click',()=>show(i+1));
+</script>
+</body>
+</html>

@@ -1,0 +1,5 @@
+tc,phan_loai,do_tin_cay,verdict
+TC1,CHIET_KHAU_CHUA_GHI,cao,PASS
+TC2,SAI_NGAY,cao,PASS
+TC3,TRUNG_DON,cao,PASS
+TC4,THIEU_DON,cao,PASS

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Recon Helper — MVP Linh (B8)</title>
+<style>
+  :root{--navy:#1F3864;--red:#C00000;--ok:#1a7f37;--warn:#9a6700;--bg:#F7F5F0;}
+  *{box-sizing:border-box;font-family:"Calibri","Segoe UI",sans-serif;}
+  body{background:var(--bg);color:#222;max-width:900px;margin:0 auto;padding:2rem;}
+  h1{color:var(--navy);font-size:1.5rem;}
+  textarea{width:48%;min-height:150px;padding:.6rem;border:1px solid #bbb;border-radius:6px;font-family:monospace;font-size:.9rem;}
+  button{background:var(--navy);color:#fff;border:none;padding:.7rem 1.4rem;border-radius:6px;font-size:1rem;cursor:pointer;margin-top:.6rem;}
+  table{border-collapse:collapse;width:100%;margin-top:1rem;}
+  th,td{border:1px solid #ccc;padding:.4rem .6rem;font-size:.9rem;text-align:left;}
+  th{background:var(--navy);color:#fff;}
+  .khong-ro{background:#fff4e5;} .lech{background:#fde8e8;} .khop td{color:var(--ok);}
+  #draft{background:#fff;border-left:4px solid var(--navy);padding:.8rem 1rem;margin-top:1rem;white-space:pre-wrap;}
+  .hide{display:none;}
+</style>
+</head>
+<body>
+<h1>Recon Helper <small style="font-size:.8rem;color:#888">(MVP Linh — rule cứng local, dán CSV: so_dh,so_tien,ngay)</small></h1>
+<p>Dán 2 bảng (mỗi dòng: <code>so_dh, so_tien, ngay_thanh_toan</code>) rồi bấm Đối chiếu.</p>
+<textarea id="nb" placeholder="so_dh,so_tien,ngay&#10;DH001,12.500.000,2026-08-01"></textarea>
+<textarea id="sk" placeholder="so_dh,so_tien,ngay&#10;DH001,12.000.000,2026-08-01"></textarea>
+<br><button onclick="doiChieu()">Đối chiếu</button>
+<div id="kq" class="hide">
+  <table id="bang"></table>
+  <div id="draft"></div>
+</div>
+<script>
+function so(s){ s=(s||"").toString().trim().replace(/[^\d-]/g,""); return s?parseInt(s,10):null; }
+function ngay(s){ const m=(s||"").match(/(\d{4})-(\d{2})-(\d{2})/); return m?new Date(+m[1],+m[2]-1,+m[3]):null; }
+function parseCSV(txt){
+  return txt.trim().split(/\n+/).filter(l=>l.trim()&&!/^so_dh/i.test(l)).map(l=>{
+    const p=l.split(",").map(x=>x.trim());
+    return {so_dh:p[0], tien:so(p[1]), ngay:ngay(p[2])};
+  }).filter(r=>r.so_dh);
+}
+function loai(nb,sk){
+  if(nb.tien==null&&sk.tien!=null||sk.tien==null&&nb.tien!=null) return ["THIEU_DON","cao"];
+  if(nb.tien!=null&&sk.tien!=null){
+    const ch=nb.tien-sk.tien;
+    if(ch>0&&ch%50000===0) return ["CHIET_KHAU_CHUA_GHI","cao (chênh "+ch.toLocaleString("vi")+" bội 50k)"];
+    if(ch!==0) return ["KHONG_RO","thấp (chênh "+ch.toLocaleString("vi")+" không khớp rule nào)"];
+    const d1=nb.ngay,d2=sk.ngay;
+    if(d1&&d2){ const d=Math.abs(d2-d1)/86400000;
+      if(d>0&&d<=3&&d1.getMonth()!==d2.getMonth()) return ["SAI_NGAY","cao (lệch "+d+" ngày vắt tháng)"]; }
+    return ["KHOP",""];
+  }
+  return ["KHONG_RO","thấp (thiếu cả 2 phía)"];
+}
+function doiChieu(){
+  const nb=parseCSV(document.getElementById("nb").value), sk=parseCSV(document.getElementById("sk").value);
+  const skBy={}; sk.forEach(r=>{ (skBy[r.so_dh]=skBy[r.so_dh]||[]).push(r); });
+  const nbBy={}; nb.forEach(r=>{ (nbBy[r.so_dh]=nbBy[r.so_dh]||[]).push(r); });
+  let rows="", nKhop=0, drafts=[];
+  const seen=new Set();
+  for(const r of nb.concat(sk)){ if(seen.has(r.so_dh)) continue; seen.add(r.so_dh);
+    const a=nbBy[r.so_dh], b=skBy[r.so_dh];
+    let cls,verdict,tin="";
+    if(a&&a.length>1||b&&b.length>1){ cls="lech"; verdict="TRUNG_DON ("+((a?a.length:0)+(b?b.length:0))+" dòng)"; }
+    else { const nb1=a?a[0]:{tien:null,ngay:null}, sk1=b?b[0]:{tien:null,ngay:null};
+      const [v,t]=loai(nb1,sk1); verdict=v; tin=t;
+      cls = v==="KHOP"?"khop":(v==="KHONG_RO"?"khong-ro":"lech");
+      if(v==="KHOP") nKhop++;
+      if(v!=="KHOP") drafts.push(r.so_dh+": "+v+(t?" — "+t:"")); }
+    rows+="<tr class='"+cls+"'><td>"+r.so_dh+"</td><td>"+verdict+"</td><td>"+tin+"</td></tr>";
+  }
+  document.getElementById("kq").classList.remove("hide");
+  document.getElementById("bang").innerHTML="<tr><th>Đơn</th><th>Kết quả</th><th>Ghi chú</th></tr>"+rows;
+  document.getElementById("draft").textContent="Email draft (per đại lý — chờ kế toán trưởng duyệt):\n• "+(drafts.join("\n• ")||"(không có lệch)");
+  document.getElementById("kq").scrollIntoView({behavior:"smooth"});
+}
+</script>
+</body>
+</html>

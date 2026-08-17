@@ -8,9 +8,6 @@
     "location_consistency": "Same clean SME office and the same desk setup",
     "forbidden_elements": ["third-party logos", "generated text", "real-person likeness"]
   },
-  "voice_bible": {
-    "description": "Male, calm and warm mid-range voice, steady moderate pace, professional consultant tone giving practical operational advice, no dramatic pitch swings."
-  },
   "frames": [
     {"frame_id":"FR-01","scene_id":"SC-01","composition":"Medium-wide vertical shot","subject":"Operations manager at a crowded workflow screen","action":"Pauses and looks overwhelmed","camera":"Eye level, 35mm","image_prompt":"Vertical cinematic documentary frame, fictional Vietnamese operations manager in navy shirt facing an overcrowded node workflow, modern SME office, soft daylight from camera left, navy and cyan palette, realistic, no text, no logos","negative_prompt":"text, logos, extra fingers, real person likeness","status":"DRAFT","image_asset_ref":null},
     {"frame_id":"FR-02","scene_id":"SC-02","composition":"Over-shoulder close shot","subject":"Workflow screen and empty report","action":"Data routes into the wrong branch","camera":"Over shoulder, shallow depth","image_prompt":"Vertical over-shoulder cinematic frame, same fictional manager and office, data lines routing into a wrong branch and an empty report represented without readable text, consistent daylight, no text, no logos","negative_prompt":"readable text, logos, different character","status":"DRAFT","image_asset_ref":null},

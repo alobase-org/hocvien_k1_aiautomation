@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Warranty Helper — MVP Hà (B8)</title>
+<style>
+  :root { --navy:#1F3864; --red:#C00000; --ok:#1a7f37; --warn:#9a6700; --bg:#F7F5F0; }
+  * { box-sizing:border-box; font-family:"Calibri","Segoe UI",sans-serif; }
+  body { background:var(--bg); color:#222; max-width:860px; margin:0 auto; padding:2rem; }
+  h1 { color:var(--navy); font-size:1.6rem; }
+  textarea { width:100%; min-height:120px; padding:.8rem; border:1px solid #bbb; border-radius:6px; font-size:1rem; }
+  button { background:var(--navy); color:#fff; border:none; padding:.7rem 1.4rem; border-radius:6px; font-size:1rem; cursor:pointer; margin-top:.6rem; }
+  button:disabled { background:#999; cursor:wait; }
+  .chips span { display:inline-block; background:#fde8e8; color:var(--red); border-radius:12px; padding:.15rem .7rem; margin:.15rem .25rem 0 0; font-size:.9rem; }
+  table { border-collapse:collapse; width:100%; margin-top:1rem; }
+  th,td { border:1px solid #ccc; padding:.45rem .6rem; text-align:left; font-size:.95rem; }
+  th { background:var(--navy); color:#fff; }
+  .verdict { font-size:1.25rem; font-weight:700; margin-top:1rem; padding:.6rem 1rem; border-radius:6px; display:inline-block; }
+  .nhan { background:#e6f4ea; color:var(--ok); } .tuchoi { background:#fde8e8; color:var(--red); } .bosung { background:#fff4e5; color:var(--warn); }
+  #logline { font-family:monospace; background:#fff; border:1px dashed #bbb; padding:.5rem; margin-top:.8rem; font-size:.85rem; word-break:break-all; }
+  #traloi { background:#fff; border-left:4px solid var(--navy); padding:.8rem 1rem; margin-top:1rem; font-size:1rem; }
+  .hide { display:none; }
+</style>
+</head>
+<body>
+<h1>Warranty Helper <small style="font-size:.8rem;color:#888">(MVP Hà — rule cứng chạy local, không gọi AI ngoài)</small></h1>
+<p>Dán 1 tin yêu cầu bảo hành vào đây. App trích thông tin, đối chiếu chính sách 12 tháng, đề xuất xử lý kèm lý do. Lịch sửa do kỹ thuật duyệt.</p>
+<textarea id="tin" placeholder='Ví dụ: "Máy giặt Electrolux em Mỹ Dung mua 15/03/2026, serial EL88231, giờ không vắt. SĐT 0900.000.012"'></textarea>
+<input type="date" id="ngayxuly" value="2026-08-23" style="margin-top:.5rem;padding:.4rem"> <span style="color:#888;font-size:.85rem">ngày xử lý (đổi để test)</span>
+<br><button id="btn" onclick="xuLy()">Xử lý</button>
+<div id="kq" class="hide">
+  <div class="chips" id="thieuchips"></div>
+  <div id="verdict" class="verdict"></div>
+  <table id="bang"></table>
+  <div id="traloi"></div>
+  <div id="logline"></div>
+  <button onclick="copyLog()" style="background:var(--red)">Copy dòng log</button>
+</div>
+<script>
+const LOI_MAY=["không vắt","khong vat","không lạnh","không lạnh hơn","không nóng","kêu to","hở nước","gioăng","bo mạch","mất nguồn","không chạy"];
+const LOI_NGUOI=["vỡ nhựa","vo nhua","rơ mỡ","ro mo","côn trùng","tự tháo","tu thao"];
+function pDate(s){ const p=s.trim().split(/[\/\-\.]/).map(Number);
+  if(p.length<2||!p[0]||!p[1]) return null;
+  let y=p.length===3?(p[2]<100?p[2]+2000:p[2]):null; return {d:p[0],m:p[1],y}; }
+function han12(nm, homNay){ if(!nm) return null;
+  const y=(nm.y!==null&&nm.y!==undefined)?nm.y:homNay.getFullYear();
+  return new Date(y+1, nm.m-1, nm.d); }
+function trich(text){
+  const ten=(text.match(/(?:em|Em|tôi|Tôi là|chị|anh)\s+([A-ZĐÀ-Ỹ][a-zà-ỹ]+)/)||[])[1]||"";
+  const sdt=(()=>{ const cand=text.match(/0[\d\.\s]{9,13}/g)||[];
+    for(const c of cand){ const digits=c.replace(/\D/g,""); if(/^0\d{9,10}$/.test(digits)) return c.trim(); } return ""; })();
+  const serial=(text.match(/serial\s*:?\s*([A-Z0-9]{4,})/i)||[])[1]||"";
+  const may=(text.match(/(máy giặt|máy lạnh|máy nước nóng|nồi chiên|tủ lạnh|máy sấy)/i)||[])[1]||"";
+  const d=[...text.matchAll(/(\d{1,2})[\/\-\.](\d{1,2})(?:[\/\-\.](\d{2,4}))?/g)].map(m=>({d:+m[1],m:+m[2],y:m[3]?(+m[3]<100?+m[3]+2000:+m[3]):null}));
+  const ngayMua=d.length?d[0]:null;
+  const lower=text.toLowerCase();
+  let loai="KHONG_RO", viDu="";
+  for(const k of LOI_MAY){ if(lower.includes(k)){loai="LOI_MAY";viDu=k;break;} }
+  if(loai==="KHONG_RO") for(const k of LOI_NGUOI){ if(lower.includes(k)){loai="LOI_NGUOI_DUNG";viDu=k;break;} }
+  return {ten,sdt,serial,may,ngayMua,loai,viDu,text};
+}
+function doiChieu(d, homNay){
+  const rows=[],thieu=[];
+  if(!d.ten) thieu.push("ho_ten");
+  if(!/^\d{10,11}$/.test(d.sdt.replace(/[\.\s]/g,""))) thieu.push("sdt");
+  if(!d.serial) thieu.push("serial");
+  if(!d.may) thieu.push("loai_may");
+  if(!d.ngayMua) thieu.push("ngay_mua");
+  let thoi_han="KHONG_RO", han=null;
+  if(d.ngayMua){ han=han12(d.ngayMua, homNay);
+    thoi_han = han && han>=homNay ? "CON":"HET";
+    const nmTxt=d.ngayMua?(String(d.ngayMua.d).padStart(2,"0")+"/"+String(d.ngayMua.m).padStart(2,"0")+"/"+(d.ngayMua.y??"(năm này)")):"?";
+    rows.push(["Bảo hành 12 tháng", "mua "+nmTxt, "hạn "+(han?han.toISOString().slice(0,10):"?")+" → "+thoi_han]);
+  } else rows.push(["Bảo hành 12 tháng","chưa có ngày mua","KHÔNG RO"]);
+  rows.push(["Phân loại sự cố", d.viDu?("từ khoá: "+d.viDu):"mô tả mơ hồ", d.loai==="KHONG_RO"?"KHÔNG RO":d.loai]);
+  return {rows,thieu,thoi_han,han};
+}
+function xuLy(){
+  const text=document.getElementById("tin").value.trim();
+  if(!text){ alert("Dán tin vào trước đã."); return; }
+  const btn=document.getElementById("btn"); btn.disabled=true; btn.textContent="Đang xử lý...";
+  setTimeout(()=>{ chay(text); btn.disabled=false; btn.textContent="Xử lý"; },350);
+}
+function chay(text){
+  const homNay=new Date(document.getElementById("ngayxuly").value||"2026-08-23");
+  const d=trich(text);
+  const {rows,thieu,thoi_han,han}=doiChieu(d,homNay);
+  document.getElementById("kq").classList.remove("hide");
+  document.getElementById("thieuchips").innerHTML=thieu.map(t=>"<span>"+t+"</span>").join("");
+  const v=document.getElementById("verdict");
+  let dx, traloi;
+  if(thieu.length){ dx="CAN_BO_SUNG"; v.className="verdict bosung";
+    traloi="Chào anh/chị, để xử lý yêu cầu bảo hành nhanh, mình cần bổ sung: "+thieu.join(", ")+". Anh/chị gửi thêm giúp em nhé ạ."; }
+  else if(thoi_han==="HET"){ dx="TU_CHOI"; v.className="verdict tuchoi";
+    traloi="Chào anh/chị, sản phẩm đã hết hạn bảo hành 12 tháng (hạn "+han.toISOString().slice(0,10)+"). Phòng kỹ thuật có thể báo giá sửa ngoài bảo hành nếu anh/chị cần ạ."; }
+  else if(d.loai==="LOI_NGUOI_DUNG"){ dx="TU_CHOI"; v.className="verdict tuchoi";
+    traloi="Chào anh/chị, hiện tượng này thuộc nhóm lỗi do sử dụng, không thuộc bảo hành. Mong anh/chị thông cảm ạ."; }
+  else if(thoi_han==="CON"&&d.loai==="LOI_MAY"){ dx="NHAN_BAO_HANH"; v.className="verdict nhan";
+    traloi="Chào anh/chị, máy của anh/chị còn bảo hành (hạn "+han.toISOString().slice(0,10)+"). Phòng kỹ thuật sẽ liên hệ xác nhận lịch sửa trong hôm nay ạ."; }
+  else { dx="CAN_BO_SUNG"; v.className="verdict bosung";
+    traloi="Chào anh/chị, mong anh/chị mô tả rõ hơn hiện tượng máy (ví dụ: không vắt, không lạnh...) để mình xử lý chính xác ạ."; }
+  v.textContent=dx+(thieu.length?" — thiếu "+thieu.length+" trường":"");
+  document.getElementById("bang").innerHTML="<tr><th>Quy tắc</th><th>Tình trạng tin</th><th>Kết quả</th></tr>"
+    +rows.map(r=>"<tr><td>"+r[0]+"</td><td>"+r[1]+"</td><td>"+r[2]+"</td></tr>").join("");
+  document.getElementById("traloi").textContent="Trả lời khách (chờ duyệt): "+traloi;
+  const csv=[homNay.toISOString().slice(0,10),d.ten||"?",d.may||"?",thoi_han,dx].join(",");
+  document.getElementById("logline").textContent=csv; window._csv=csv;
+  document.getElementById("kq").scrollIntoView({behavior:"smooth"});
+}
+function copyLog(){ if(navigator.clipboard&&window._csv){ navigator.clipboard.writeText(window._csv); alert("Đã copy dòng log CSV."); } }
+</script>
+</body>
+</html>

@@ -1,0 +1,60 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Candidate ở unified schema (đã convert + chống hallucination)",
+  "description": "Mỗi candidate được convert về schema thống nhất. MỖI field phải có confidence_score + need_review + evidence (verbatim quote từ file gốc). Validator sẽ xác minh evidence tồn tại trong source và confidence đủ tin cậy.",
+  "type": "object",
+  "required": ["candidate_id", "candidate_name", "source_file", "fields", "confidence_score", "need_review"],
+  "properties": {
+    "candidate_id": { "type": "string", "minLength": 1 },
+    "candidate_name": { "type": "string" },
+    "source_file": { "type": "string", "description": "Đường dẫn file artifact gốc của candidate" },
+    "extracted_at": { "type": "string" },
+    "fields": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Mỗi field = một đơn vị dữ liệu trích được, map sang tiêu chí rubric nếu có",
+      "items": {
+        "type": "object",
+        "required": ["key", "value", "confidence_score", "need_review", "evidence"],
+        "properties": {
+          "key": { "type": "string", "description": "Tên field theo unified schema" },
+          "value": {},
+          "value_type": { "type": "string", "enum": ["string", "number", "boolean", "array", "object"] },
+          "rubric_link": {
+            "type": "string",
+            "description": "ID tiêu chí con mà field này làm bằng chứng cho"
+          },
+          "confidence_score": { "type": "number", "minimum": 0, "maximum": 1 },
+          "need_review": { "type": "boolean" },
+          "evidence": {
+            "type": "array",
+            "minItems": 1,
+            "description": "Phải có ≥1 trích dẫn verbatim từ file gốc — không hallucination",
+            "items": {
+              "type": "object",
+              "required": ["claim", "verbatim_quote", "source"],
+              "properties": {
+                "claim": { "type": "string" },
+                "verbatim_quote": { "type": "string", "minLength": 1 },
+                "source": { "type": "string" },
+                "location": { "type": "string", "description": "vd: line 23, slide 4, trang 5" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "confidence_score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Confidence tổng hợp (min hoặc trung bình của các field)"
+    },
+    "need_review": { "type": "boolean" },
+    "extraction_warnings": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Cảnh báo: field không trích được, evidence mờ, ..."
+    }
+  }
+}

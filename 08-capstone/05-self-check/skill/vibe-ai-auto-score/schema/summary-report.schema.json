@@ -1,0 +1,108 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Báo cáo tổng hợp chấm điểm nhiều candidate",
+  "description": "Tổng hợp kết quả chấm của toàn bộ candidate: bảng xếp hạng, điểm trung bình, phân bố, top mạnh/yếu, đề xuất. Nguồn để render docx/html-dashboard/slide.",
+  "type": "object",
+  "required": ["report_id", "rubric_id", "title", "ranking", "statistics", "confidence_score", "need_review"],
+  "properties": {
+    "report_id": { "type": "string" },
+    "rubric_id": { "type": "string" },
+    "title": { "type": "string" },
+    "generated_at": { "type": "string" },
+    "candidate_count": { "type": "integer", "minimum": 1 },
+    "ranking": {
+      "type": "array",
+      "description": "Sắp xếp giảm dần theo total_score",
+      "items": {
+        "type": "object",
+        "required": ["rank", "candidate_id", "candidate_name", "total_score", "band"],
+        "properties": {
+          "rank": { "type": "integer", "minimum": 1 },
+          "candidate_id": { "type": "string" },
+          "candidate_name": { "type": "string" },
+          "base_score": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100,
+            "description": "Điểm cốt lõi (weighted-average), chưa tính adjustments."
+          },
+          "bonus_total": { "type": "number", "minimum": 0, "description": "Σ adjustments.bonus. 0 nếu không có." },
+          "penalty_total": { "type": "number", "minimum": 0, "description": "Σ adjustments.penalty (trigger_met=true). 0 nếu không có." },
+          "total_score": { "type": "number", "minimum": 0, "maximum": 100, "description": "= clamp(base + bonus − penalty, 0, 100). Điểm công bố." },
+          "band": { "type": "string" },
+          "criteria_scores": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "criterion_id": { "type": "string" },
+                "criterion_name": { "type": "string" },
+                "weighted_score": { "type": "number" }
+              }
+            }
+          },
+          "confidence_gate": { "type": "string", "enum": ["PASS", "NEED_REVIEW", "REJECT"] },
+          "need_review": { "type": "boolean" }
+        }
+      }
+    },
+    "statistics": {
+      "type": "object",
+      "required": ["mean", "median", "min", "max", "stddev"],
+      "properties": {
+        "mean": { "type": "number" },
+        "median": { "type": "number" },
+        "min": { "type": "number" },
+        "max": { "type": "number" },
+        "stddev": { "type": "number" }
+      }
+    },
+    "distribution": {
+      "type": "object",
+      "description": "Số candidate ở mỗi band",
+      "properties": {
+        "Xuất sắc": { "type": "integer" },
+        "Tốt": { "type": "integer" },
+        "Đạt": { "type": "integer" },
+        "Yếu": { "type": "integer" },
+        "Kém": { "type": "integer" }
+      }
+    },
+    "top_strengths": { "type": "array", "items": { "type": "string" } },
+    "common_weaknesses": { "type": "array", "items": { "type": "string" } },
+    "recommendations": { "type": "array", "items": { "type": "string" } },
+    "review_queue": {
+      "type": "array",
+      "description": "Candidate/ tiêu chí cần human review (confidence thấp / evidence mờ)",
+      "items": { "type": "string" }
+    },
+    "rejected": {
+      "type": "array",
+      "description": "Candidate bị confidence_gate REJECT (<0.60) — KHÔNG vào ranking, để riêng chờ human xử lý (BR-08).",
+      "items": {
+        "type": "object",
+        "required": ["candidate_id", "reason"],
+        "properties": {
+          "candidate_id": { "type": "string" },
+          "candidate_name": { "type": "string" },
+          "overall_confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+          "reason": { "type": "string" }
+        }
+      }
+    },
+    "confidence_score": { "type": "number", "minimum": 0, "maximum": 1 },
+    "need_review": { "type": "boolean" },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["claim", "verbatim_quote", "source"],
+        "properties": {
+          "claim": { "type": "string" },
+          "verbatim_quote": { "type": "string", "minLength": 1 },
+          "source": { "type": "string" }
+        }
+      }
+    }
+  }
+}

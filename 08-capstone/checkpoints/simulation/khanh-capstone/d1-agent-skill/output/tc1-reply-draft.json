@@ -1,0 +1,13 @@
+{
+  "loai": "HOI_GIA+HOI_TON_KHO",
+  "san_pham": "Tai nghe Bluetooth AirBeat Lite",
+  "id": "P01",
+  "can_chuyen_nguoi": false,
+  "du_lieu_tra": {
+    "price": 690000,
+    "stock": 18,
+    "warranty_months": 12
+  },
+  "nguon": "products.json#P01",
+  "reply_draft": "Dạ Tai nghe Bluetooth AirBeat Lite còn 18 chiếc, giá 690,000đ ạ. Anh/chị cần em giữ một chiếc không ạ?"
+}

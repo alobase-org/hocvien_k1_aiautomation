@@ -3,7 +3,7 @@
   "$id": "storyboard.schema.json",
   "type": "object",
   "additionalProperties": false,
-  "required": ["project_id", "style_bible", "voice_bible", "frames"],
+  "required": ["project_id", "style_bible", "frames"],
   "properties": {
     "project_id": {"type": "string", "pattern": "^[A-Z0-9-]+$"},
     "style_bible": {
@@ -16,14 +16,6 @@
         "character_consistency": {"type": "string", "minLength": 1},
         "location_consistency": {"type": "string", "minLength": 1},
         "forbidden_elements": {"type": "array", "items": {"type": "string", "minLength": 1}}
-      }
-    },
-    "voice_bible": {
-      "type": "object", "additionalProperties": false,
-      "required": ["description"],
-      "description": "1 mô tả giọng DUY NHẤT cho toàn bộ video — dùng lặp lại y nguyên ở audio.voice_profile của MỌI clip trong video-plan.json, không đổi theo từng scene, để giữ giọng đồng nhất xuyên suốt.",
-      "properties": {
-        "description": {"type": "string", "minLength": 1, "description": "Tiếng Anh, cụ thể: giới tính, chất giọng (trầm/cao/ấm/sắc), tốc độ nói mặc định, phong cách (chuyên gia tư vấn/thân thiện/nghiêm túc...)."}
       }
     },
     "frames": {

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head><meta charset="UTF-8"><title>Weekly Report — MVP Thảo (B8)</title>
+<style>
+:root{--navy:#1F3864;--red:#C00000;--ok:#1a7f37;--warn:#9a6700;--bg:#F7F5F0;}
+*{box-sizing:border-box;font-family:"Calibri","Segoe UI",sans-serif;}
+body{background:var(--bg);max-width:820px;margin:0 auto;padding:2rem;}
+h1{color:var(--navy);font-size:1.5rem;}
+textarea{width:48%;min-height:130px;padding:.6rem;border:1px solid #bbb;border-radius:6px;font-family:monospace;font-size:.85rem;}
+button{background:var(--navy);color:#fff;border:none;padding:.7rem 1.3rem;border-radius:6px;font-size:1rem;cursor:pointer;margin-top:.5rem;}
+button.sec{background:var(--red);}
+.stat{display:inline-block;background:#fff;border:1px solid #ccc;border-radius:8px;padding:.8rem 1.2rem;margin:.4rem .4rem 0 0;}
+.stat b{font-size:1.4rem;color:var(--navy);}
+.badge{display:inline-block;padding:.15rem .6rem;border-radius:10px;font-weight:700;}
+.baohong{background:#fde8e8;color:var(--red);} .baoxanh{background:#e6f4ea;color:var(--ok);}
+#email{background:#fff;border-left:4px solid var(--navy);padding:.8rem 1rem;margin-top:1rem;white-space:pre-wrap;}
+.hide{display:none;}
+</style></head>
+<body>
+<h1>Weekly Report <small style="font-size:.78rem;color:#888">(MVP Thảo — số liệu vòng cứng local, email draft chờ duyệt)</small></h1>
+<p>Dán CSV mỗi dòng: <code>diem,tong_doanh_thu</code> (chấp nhận dấu phẩy nghìn)</p>
+<textarea id="tuan_nay" placeholder="D01,310000000&#10;D02,500000000"></textarea>
+<textarea id="tuan_truoc" placeholder="D01,300000000&#10;D02,480000000"></textarea>
+<br><button onclick="tinh()">Tính báo cáo</button>
+<div id="kq" class="hide">
+  <div id="stats"></div>
+  <div id="email"></div>
+  <button class="sec" onclick="copyEmail()">Copy email draft</button>
+</div>
+<script>
+function so(s){const d=(s||"").toString().trim().replace(/[^\d-]/g,"");return d?parseInt(d,10):null;}
+function parse(t){return t.trim().split(/\n+/).map(l=>{const i=l.indexOf(",");if(i<0)return {diem:null,tien:null};return {diem:l.slice(0,i).trim(),tien:so(l.slice(i+1))};}).filter(x=>x.diem&&x.tien);}
+function tinh(){
+  const nay=parse(document.getElementById("tuan_nay").value);
+  const truocRaw=document.getElementById("tuan_truoc").value.trim();
+  document.getElementById("kq").classList.remove("hide");
+  const tongNay=nay.reduce((s,x)=>s+x.tien,0);
+  if(!truocRaw){
+    document.getElementById("stats").innerHTML='<span class="badge baohong">THIEU_DU_LIEU — thiếu tuần trước, không tính bừa</span>';
+    document.getElementById("email").textContent="";return;}
+  const truoc=parse(truocRaw);
+  const tongTruoc=truoc.reduce((s,x)=>s+x.tien,0);
+  const g=Math.round((tongNay-tongTruoc)/tongTruoc*1000)/10;
+  const canhBao=g<-10;
+  const tb=tongNay/nay.length;
+  const canChuY=nay.filter(x=>x.tien<tb*0.5).map(x=>x.diem);
+  document.getElementById("stats").innerHTML=
+   `<span class="stat">Tổng tuần này<br><b>${tongNay.toLocaleString("vi-VN")}đ</b></span>
+    <span class="stat">Tuần trước<br><b>${tongTruoc.toLocaleString("vi-VN")}đ</b></span>
+    <span class="stat">Tăng trưởng<br><b>${g>0?"+":""}${g}%</b></span>
+    <span class="badge ${canhBao?"baohong":"baoxanh"}">${canhBao?"CẢNH BAO — giảm >10%":"ỔN"}</span>`+
+    (canChuY.length?`<br><span class="badge baohong">CẦN CHÚ Ý: ${canChuY.join(", ")}</span>`:"");
+  document.getElementById("email").textContent=
+   `Kính gửi anh/chị,\nTổng doanh thu tuần: ${tongNay.toLocaleString("vi-VN")}đ (${g>0?"+":""}${g}% so tuần trước).`+
+   (canhBao?`\nCẢNH BAO: doanh thu giảm mạnh ${Math.abs(g)}%, đề nghị xem ngay các điểm giảm.`:"")+
+   (canChuY.length?`\nĐiểm cần chú ý: ${canChuY.join(", ")} (dưới 50% trung bình).`:"")+
+   `\nChi tiết trong file đính kèm. Trân trọng.`;
+}
+function copyEmail(){const t=document.getElementById("email").textContent;if(t&&navigator.clipboard){navigator.clipboard.writeText(t);alert("Đã copy email draft.");}}
+</script></body></html>
